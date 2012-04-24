@@ -1,7 +1,7 @@
 #ifndef TRIAL_DATA
 
 typedef struct __TrialData TrialData;
-typedef struct __TrialDataHistory TrialDataHistory;
+typedef struct __TrialsHistory TrialsHistory;
 
 
 
@@ -15,8 +15,10 @@ struct __TrialData
 };
 
 
-struct __TrialDataHistory
+struct __TrialsHistory
 {
 	TrialData				history[TRIAL_DATA_HISTORY_SIZE];
 	unsigned int 			buff_write_idx;
 };
+
+#endif

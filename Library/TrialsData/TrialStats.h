@@ -1,5 +1,6 @@
 
 
+typedef struct __TrialStats TrialStats;
 
 struct __TrialStats
 {

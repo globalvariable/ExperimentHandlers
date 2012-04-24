@@ -29,13 +29,54 @@ void create_gui(void)
   	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
   	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	table = gtk_table_new(1,2,TRUE);
+	table = gtk_table_new(14 ,9,TRUE);   // 14 rows 9 columns
 	gtk_box_pack_start(GTK_BOX(vbox),table, FALSE,FALSE,0);
 
-	btn_quit = gtk_button_new_with_label("Quit");
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,9, 0, 4);  
+	if (!create_trial_handler_gui(vbox))
+		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_trial_handler_gui().");
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,9, 4, 5);  
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,4, 5, 9);  
+	if (!create_exp_envi_handler_gui(vbox))
+		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_exp_envi_handler_gui().");
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,4, 9, 10);  
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,4, 10, 14);  
+	if (!create_exp_envi_interfacer_gui(vbox))
+		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_exp_envi_interfacer_gui().");
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 5, 9, 5, 9);  
+	if (!create_mov_obj_handler_gui(vbox))
+		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_mov_obj_handler_gui().");
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 5, 9, 9, 10);  
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 5, 9, 10, 14);  
+	if (!create_mov_obj_interfacer_gui(vbox))
+		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_mov_obj_interfacer_gui().");
+
+	hbox = gtk_hbox_new(TRUE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 4, 5, 5, 14);  
+        gtk_box_pack_start(GTK_BOX(hbox),gtk_vseparator_new(), TRUE,TRUE,5);
+
+/*	btn_quit = gtk_button_new_with_label("Quit");
 	gtk_box_pack_start (GTK_BOX (vbox), btn_quit, FALSE, FALSE, 0);
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -120,7 +161,7 @@ void create_gui(void)
        	g_signal_connect(G_OBJECT(btn_interrogate_trial_type), "clicked", G_CALLBACK(interrogate_trial_type_button_func ), NULL);   	
        	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func ), NULL);   	
        	g_signal_connect(G_OBJECT(btn_quit), "clicked", G_CALLBACK(quit_button_func ), NULL);       
-
+*/
 	gtk_widget_show_all(window);
 }
 
