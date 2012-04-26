@@ -17,8 +17,9 @@ struct __TrialData
 
 struct __TrialsHistory
 {
-	TrialData				history[TRIAL_DATA_HISTORY_SIZE];
+	TrialData				*history;
 	unsigned int 			buff_write_idx;
+	unsigned int 			buffer_size;
 };
 
 #endif

@@ -5,13 +5,13 @@ bool get_trial_type_string(TrialType trial_type, char *str)  // pass NULL for on
 	switch (trial_type)
 	{
 ////            RT_TRIALS    (REAL_TIME)
-		case TRIAL_TYPE_RT_BMI_LEFT_TARGET:
+		case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:
 			if (str != NULL)
-				strcpy(str, "TRIAL_TYPE_RT_BMI_LEFT_TARGET");
+				strcpy(str, "TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET");
 			return TRUE;
-		case TRIAL_TYPE_RT_BMI_RIGHT_TARGET:
+		case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:
 			if (str != NULL)
-				strcpy(str, "TRIAL_TYPE_RT_BMI_RIGHT_TARGET");	
+				strcpy(str, "TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET");	
 			return TRUE;
 									
 ////            RAT_TRAINING_TRIALS   
@@ -38,9 +38,9 @@ bool get_trial_type_string(TrialType trial_type, char *str)  // pass NULL for on
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx)
 {
 	unsigned int i;
-	*idx = NUM_OF_TRIAL_TYPES; 
+	*idx = trial_types_data->num_of_trial_types; 
 
-	for (i = 0; i < NUM_OF_TRIAL_TYPES; i++)
+	for (i = 0; i < trial_types_data->num_of_trial_types; i++)
 	{
 		if (trial_type == trial_types_data->types[i].type)
 		{
@@ -50,22 +50,28 @@ bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, Tr
 	}
 	return FALSE;	
 }
-bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int trial_type_idx, TimeStamp max_trial_length, TimeStamp trial_refractory)
+bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, TimeStamp max_trial_length, TimeStamp trial_refractory)
 {
+	unsigned int i;
 	bool trial_type_used;
-	char temp[TRIAL_TYPE_MAX_STRING_LENGTH];
+	char temp[200];
+	TrialTypeData	*lcl_types;
 	if (!is_trial_type_used(trial_types_data, trial_type, &trial_type_used))
-		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", "! is_trial_type_used.");	
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trial_types_data", "! is_trial_type_used()");	
 	if (trial_type_used)
-		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", "trial_type_used.");	
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trial_types_data", "trial_type_used");	
 	if (!get_trial_type_string(trial_type, temp))    // is trial type valid ?
-		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", "! get_trial_type_string.");	
-	if (trial_type_idx >= NUM_OF_TRIAL_TYPES) 
-		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", "trial_type_idx >= NUM_OF_TRIAL_TYPES.");	
-	trial_types_data->types[trial_type_idx].type = trial_type;
-	trial_types_data->types[trial_type_idx].constraints.max_trial_length = max_trial_length;
-	trial_types_data->types[trial_type_idx].constraints.trial_refractory = trial_refractory;
-	print_message(INFO_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", temp);	
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trial_types_data", "!get_trial_type_string()");
+	lcl_types = g_new0(TrialTypeData, trial_types_data->num_of_trial_types + 1);
+	for (i = 0; i < trial_types_data->num_of_trial_types; i++)
+		lcl_types[i] = trial_types_data->types[i];
+	g_free(trial_types_data->types);
+	trial_types_data->types = lcl_types;
+	trial_types_data->types[trial_types_data->num_of_trial_types].type = trial_type;
+	trial_types_data->types[trial_types_data->num_of_trial_types].constraints.max_trial_length = max_trial_length;
+	trial_types_data->types[trial_types_data->num_of_trial_types].constraints.trial_refractory = trial_refractory;
+	trial_types_data->num_of_trial_types++;
+	print_message(INFO_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trial_types_data", temp);	
 	return TRUE;
 }
 bool is_trial_type_used(TrialTypesData* trial_types_data, TrialType trial_type, bool *used)
@@ -77,7 +83,7 @@ bool is_trial_type_used(TrialTypesData* trial_types_data, TrialType trial_type, 
 	if (!get_trial_type_string(trial_type, temp))  // is trial type valid ?
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trials_data", "! get_trial_type_string.");
 
-	for (i = 0; i < NUM_OF_TRIAL_TYPES; i++)
+	for (i = 0; i < trial_types_data->num_of_trial_types; i++)
 	{
 		if (trial_type == trial_types_data->types[i].type)
 		{

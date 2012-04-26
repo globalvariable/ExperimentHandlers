@@ -31,30 +31,28 @@ struct __TrialTypeData
 
 struct __TrialTypesData
 {
-	TrialTypeData				types[NUM_OF_TRIAL_TYPES];
+	TrialTypeData				*types;
+	unsigned int				num_of_trial_types;
 };
 
 
 
 
 
-#define	TRIAL_TYPE_MAX_STRING_LENGTH	200
+#define	TRIAL_TYPE_MAX_STRING_LENGTH					200
 
 #define	TRIAL_TYPE_NULL									0
 
-////            RT_TRIALS    (REAL_TIME)
-#define	TRIAL_TYPE_RT_BMI_LEFT_TARGET		11
-#define	TRIAL_TYPE_RT_BMI_RIGHT_TARGET		12
+#define	TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET				1
+#define	TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET				2
+#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_LEFT			3
+#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_RIGHT			4
 
-
-////            RAT_TRAINING_TRIALS   
-#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_LEFT		3001
-#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_RIGHT		3002
-
+#define	NUM_OF_ALL_TRIAL_TYPES							5
 
 bool get_trial_type_string(TrialType trial_type, char *str);
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx);
-bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int trial_type_idx, TimeStamp max_trial_length, TimeStamp trial_refractory);
+bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, TimeStamp max_trial_length, TimeStamp trial_refractory);
 bool is_trial_type_used(TrialTypesData* trial_types_data, TrialType trial_type, bool *used);
 
 

@@ -2,7 +2,7 @@
 #define TRIAL_HAND_STATUS_H
 
 
-typedef unsigned int TrialStatus;
+typedef unsigned int TrialStatus;   // !!!ONLY!!! trial_handler can change this. Do not change this without MUTEX if there is multi threading for handling the messages of mov obj, exp envi etc. handlers
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

@@ -1,11 +1,17 @@
 
 
 typedef struct __TrialStats TrialStats;
+typedef struct __TrialTypeStats TrialTypeStats;
+
+struct __TrialTypeStats
+{
+	unsigned int					num_of_trials;  
+	unsigned int					num_of_rewarded_trials;
+};
 
 struct __TrialStats
 {
-	unsigned int 					num_of_trials;	// number of trials in linked list
-	unsigned int					num_of_trials_in_trial_type[NUM_OF_TRIAL_TYPES];
+	unsigned int 					num_of_trials;	
 	unsigned int					num_of_rewarded_trials;
-	unsigned int					num_of_rewarded_trials_in_trial_type[NUM_OF_TRIAL_TYPES];
+	TrialTypeStats				*trial_type_stats;    // num_of_trial_types in trial types data
 };
