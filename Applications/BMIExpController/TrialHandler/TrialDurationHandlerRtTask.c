@@ -1,52 +1,35 @@
-#include "TrialHandlerRtTask.h"
+#include "TrialDurationHandlerRtTask.h"
 
-static TrialStatus trial_status = TRIAL_STATUS_NULL;   // Only trial handler can change trial status. 
+static TrialDurationStatus trial_duration_status = TRIAL_DUR_STATUS_NULL;   // Only trial duration handler can change trial status. 
 
-static TrialTypesData *static_trial_types_data;	
-static TrialStatsData *static_trial_stats_data; 
-static TrialsHistory *static_trials_history;   
+static TrialHand2TrialDurHandMsg *static_msgs_trial_hand_2_trial_dur_hand;    
+static TrialDurHand2TrialHandMsg *static_msgs_trial_dur_hand_2_trial_hand;    
 
-static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand;    
+static int trial_duration_handler_rt_thread = 0;
 
-static TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand;    
-static TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand;    
 
-static int trial_handler_rt_thread = 0;
 
-static void *rt_trial_handler(void *args);
+static void *rt_trial_duration_handler(void *args);
 
-bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+bool create_trial_duration_handler_rt_thread(TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand, TrialHand2TrialDurHandMsg **msgs_trial_hand_2_trial_dur_hand)
 {
-   	shared_memory = (SharedMemStruct*)rtai_malloc(nam2num(SHARED_MEM_NAME), SHARED_MEM_SIZE);
-	if (shared_memory == NULL) {
-		return print_message(ERROR_MSG ,"BMISimulationTrialController", "BMISimulationTrialController", "main", "shared_memory == NULL.");	return -1; }
-
-	trial_status = TRIAL_STATUS_TRIALS_DISABLED;
-
-	static_trial_types_data = trial_types_data;
-	static_trial_stats_data = trial_stats;
-	static_trials_history = trials_history;
-	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;	
-
-//	msgs_trial_dur_hand_2_trial_hand = allocate
-
-	if(! create_trial_duration_handler_rt_thread(msgs_trial_dur_hand_2_trial_hand, &msgs_trial_hand_2_trial_dur_hand))
-		return print_message(ERROR_MSG ,"BMISimulationTrialController", "BMISimulationTrialController", "main", "create_trial_handler_rt_thread().");	
-
-	if (trial_handler_rt_thread !=0)
-		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
-	trial_handler_rt_thread =  rt_thread_create(rt_trial_handler, NULL, 10000);
-	if (trial_handler_rt_thread ==0)
-		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "Couldn' t create rt_thread.");	
+	static_msgs_trial_dur_hand_2_trial_hand = msgs_trial_dur_hand_2_trial_hand;
+	static_msgs_trial_hand_2_trial_dur_hand = *msgs_trial_hand_2_trial_dur_hand;
+	trial_duration_status = TRIAL_DUR_STATUS_OUTSIDE_TRIAL_PHASE;
+	if (trial_duration_handler_rt_thread !=0)
+		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
+	trial_duration_handler_rt_thread =  rt_thread_create(rt_trial_duration_handler, NULL, 10000);
+	if (trial_duration_handler_rt_thread ==0)
+		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_duration_handler_rt_thread", "Couldn' t create rt_thread.");	
 	return TRUE;
 }
 
-bool kill_trial_handler_rt_thread(void)
+bool kill_trial_duration_handler_rt_thread(void)
 {
 	return TRUE;
 }
 
-static void *rt_trial_handler(void *args)
+static void *rt_trial_duration_handler(void *args)
 {
 /*	RT_TASK *handler;
         RTIME period;

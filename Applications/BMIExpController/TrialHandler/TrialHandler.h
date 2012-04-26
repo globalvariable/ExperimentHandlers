@@ -3,13 +3,9 @@
 
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
-#include "../../../Library/Status/TrialStatus.h"
-#include "../../../Library/TrialsData/TrialTypes.h"
-#include "../../../Library/TrialsData/TrialData.h"
-#include "../../../Library/TrialsData/TrialStats.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/SharedMemory.h"
 #include "Gui.h"
+#include "TrialHandlerRtTask.h"
 
 TrialTypesData *get_trial_types_data(void);   // only trial handler gui can use this
 bool initialize_trial_handler(void);

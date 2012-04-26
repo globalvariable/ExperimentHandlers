@@ -1,5 +1,5 @@
-#ifndef TRIAL_HAND_STATUS_H
-#define TRIAL_HAND_STATUS_H
+#ifndef TRIAL_STATUS_H
+#define TRIAL_STATUS_H
 
 
 typedef unsigned int TrialStatus;   // !!!ONLY!!! trial_handler can change this. Do not change this without MUTEX if there is multi threading for handling the messages of mov obj, exp envi etc. handlers

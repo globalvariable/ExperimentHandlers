@@ -1,5 +1,14 @@
 #include "Gui2TrialHand.h"
 
+Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer)
+{
+	return NULL;
+}
+Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer)
+{
+	return NULL;
+}
+
 bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *str)
 {
 	switch (msg_type)

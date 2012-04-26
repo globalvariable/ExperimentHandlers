@@ -11,7 +11,6 @@ typedef unsigned int TrialType;
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../Config.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 
@@ -50,6 +49,8 @@ struct __TrialTypesData
 
 #define	NUM_OF_ALL_TRIAL_TYPES							5
 
+TrialTypesData* allocate_trial_types_data(TrialTypesData* data);
+TrialTypesData* deallocate_trial_types_data(TrialTypesData* data);
 bool get_trial_type_string(TrialType trial_type, char *str);
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx);
 bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, TimeStamp max_trial_length, TimeStamp trial_refractory);

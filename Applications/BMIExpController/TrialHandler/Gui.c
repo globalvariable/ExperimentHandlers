@@ -1,6 +1,6 @@
 #include "Gui.h"
 
-void create_gui(void)
+void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
 	GtkWidget *window, *table, *vbox, *hbox;
 
@@ -21,7 +21,7 @@ void create_gui(void)
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,9, 0, 4);  // column 0-9, row 0-4
-	if (!create_trial_handler_gui(vbox))
+	if (!create_trial_handler_gui(vbox, trial_types_data, trial_stats, trials_history, msgs_gui_2_trial_hand))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_trial_handler_gui().");
 
 	vbox = gtk_vbox_new(TRUE, 0);

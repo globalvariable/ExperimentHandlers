@@ -1,9 +1,11 @@
-#ifndef TRIAL_DATA
+#ifndef TRIALS_DATA_H
+#define TRIALS_DATA_H
 
 typedef struct __TrialData TrialData;
 typedef struct __TrialsHistory TrialsHistory;
 
-
+#include "../../../BlueSpike/TimeStamp.h"
+#include "TrialTypes.h"
 
 struct __TrialData
 {
@@ -21,5 +23,9 @@ struct __TrialsHistory
 	unsigned int 			buff_write_idx;
 	unsigned int 			buffer_size;
 };
+
+TrialsHistory* allocate_trials_history(TrialsHistory* hist, unsigned int buffer_size); 
+TrialsHistory* deallocate_trials_history(TrialsHistory* hist); 
+
 
 #endif

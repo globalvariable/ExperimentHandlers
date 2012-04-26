@@ -19,7 +19,7 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <string.h>
-#include "../../Config.h"
+#include "MessageBuffersConfig.h"
 #include "../../../BlueSpike/TimeStamp.h"
 
 struct __Gui2TrialHandMsgItem
@@ -36,7 +36,8 @@ struct __Gui2TrialHandMsg		// Requests to TrialControllers
 	unsigned int				buff_read_idx;	// only one request handler can edit this read index
 };
 
-
+Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer);
+Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer);
 bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *str);
 bool write_to_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer, TimeStamp msg_time, Gui2TrialHandMsgType msg_type, Gui2TrialHandMsgAdditional additional_data);
 bool get_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses

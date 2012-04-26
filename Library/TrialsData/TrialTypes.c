@@ -35,6 +35,30 @@ bool get_trial_type_string(TrialType trial_type, char *str)  // pass NULL for on
 	}
 }
 
+TrialTypesData* allocate_trial_types_data(TrialTypesData* data)
+{
+	if (data != NULL)
+	{
+		data = deallocate_trial_types_data(data);
+		data = allocate_trial_types_data(data);
+		return data;
+	}  
+	data = g_new0(TrialTypesData,1);
+	print_message(INFO_MSG ,"ExperimentHandlers", "TrialTypes", "allocate_trial_types_data", "Created trial_types_data.");
+	return data;	
+}
+
+TrialTypesData* deallocate_trial_types_data(TrialTypesData* data)
+{
+	if (data == NULL)
+		return (TrialTypesData*)print_message(BUG_MSG ,"ExperimentHandlers", "TrialTypes", "deallocate_trial_types_data", "trial_types_data == NULL.");    
+	g_free(data->types);
+	g_free(data);
+	print_message(INFO_MSG ,"ExperimentHandlers", "TrialTypes", "deallocate_trials_data", "Destroyed trial_types_data.");
+	return NULL;
+}
+
+
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx)
 {
 	unsigned int i;
