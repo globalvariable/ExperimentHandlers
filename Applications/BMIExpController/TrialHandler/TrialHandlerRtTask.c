@@ -8,8 +8,14 @@ static TrialsHistory *static_trials_history;
 
 static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand;    
 
-static TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand;    
-static TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand;    
+static TrialDurHand2TrialHandMsg *static_msgs_trial_dur_hand_2_trial_hand = NULL;    // Trial Handler only read it, cannot write
+static TrialHand2TrialDurHandMsg *static_msgs_trial_hand_2_trial_dur_hand = NULL;     // Trial Handler can write here, cannot read it, trial duration handler will read it
+
+static ExpEnviHand2TrialHandMsg *static_msgs_exp_envi_hand_2_trial_hand = NULL;
+static MovObjHand2TrialHandMsg *static_msgs_mov_obj_hand_2_trial_hand = NULL;
+
+static TrialHand2ExpEnviHandMsg *static_msgs_trial_hand_2_exp_envi_hand = NULL;
+static TrialHand2MovObjHandMsg *static_msgs_trial_hand_2_mov_obj_hand = NULL;
 
 static int trial_handler_rt_thread = 0;
 static bool rt_trial_handler_stay_alive = 1;
@@ -25,10 +31,12 @@ bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStats
 	static_trials_history = trials_history;
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;	
 
-//	msgs_trial_dur_hand_2_trial_hand = allocate
+	static_msgs_trial_dur_hand_2_trial_hand = allocate_trial_dur_hand_2_trial_hand_msg_buffer(static_msgs_trial_dur_hand_2_trial_hand);
 
-	if(! create_trial_duration_handler_rt_thread(msgs_trial_dur_hand_2_trial_hand, &msgs_trial_hand_2_trial_dur_hand))
+	if(! create_trial_duration_handler_rt_thread(static_msgs_trial_dur_hand_2_trial_hand, &static_msgs_trial_hand_2_trial_dur_hand))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "create_trial_handler_rt_thread().");	
+
+
 
 	if (trial_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -72,6 +80,12 @@ static void *rt_trial_handler(void *args)
 		// routines
 		if (!handle_gui_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_gui_2_trial_hand)) {
 			print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
+		if (!handle_trial_dur_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_trial_dur_hand_2_trial_hand))  {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
+		if (!handle_exp_envi_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_exp_envi_hand_2_trial_hand))  {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
+		if (!handle_mov_obj_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_mov_obj_hand_2_trial_hand))  {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
 /*		handle_trial_duration_to_trial_handler_msg
 		handle_exp_envi_to_trial_handler_msg
 		handle_mov_obj_to_trial_handler_msg

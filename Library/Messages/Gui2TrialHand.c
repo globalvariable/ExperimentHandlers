@@ -1,25 +1,5 @@
 #include "Gui2TrialHand.h"
 
-Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer)
-{
-	if (msg_buffer != NULL)
-	{
-		msg_buffer = deallocate_gui_2_trial_hand_msg(msg_buffer);
-		msg_buffer = allocate_gui_2_trial_hand_msg(msg_buffer);
-		return msg_buffer;
-	}  
-	msg_buffer = g_new0(Gui2TrialHandMsg,1);
-	print_message(INFO_MSG ,"ExperimentHandlers", "Gui2TrialHand", "allocate_gui_2_trial_hand_msg", "Created gui_2_trial_hand_msg_buffer.");
-	return msg_buffer;	
-}
-Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer)
-{
-	if (msg_buffer == NULL)
-		return (Gui2TrialHandMsg*)print_message(BUG_MSG ,"ExperimentHandlers", "Gui2TrialHand", "deallocate_gui_2_trial_hand_msg", "msg_buffer == NULL.");    
-	g_free(msg_buffer);	
-	return NULL;
-}
-
 bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *str)
 {
 	switch (msg_type)
@@ -50,6 +30,25 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 	}
 }
 
+Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer)
+{
+	if (msg_buffer != NULL)
+	{
+		msg_buffer = deallocate_gui_2_trial_hand_msg_buffer(msg_buffer);
+		msg_buffer = allocate_gui_2_trial_hand_msg_buffer(msg_buffer);
+		return msg_buffer;
+	}  
+	msg_buffer = g_new0(Gui2TrialHandMsg,1);
+	print_message(INFO_MSG ,"ExperimentHandlers", "Gui2TrialHand", "allocate_gui_2_trial_hand_msg", "Created gui_2_trial_hand_msg_buffer.");
+	return msg_buffer;	
+}
+Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer)
+{
+	if (msg_buffer == NULL)
+		return (Gui2TrialHandMsg*)print_message(BUG_MSG ,"ExperimentHandlers", "Gui2TrialHand", "deallocate_gui_2_trial_hand_msg", "msg_buffer == NULL.");    
+	g_free(msg_buffer);	
+	return NULL;
+}
 
 bool write_to_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer, TimeStamp msg_time, Gui2TrialHandMsgType msg_type, Gui2TrialHandMsgAdditional additional_data)
 {

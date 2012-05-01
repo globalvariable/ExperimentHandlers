@@ -23,7 +23,7 @@ int main( int argc, char *argv[])
 	if (! add_trial_type_to_trial_stats_data(trial_types_data, trial_stats_data))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_stats_types_data().");
 
-	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg(msgs_gui_2_trial_hand);
+	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 
 	if(! create_trial_handler_rt_thread(trial_types_data, trial_stats_data, trials_history, msgs_gui_2_trial_hand))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "create_trial_handler_rt_thread().");
