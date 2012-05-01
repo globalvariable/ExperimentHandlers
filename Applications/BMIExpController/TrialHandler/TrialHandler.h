@@ -7,10 +7,6 @@
 #include "Gui.h"
 #include "TrialHandlerRtTask.h"
 
-TrialTypesData *get_trial_types_data(void);   // only trial handler gui can use this
-bool initialize_trial_handler(void);
-
-
 
 
 
