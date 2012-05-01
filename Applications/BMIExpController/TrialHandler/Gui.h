@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "GuiTrialHandler.h"
-#include "GuiExpEnviHandler.h"
-#include "GuiMovObjHandler.h"
 #include "../../../Library/TrialsData/TrialStats.h"
 #include "../../../Library/Messages/Gui2TrialHand.h"
 

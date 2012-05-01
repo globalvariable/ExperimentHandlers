@@ -12,15 +12,12 @@ static TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand;
 static TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand;    
 
 static int trial_handler_rt_thread = 0;
+static bool rt_trial_handler_stay_alive = 1;
 
 static void *rt_trial_handler(void *args);
 
 bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
-   	shared_memory = (SharedMemStruct*)rtai_malloc(nam2num(SHARED_MEM_NAME), SHARED_MEM_SIZE);
-	if (shared_memory == NULL) {
-		return print_message(ERROR_MSG ,"BMISimulationTrialController", "BMISimulationTrialController", "main", "shared_memory == NULL.");	return -1; }
-
 	trial_status = TRIAL_STATUS_TRIALS_DISABLED;
 
 	static_trial_types_data = trial_types_data;
@@ -31,7 +28,7 @@ bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStats
 //	msgs_trial_dur_hand_2_trial_hand = allocate
 
 	if(! create_trial_duration_handler_rt_thread(msgs_trial_dur_hand_2_trial_hand, &msgs_trial_hand_2_trial_dur_hand))
-		return print_message(ERROR_MSG ,"BMISimulationTrialController", "BMISimulationTrialController", "main", "create_trial_handler_rt_thread().");	
+		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "create_trial_handler_rt_thread().");	
 
 	if (trial_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -48,17 +45,17 @@ bool kill_trial_handler_rt_thread(void)
 
 static void *rt_trial_handler(void *args)
 {
-/*	RT_TASK *handler;
+	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time;
 
-	if (! check_rt_task_specs_to_init(IZ_PS_NETWORK_SIM_CPU_ID, IZ_PS_NETWORK_SIM_CPU_THREAD_ID, IZ_PS_NETWORK_SIM_PERIOD))  {
-		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMIRtTask", "hybrid_net_rl_bmi_internal_network_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
-        if (! (handler = rt_task_init_schmod(IZ_PS_NETWORK_SIM_PERIOD_SIM_TASK_NAME, IZ_PS_NETWORK_SIM_PERIOD_SIM_TASK_PRIORITY, IZ_PS_NETWORK_SIM_STACK_SIZE, IZ_PS_NETWORK_SIM_MSG_SIZE, IZ_PS_NETWORK_SIM_POLICY, 1 << ((IZ_PS_NETWORK_SIM_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+IZ_PS_NETWORK_SIM_CPU_THREAD_ID)))) {
-		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMIRtTask", "hybrid_net_rl_bmi_internal_network_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(IZ_PS_NETWORK_SIM_CPU_ID, IZ_PS_NETWORK_SIM_CPU_THREAD_ID, IZ_PS_NETWORK_SIM_PERIOD, IZ_PS_NETWORK_SIM_POSITIVE_JITTER_THRES, IZ_PS_NETWORK_SIM_NEGATIVE_JITTER_THRES))  {
-		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMIRtTask", "hybrid_net_rl_bmi_internal_network_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
-        period = nano2count(IZ_PS_NETWORK_SIM_PERIOD);
+	if (! check_rt_task_specs_to_init(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_PERIOD))  {
+		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
+        if (! (handler = rt_task_init_schmod(TRIAL_HANDLER_TASK_NAME, TRIAL_HANDLER_TASK_PRIORITY, TRIAL_HANDLER_STACK_SIZE, TRIAL_HANDLER_MSG_SIZE,TRIAL_HANDLER_POLICY, 1 << ((TRIAL_HANDLER_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+TRIAL_HANDLER_CPU_THREAD_ID)))) {
+		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "handler = rt_task_init_schmod()."); exit(1); }
+	if (! write_rt_task_specs_to_rt_tasks_data(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_PERIOD, TRIAL_HANDLER_POSITIVE_JITTER_THRES, TRIAL_HANDLER_NEGATIVE_JITTER_THRES))  {
+		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
+        period = nano2count(TRIAL_HANDLER_PERIOD);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
 	prev_time = rt_get_cpu_time_ns();	
 
@@ -70,20 +67,22 @@ static void *rt_trial_handler(void *args)
 	{
         	rt_task_wait_period();
 		curr_time = rt_get_cpu_time_ns();
-		evaluate_and_save_jitter(IZ_PS_NETWORK_SIM_CPU_ID, IZ_PS_NETWORK_SIM_CPU_THREAD_ID, prev_time, curr_time);
+		evaluate_and_save_jitter(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
 		// routines
-		handle_trial_duration_to_trial_handler_msg
+		if (!handle_gui_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_gui_2_trial_hand)) {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
+/*		handle_trial_duration_to_trial_handler_msg
 		handle_exp_envi_to_trial_handler_msg
 		handle_mov_obj_to_trial_handler_msg
 		handle_neural_net_to_trial_handler_msg
-		handle_gui_to_trial_handler_msg
-		// routines	
-		evaluate_and_save_period_run_time(IZ_PS_NETWORK_SIM_CPU_ID, IZ_PS_NETWORK_SIM_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
+
+*/		// routines	
+		evaluate_and_save_period_run_time(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);
-	print_message(INFO_MSG ,"HybridNetRLBMI", "HybridNetRLBMIRtTask", "hybrid_net_rl_bmi_internal_network_handler", "rt_task_delete().");	
-*/
+	print_message(INFO_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "rt_task_delete().");	
+
         return 0; 
 }

@@ -9,11 +9,12 @@ typedef unsigned int Gui2TrialHandMsgType;
 typedef unsigned int Gui2TrialHandMsgAdditional;
 
 
-#define GUI_2_TRIAL_HAND_MSG_STRING_LENTGH		20
+#define GUI_2_TRIAL_HAND_MSG_STRING_LENGTH		50
 
 #define GUI_2_TRIAL_HAND_MSG_NULL							0
 #define GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING		1
 #define GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING		2
+#define GUI_2_TRIAL_HAND_MSG_QUIT							3
 
 
 #include <stdbool.h>
@@ -21,6 +22,7 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #include <string.h>
 #include "MessageBuffersConfig.h"
 #include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/Library/Misc/Misc.h"
 
 struct __Gui2TrialHandMsgItem
 {
@@ -40,5 +42,5 @@ Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer);
 Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg(Gui2TrialHandMsg* msg_buffer);
 bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *str);
 bool write_to_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer, TimeStamp msg_time, Gui2TrialHandMsgType msg_type, Gui2TrialHandMsgAdditional additional_data);
-bool get_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 #endif

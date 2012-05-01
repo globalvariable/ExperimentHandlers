@@ -23,12 +23,12 @@ TrialStatsData* deallocate_trial_stats_data(TrialStatsData* data)
 	return NULL;
 }
 
-bool add_trial_type_to_trial_stats_data(TrialTypesData* trial_types_data, TrialStatsData* trial_stats_data)
+bool add_trial_type_to_trial_stats_data(TrialTypesData* trial_types_data, TrialStatsData* trial_stats_data)    // to use this trial type should be added to trial_types_data previously
 {
 	unsigned int i;
 	TrialTypeStats *lcl_trial_type_stats;
-	lcl_trial_type_stats = g_new0(TrialTypeStats, trial_types_data->num_of_trial_types + 1);
-	for (i = 0; i < trial_types_data->num_of_trial_types; i++)
+	lcl_trial_type_stats = g_new0(TrialTypeStats, trial_types_data->num_of_trial_types);   // trial_types_data->num_of_trial_types was incremented when new trial type was added.
+	for (i = 0; i < trial_types_data->num_of_trial_types-1; i++)
 		lcl_trial_type_stats[i] = trial_stats_data->trial_type_stats[i];
 	g_free(trial_stats_data->trial_type_stats);
 	trial_stats_data->trial_type_stats = lcl_trial_type_stats;

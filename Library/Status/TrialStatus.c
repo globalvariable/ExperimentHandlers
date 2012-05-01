@@ -1,4 +1,4 @@
-#include "TrialHandStatus.h"
+#include "TrialStatus.h"
 
 
 bool get_trial_status_type_string(TrialStatus trial_status_type, char *str)   // pass NULL if you only want checking (to be faster) 
