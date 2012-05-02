@@ -2,7 +2,7 @@
 
 void create_gui_handler(Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
-	GtkWidget *window, *table, *vbox, *hbox, *tabs;
+	GtkWidget *window, *vbox, *tabs;
 
  	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

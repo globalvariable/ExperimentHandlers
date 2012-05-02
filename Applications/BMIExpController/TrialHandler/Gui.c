@@ -4,7 +4,7 @@
 
 void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
-	GtkWidget *window, *table, *vbox, *hbox, *tabs;
+	GtkWidget *window, *vbox, *tabs;
 
  	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);

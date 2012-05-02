@@ -10,7 +10,7 @@ LXRT_LDFLAGS = $(shell rtai-config --lxrt-ldflags)
 MATH_FLAGS = -lm
 GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 
-all: TrialHandler/TrialHandler ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler
+all: TrialHandler/TrialHandler ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler FirstBMICageInterfacer/FirstBMICageInterfacer
 
 ############## TRIAL_HANDLER ############## 
 
@@ -108,8 +108,28 @@ MovObjHandler/GuiMovObjHandler.o: MovObjHandler/GuiMovObjHandler.c
 ../../Library/Messages/Gui2MovObjHand.o: ../../Library/Messages/Gui2MovObjHand.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2MovObjHand
 
+############## FIRST_BMI_CAGE_INTERFACER ############## 
+
+FirstBMICageInterfacer/FirstBMICageInterfacer: FirstBMICageInterfacer/FirstBMICageInterfacer.c FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ### FirstBMICageInterfacer
+
+FirstBMICageInterfacer/Gui.o: FirstBMICageInterfacer/Gui.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/Gui
+
+FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o: FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/MovObjHandlerRtTask
+
+FirstBMICageInterfacer/GuiCageInterfacer.o: FirstBMICageInterfacer/GuiCageInterfacer.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/GuiCageInterfacer
+
+../../Library/Messages/Gui2MovObjInterf.o: ../../Library/Messages/Gui2MovObjInterf.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2MovObjInterf
+
+../../Library/Messages/Gui2ExpEnviInterf.o: ../../Library/Messages/Gui2ExpEnviInterf.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2ExpEnviInterf
+
 clean:
-	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o
+	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o FirstBMICageInterfacer/FirstBMICageInterfacer FirstBMICageInterfacer/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o
 
 .PHONY: clean
 
