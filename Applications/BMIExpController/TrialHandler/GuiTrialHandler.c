@@ -3,8 +3,13 @@
 static TrialTypesData *static_trial_types_data;	
 static TrialStatsData *static_trial_stats_data; 
 static TrialsHistory *static_trials_history;   
-static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand;    
+static Gui2TrialHandMsg *msgs_gui_2_trial_hand;    
+static ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand;
+static TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand;
+static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand;
+static TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand;
 
+static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
 static GtkWidget *btn_disable_trials;
 static TrialTypesCombo *combo_trial_type_stats;
@@ -17,19 +22,23 @@ static GtkWidget *lbl_num_of_trials_of_trial_type;
 static GtkWidget *lbl_num_of_rewarded_trials_of_trial_type;
 
 
-
+static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
 static void combo_trial_type_stats_func (void);
 
-bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
 	static_trial_types_data = trial_types_data;
 	static_trial_stats_data = trial_stats;
 	static_trials_history = trials_history;
-	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;
+
+	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
+	msgs_exp_envi_hand_2_trial_hand = allocate_shm_server_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand);
+	msgs_mov_obj_hand_2_trial_hand = allocate_shm_server_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand);
+
 
         frame = gtk_frame_new ("");
         frame_label = gtk_label_new ("     Trials Handler    ");      
@@ -44,6 +53,12 @@ bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data,
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,1, 0, 6);  // column 0-1, row 0-6
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_reset_connections = gtk_button_new_with_label("Reset Connections");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_reset_connections, TRUE, TRUE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
@@ -130,16 +145,27 @@ bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data,
 	lbl = gtk_label_new("data load save");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
 
+	g_signal_connect(G_OBJECT(btn_reset_connections), "clicked", G_CALLBACK(reset_connections_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_disable_trials), "clicked", G_CALLBACK(disable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(combo_trial_type_stats->combo), "changed", G_CALLBACK(combo_trial_type_stats_func), NULL);
 
 	return TRUE;
 }
+static void reset_connections_button_func (void)
+{
+	if ((msgs_trial_hand_2_exp_envi_hand = allocate_shm_client_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand)) == NULL)
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "reset_connecitons_button_func", "'msgs_trial_hand_2_exp_envi_hand == NULL.");
+	if ((msgs_trial_hand_2_mov_obj_hand = allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand)) == NULL)	
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "reset_connecitons_button_func", "'msgs_trial_hand_2_mov_obj_hand == NULL.");	
+	if(! create_trial_handler_rt_thread(static_trial_types_data, static_trial_stats_data, static_trials_history, msgs_gui_2_trial_hand, msgs_exp_envi_hand_2_trial_hand, msgs_mov_obj_hand_2_trial_hand))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "reset_connecitons_button_func", "'! create_trial_handler_rt_thread().");	
+}
+
 
 static void enable_trials_button_func (void)
 {
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING, 0))
+	if (!write_to_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 	gtk_widget_set_sensitive(btn_enable_trials, FALSE);		
 	gtk_widget_set_sensitive(btn_disable_trials, TRUE);	
@@ -147,7 +173,7 @@ static void enable_trials_button_func (void)
 
 static void disable_trials_button_func (void)
 {
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING, 0))
+	if (!write_to_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 	gtk_widget_set_sensitive(btn_disable_trials, FALSE);		
 	gtk_widget_set_sensitive(btn_enable_trials, TRUE);	

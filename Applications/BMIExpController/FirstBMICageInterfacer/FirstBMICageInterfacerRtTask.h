@@ -8,6 +8,7 @@
 #include <rtai_nam2num.h>
 #include "../../../Library/Messages/Gui2ExpEnviInterf.h"
 #include "../../../Library/Messages/Gui2MovObjInterf.h"
+#include "../../../Library/Messages/ExpEnviHand2ExpEnviInterf.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 

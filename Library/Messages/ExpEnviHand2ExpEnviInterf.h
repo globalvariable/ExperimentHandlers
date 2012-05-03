@@ -20,9 +20,13 @@ typedef unsigned int ExpEnviHand2ExpEnviInterfMsgAdditional;
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <string.h>
+#include <rtai_shm.h>
+#include <rtai_nam2num.h>
 #include "MessageBuffersConfig.h"
+#include "MessageBuffersSharedMem.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+
 
 struct __ExpEnviHand2ExpEnviInterfMsgItem
 {

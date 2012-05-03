@@ -22,7 +22,7 @@ static bool rt_trial_handler_stay_alive = 1;
 
 static void *rt_trial_handler(void *args);
 
-bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand)
 {
 	trial_status = TRIAL_STATUS_TRIALS_DISABLED;
 

@@ -2,7 +2,7 @@
 
 
 
-void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history)
 {
 	GtkWidget *window, *vbox, *tabs;
 
@@ -21,7 +21,7 @@ void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (tabs), GTK_POS_TOP);
         gtk_box_pack_start(GTK_BOX(vbox),tabs, TRUE, TRUE, 0);
 
-	if (!create_trial_handler_tab(tabs, trial_types_data, trial_stats, trials_history, msgs_gui_2_trial_hand))
+	if (!create_trial_handler_tab(tabs, trial_types_data, trial_stats, trials_history))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_trial_handler_gui().");
 
 	gtk_widget_show_all(window);
