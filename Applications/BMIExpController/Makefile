@@ -122,8 +122,8 @@ MovObjHandler/GuiMovObjHandler.o: MovObjHandler/GuiMovObjHandler.c
 
 ############## FIRST_BMI_CAGE_INTERFACER ############## 
 
-FirstBMICageInterfacer/FirstBMICageInterfacer: FirstBMICageInterfacer/FirstBMICageInterfacer.c FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ### FirstBMICageInterfacer
+FirstBMICageInterfacer/FirstBMICageInterfacer: FirstBMICageInterfacer/FirstBMICageInterfacer.c FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleGui2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleGui2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2MovObjInterf.o ../../Library/Messages/Gui2ExpEnviInterf.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleGui2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleGui2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o ### FirstBMICageInterfacer
 
 FirstBMICageInterfacer/Gui.o: FirstBMICageInterfacer/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/Gui
@@ -134,6 +134,24 @@ FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o: FirstBMICageInterfacer/Fi
 FirstBMICageInterfacer/GuiCageInterfacer.o: FirstBMICageInterfacer/GuiCageInterfacer.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/GuiCageInterfacer
 
+FirstBMICageInterfacer/HandleGui2ExpEnviInterfMsgs.o: FirstBMICageInterfacer/HandleGui2ExpEnviInterfMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleGui2ExpEnviInterfMsgs
+
+FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o: FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs
+
+FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o: FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/ExpEnviHandMsgs2ExpEnviHandMsgs
+
+FirstBMICageInterfacer/HandleGui2MovObjInterfMsgs.o: FirstBMICageInterfacer/HandleGui2MovObjInterfMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleGui2MovObjInterfMsgs
+
+FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o: FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs
+
+FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o: FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs
+
 ../../Library/Messages/Gui2MovObjInterf.o: ../../Library/Messages/Gui2MovObjInterf.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2MovObjInterf
 
@@ -143,8 +161,14 @@ FirstBMICageInterfacer/GuiCageInterfacer.o: FirstBMICageInterfacer/GuiCageInterf
 ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o: ../../Library/Messages/ExpEnviHand2ExpEnviInterf.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviHand2ExpEnviInterf
 
+../../Library/Messages/MovObjHand2MovObjInterf.o: ../../Library/Messages/MovObjHand2MovObjInterf.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/MovObjHand2MovObjInterf
+
+../../Library/RS232/RS232Handler.o: ../../Library/RS232/RS232Handler.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/RS232/RS232Handler
+
 clean:
-	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o FirstBMICageInterfacer/FirstBMICageInterfacer FirstBMICageInterfacer/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o
+	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o FirstBMICageInterfacer/FirstBMICageInterfacer FirstBMICageInterfacer/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o ../../Library/RS232/*.o
 
 .PHONY: clean
 
