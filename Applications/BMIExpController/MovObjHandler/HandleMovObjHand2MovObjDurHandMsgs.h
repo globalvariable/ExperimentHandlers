@@ -1,0 +1,22 @@
+#ifndef HANDLE_MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSGS_H
+#define HANDLE_MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSGS_H
+
+#include "../../../Library/Status/MovObjDurStatus.h"
+#include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
+#include "../../../../BlueSpike/Library/Misc/Misc.h"
+#include "../../../../BlueSpike/TimeStamp.h"
+
+
+bool handle_mov_obj_handler_to_mov_obj_dur_handler_msg(MovObjDurationStatus *mov_obj_status, TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand);
+
+
+
+
+
+
+
+
+
+
+
+#endif

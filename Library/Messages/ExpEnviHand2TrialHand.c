@@ -5,7 +5,10 @@ bool get_exp_envi_hand_2_trial_hand_msg_type_string(ExpEnviHand2TrialHandMsgType
 {
 	switch (msg_type)
 	{
-
+		case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

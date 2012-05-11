@@ -12,7 +12,7 @@ typedef unsigned int MovObjHand2MovObjInterfMsgAdditional;
 #define MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_STRING_LENGTH					100
 
 #define MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_NULL							0
-
+#define MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE					1
 
 
 

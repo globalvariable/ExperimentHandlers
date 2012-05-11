@@ -4,7 +4,7 @@
 #include "../../../Library/Messages/ExpEnviInterf2ExpEnviHand.h"
 
 
-bool handle_exp_envi_interf_2_exp_envi_hand_msgs(char *tx_buff);
+bool handle_exp_envi_interf_2_exp_envi_hand_msgs(char *rx_buff);
 
 
 

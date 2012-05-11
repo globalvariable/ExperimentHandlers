@@ -1,14 +1,9 @@
 #include "GuiCageInterfacer.h"
 
-static Gui2ExpEnviInterfMsg *static_msgs_gui_2_exp_envi_interf;    
-static Gui2MovObjInterfMsg *static_msgs_gui_2_mov_obj_interf;
 
-bool create_cage_interfacer_tab(GtkWidget *tabs, Gui2ExpEnviInterfMsg *msgs_gui_2_exp_envi_interf, Gui2MovObjInterfMsg *msgs_gui_2_mov_obj_interf)
+bool create_cage_interfacer_tab(GtkWidget *tabs)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
-
-	static_msgs_gui_2_exp_envi_interf = msgs_gui_2_exp_envi_interf;
-	static_msgs_gui_2_mov_obj_interf = msgs_gui_2_mov_obj_interf;
 
         frame = gtk_frame_new ("");
         frame_label = gtk_label_new ("     Cage Interfacer    ");      

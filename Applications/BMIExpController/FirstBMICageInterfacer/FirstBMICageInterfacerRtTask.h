@@ -6,21 +6,17 @@
 #include <stdbool.h>
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
-#include "../../../Library/Messages/Gui2ExpEnviInterf.h"
-#include "../../../Library/Messages/Gui2MovObjInterf.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviInterf.h"
 #include "../../../Library/Messages/MovObjHand2MovObjInterf.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
-#include "HandleGui2ExpEnviInterfMsgs.h"
-#include "HandleGui2MovObjInterfMsgs.h"
 #include "HandleExpEnviHand2ExpEnviInterfMsgs.h"
 #include "HandleMovObjHand2MovObjInterfMsgs.h"
 #include "HandleExpEnviInterf2ExpEnviHandMsgs.h"
 #include "HandleMovObjInterf2MovObjHandMsgs.h"
 #include "../../../Library/RS232/RS232Handler.h"
 
-bool create_cage_interfacer_rt_thread(Gui2ExpEnviInterfMsg *msgs_gui_2_exp_envi_interf, Gui2MovObjInterfMsg *msgs_gui_2_mov_obj_interf);
+bool create_cage_interfacer_rt_thread(void);
 bool kill_cage_interfacer_rt_thread(void);
 
 

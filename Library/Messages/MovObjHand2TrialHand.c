@@ -5,7 +5,10 @@ bool get_mov_obj_hand_2_trial_hand_msg_type_string(MovObjHand2TrialHandMsgType m
 {
 	switch (msg_type)
 	{
-
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

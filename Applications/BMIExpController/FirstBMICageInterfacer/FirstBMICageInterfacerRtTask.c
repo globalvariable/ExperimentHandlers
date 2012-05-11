@@ -10,17 +10,27 @@ static void *rt_cage_interfacer(void *args);
 
 static ExpEnviHand2ExpEnviInterfMsg *msgs_exp_envi_hand_2_exp_envi_interf = NULL;
 static MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf = NULL;
-static Gui2ExpEnviInterfMsg *static_msgs_gui_2_exp_envi_interf = NULL;    
-static Gui2MovObjInterfMsg *static_msgs_gui_2_mov_obj_interf = NULL;    
 
+static ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand = NULL;
+static MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand = NULL;
+static bool connected_to_exp_envi_hand = FALSE;
+static bool connected_to_mov_obj_hand = FALSE;
+static pthread_t connect_to_exp_envi_hand_thread;
+static pthread_t connect_to_mov_obj_hand_thread;
+static void *connect_to_exp_envi_hand_thread_function( void *ptr );
+static void *connect_to_mov_obj_hand_thread_function( void *ptr );
 
-bool create_cage_interfacer_rt_thread(Gui2ExpEnviInterfMsg *msgs_gui_2_exp_envi_interf, Gui2MovObjInterfMsg *msgs_gui_2_mov_obj_interf)
+bool create_cage_interfacer_rt_thread(void)
 {
-	static_msgs_gui_2_exp_envi_interf = msgs_gui_2_exp_envi_interf;
-	static_msgs_gui_2_mov_obj_interf = msgs_gui_2_mov_obj_interf;
 	msgs_exp_envi_hand_2_exp_envi_interf = allocate_shm_server_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf);
 	msgs_mov_obj_hand_2_mov_obj_interf = allocate_shm_server_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf);
 
+	pthread_create( &connect_to_exp_envi_hand_thread, NULL, connect_to_exp_envi_hand_thread_function, NULL);
+	pthread_create( &connect_to_mov_obj_hand_thread, NULL, connect_to_mov_obj_hand_thread_function, NULL);
+	while (!(connected_to_exp_envi_hand && connected_to_mov_obj_hand)) { sleep(1); }
+	msgs_exp_envi_interf_2_exp_envi_hand = allocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand);	
+	msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_client_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);	
+	
 	if (cage_interfacer_rt_thread != 0)
 		return print_message(BUG_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "CANNOT create rt_thread again.");	
 	cage_interfacer_rt_thread =  rt_thread_create(rt_cage_interfacer, NULL, 10000);
@@ -38,7 +48,7 @@ static void *rt_cage_interfacer(void *args)
 {
 	RT_TASK *handler;
         RTIME period;
-	unsigned int prev_time, curr_time;
+	unsigned int prev_time, curr_time, i;
 	char rx_buff[RX_BUFF_LEN];
 	char tx_buff[TX_BUFF_LEN];	
 
@@ -60,13 +70,10 @@ static void *rt_cage_interfacer(void *args)
         while (rt_cage_interfacer_stay_alive) 
 	{
 		// routines
-		if (! handle_gui_2_exp_envi_interf_msgs(static_msgs_gui_2_exp_envi_interf, tx_buff)) {
-			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_gui_2_exp_envi_interf_msgs()."); break; }	
-		if (! handle_gui_2_mov_obj_interf_msgs(static_msgs_gui_2_mov_obj_interf, tx_buff)) {
-			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_gui_2_mov_obj_interf_msgs()."); break; }	
-		if (! handle_exp_envi_hand_2_exp_envi_interf_msgs(msgs_exp_envi_hand_2_exp_envi_interf, tx_buff)) {
+		for (i = 0; i < TX_BUFF_LEN; i++)  tx_buff[i] = 0;
+		if (! handle_exp_envi_hand_2_exp_envi_interf_msgs(msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_interf_2_exp_envi_hand, tx_buff)) {
 			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_exp_envi_hand_2_exp_envi_interf_msgs()."); break; }	
-		if (! handle_mov_obj_hand_2_mov_obj_interf_msgs(msgs_mov_obj_hand_2_mov_obj_interf, tx_buff)) {
+		if (! handle_mov_obj_hand_2_mov_obj_interf_msgs(msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_interf_2_mov_obj_hand, tx_buff)) {
 			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_hand_2_mov_obj_interf_msgs()."); break; }	
 		if (! write_to_rs232_com1(tx_buff, TX_BUFF_LEN)) {
 			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! write_to_rs232_com1()."); break; }	
@@ -82,11 +89,56 @@ static void *rt_cage_interfacer(void *args)
 		if (! handle_mov_obj_interf_2_mov_obj_hand_msgs(rx_buff)) {
 			print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_interf_2_mov_obj_hand_msgs()."); break; }	
 		// routines	
-
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);
 	print_message(INFO_MSG ,"BMIExpController", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "rt_task_delete().");	
 
         return 0; 
+}
+
+static void *connect_to_exp_envi_hand_thread_function( void *ptr )
+{
+	ExpEnviHand2ExpEnviInterfMsgItem *msg_item;
+	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
+
+	while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
+	{
+		get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
+		print_message(INFO_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand_thread_function", str_exp_envi_hand_2_exp_envi_interf_msg);	
+		switch (msg_item->msg_type)
+		{
+			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE:
+				connected_to_exp_envi_hand = TRUE;
+				return 0;			
+			default:
+				print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand_thread_function", str_exp_envi_hand_2_exp_envi_interf_msg);	
+				return (void*)print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand_thread_function", "default - switch.");
+		}
+		sleep(1);
+	}
+	return 0;
+}
+
+static void *connect_to_mov_obj_hand_thread_function( void *ptr )
+{
+	MovObjHand2MovObjInterfMsgItem *msg_item;
+	char str_mov_obj_hand_2_mov_obj_interf_msg[MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_STRING_LENGTH];
+
+	while (get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(msgs_mov_obj_hand_2_mov_obj_interf, &msg_item))
+	{
+		get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
+		print_message(INFO_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand_thread_function", str_mov_obj_hand_2_mov_obj_interf_msg);	
+		switch (msg_item->msg_type)
+		{
+			case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE:
+				connected_to_mov_obj_hand = TRUE;
+				return 0;			
+			default:
+				print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand_thread_function", str_mov_obj_hand_2_mov_obj_interf_msg);	
+				return (void*)print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand_thread_function", "default - switch.");
+		}
+		sleep(1);
+	}
+	return 0;
 }

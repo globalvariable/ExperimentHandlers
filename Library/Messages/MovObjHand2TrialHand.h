@@ -12,7 +12,7 @@ typedef unsigned int MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH					100
 
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_NULL								0
-
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE						1
 
 
 

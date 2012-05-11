@@ -22,11 +22,11 @@ ExpEnviInterf2ExpEnviHandMsg* allocate_exp_envi_interf_2_exp_envi_hand_msg_buffe
 {
 	if (msg_buffer != NULL)
 	{
-		msg_buffer = deallocate_exp_envi_hand_2_exp_envi_interf_msg_buffer(msg_buffer);
-		msg_buffer = allocate_exp_envi_hand_2_exp_envi_interf_msg_buffer(msg_buffer);
+		msg_buffer = deallocate_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
+		msg_buffer = allocate_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = g_new0(ExpEnviHand2ExpEnviInterfMsg,1);
+	msg_buffer = g_new0(ExpEnviInterf2ExpEnviHandMsg,1);
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviInterf2ExpEnviHand", "allocate_exp_envi_interf_2_exp_envi_hand_msg_buffer", "Created exp_envi_interf_2_exp_envi_hand_msg_buffer.");
 	return msg_buffer;	
 }
@@ -43,7 +43,7 @@ ExpEnviInterf2ExpEnviHandMsg* allocate_shm_server_exp_envi_interf_2_exp_envi_han
 {
 	if (msg_buffer != NULL)
 	{
-		msg_buffer = deallocate_shm_server_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
+		msg_buffer = deallocate_shm_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
 		msg_buffer = allocate_shm_server_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
@@ -55,7 +55,7 @@ ExpEnviInterf2ExpEnviHandMsg* allocate_shm_client_exp_envi_interf_2_exp_envi_han
 {
 	if (msg_buffer != NULL)
 	{
-		msg_buffer = deallocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
+		msg_buffer = deallocate_shm_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
 		msg_buffer = allocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
@@ -74,7 +74,7 @@ bool write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHa
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
-	ExpEnviInterf2ExpEnviHandItem *buff = msg_buffer->buff;
+	ExpEnviInterf2ExpEnviHandMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
 	buff[*idx].additional_data = additional_data;

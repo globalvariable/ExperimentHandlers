@@ -22,6 +22,13 @@ static bool rt_trial_handler_stay_alive = 1;
 
 static void *rt_trial_handler(void *args);
 
+static bool connected_to_exp_envi_hand = FALSE;
+static bool connected_to_mov_obj_hand = FALSE;
+static pthread_t connect_to_exp_envi_hand_thread;
+static pthread_t connect_to_mov_obj_hand_thread;
+static void *connect_to_exp_envi_hand_thread_function( void *ptr );
+static void *connect_to_mov_obj_hand_thread_function( void *ptr );
+
 bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand)
 {
 	trial_status = TRIAL_STATUS_TRIALS_DISABLED;
@@ -31,18 +38,29 @@ bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStats
 	static_trials_history = trials_history;
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;	
 
+	static_msgs_exp_envi_hand_2_trial_hand = allocate_shm_server_exp_envi_hand_2_trial_hand_msg_buffer(static_msgs_exp_envi_hand_2_trial_hand);
+	static_msgs_mov_obj_hand_2_trial_hand= allocate_shm_server_mov_obj_hand_2_trial_hand_msg_buffer(static_msgs_mov_obj_hand_2_trial_hand);
+
+	sleep (1);
+	// send message to exp envi hand    ARE YOU ALIVE
+	// send message to mov obj hand    ARE YOU ALIVE
+	pthread_create( &connect_to_exp_envi_hand_thread, NULL, connect_to_exp_envi_hand_thread_function, NULL);
+	pthread_create( &connect_to_mov_obj_hand_thread, NULL, connect_to_mov_obj_hand_thread_function, NULL);
+	while (!(connected_to_exp_envi_hand && connected_to_mov_obj_hand)) { sleep(1); }
+
+	static_msgs_trial_hand_2_exp_envi_hand = allocate_shm_client_trial_hand_2_exp_envi_hand_msg_buffer(static_msgs_trial_hand_2_exp_envi_hand);	
+	static_msgs_trial_hand_2_mov_obj_hand = allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffer(static_msgs_trial_hand_2_mov_obj_hand);	
+
 	static_msgs_trial_dur_hand_2_trial_hand = allocate_trial_dur_hand_2_trial_hand_msg_buffer(static_msgs_trial_dur_hand_2_trial_hand);
 
 	if(! create_trial_duration_handler_rt_thread(static_msgs_trial_dur_hand_2_trial_hand, &static_msgs_trial_hand_2_trial_dur_hand))
-		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "create_trial_handler_rt_thread().");	
-
-
+		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "create_trial_handler_rt_thread().");	
 
 	if (trial_handler_rt_thread !=0)
-		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
+		return print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
 	trial_handler_rt_thread =  rt_thread_create(rt_trial_handler, NULL, 10000);
 	if (trial_handler_rt_thread ==0)
-		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "Couldn' t create rt_thread.");	
+		return print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "Couldn' t create rt_thread.");	
 	return TRUE;
 }
 
@@ -58,11 +76,11 @@ static void *rt_trial_handler(void *args)
 	unsigned int prev_time, curr_time;
 
 	if (! check_rt_task_specs_to_init(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_PERIOD))  {
-		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
+		print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(TRIAL_HANDLER_TASK_NAME, TRIAL_HANDLER_TASK_PRIORITY, TRIAL_HANDLER_STACK_SIZE, TRIAL_HANDLER_MSG_SIZE,TRIAL_HANDLER_POLICY, 1 << ((TRIAL_HANDLER_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+TRIAL_HANDLER_CPU_THREAD_ID)))) {
-		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "handler = rt_task_init_schmod()."); exit(1); }
+		print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "handler = rt_task_init_schmod()."); exit(1); }
 	if (! write_rt_task_specs_to_rt_tasks_data(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_PERIOD, TRIAL_HANDLER_POSITIVE_JITTER_THRES, TRIAL_HANDLER_NEGATIVE_JITTER_THRES))  {
-		print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
+		print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
         period = nano2count(TRIAL_HANDLER_PERIOD);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
 	prev_time = rt_get_cpu_time_ns();	
@@ -79,13 +97,13 @@ static void *rt_trial_handler(void *args)
 		prev_time = curr_time;
 		// routines
 		if (!handle_gui_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_gui_2_trial_hand)) {
-			print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
 		if (!handle_trial_dur_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_trial_dur_hand_2_trial_hand))  {
-			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
 		if (!handle_exp_envi_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_exp_envi_hand_2_trial_hand))  {
-			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
 		if (!handle_mov_obj_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_mov_obj_hand_2_trial_hand))  {
-			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
 /*		handle_trial_duration_to_trial_handler_msg
 		handle_exp_envi_to_trial_handler_msg
 		handle_mov_obj_to_trial_handler_msg
@@ -96,7 +114,54 @@ static void *rt_trial_handler(void *args)
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);
-	print_message(INFO_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_handler", "rt_task_delete().");	
+	print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "rt_task_delete().");	
 
         return 0; 
+}
+
+
+static void *connect_to_exp_envi_hand_thread_function( void *ptr )
+{
+	ExpEnviHand2TrialHandMsgItem *msg_item;
+	char str_exp_envi_hand_2_trial_hand_msg[EXP_ENVI_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
+
+	while (get_next_exp_envi_hand_2_trial_hand_msg_buffer_item(static_msgs_exp_envi_hand_2_trial_hand, &msg_item))
+	{
+		get_exp_envi_hand_2_trial_hand_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_trial_hand_msg);
+		print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_exp_envi_hand_thread_function", str_exp_envi_hand_2_trial_hand_msg);	
+		switch (msg_item->msg_type)
+		{
+			case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
+				connected_to_exp_envi_hand = TRUE;
+				return 0;			
+			default:
+				print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_exp_envi_hand_thread_function", str_exp_envi_hand_2_trial_hand_msg);	
+				return (void*)print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_exp_envi_hand_thread_function", "default - switch.");
+		}
+		sleep(1);
+	}
+	return 0;
+}
+
+static void *connect_to_mov_obj_hand_thread_function( void *ptr )
+{
+	MovObjHand2TrialHandMsgItem *msg_item;
+	char str_mov_obj_hand_2_trial_hand_msg[MOV_OBJ_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
+
+	while (get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(static_msgs_mov_obj_hand_2_trial_hand, &msg_item))
+	{
+		get_mov_obj_hand_2_trial_hand_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_trial_hand_msg);
+		print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand_thread_function", str_mov_obj_hand_2_trial_hand_msg);	
+		switch (msg_item->msg_type)
+		{
+			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
+				connected_to_mov_obj_hand = TRUE;
+				return 0;			
+			default:
+				print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand_thread_function", str_mov_obj_hand_2_trial_hand_msg);	
+				return (void*)print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand_thread_function", "default - switch.");
+		}
+		sleep(1);
+	}
+	return 0;
 }

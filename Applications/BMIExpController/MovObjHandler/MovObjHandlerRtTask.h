@@ -7,8 +7,12 @@
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "../../../Library/Messages/Gui2MovObjHand.h"
+#include "../../../Library/Messages/TrialHand2MovObjHand.h"
+#include "../../../Library/Messages/MovObjDurHand2MovObjHand.h"
+#include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
+#include "MovObjDurationHandlerRtTask.h"
 
 bool create_mov_obj_handler_rt_thread(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
 bool kill_mov_obj_handler_rt_thread(void);

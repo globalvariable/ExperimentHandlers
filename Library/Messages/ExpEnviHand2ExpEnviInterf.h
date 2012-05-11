@@ -12,7 +12,7 @@ typedef unsigned int ExpEnviHand2ExpEnviInterfMsgAdditional;
 #define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH					100
 
 #define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_NULL							0
-
+#define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE					1
 
 
 

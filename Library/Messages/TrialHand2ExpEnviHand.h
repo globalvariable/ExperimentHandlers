@@ -12,7 +12,7 @@ typedef unsigned int TrialHand2ExpEnviHandMsgAdditional;
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STRING_LENGTH				100
 
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL							0
-
+#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE				1
 
 
 #include <stdbool.h>
