@@ -5,23 +5,34 @@ static bool rt_exp_envi_handler_stay_alive = 1;
 
 static void *rt_exp_envi_handler(void *args);
 
-static ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand = NULL;
-static ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand = NULL;    
+static ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand = NULL;
+static ExpEnviHand2ExpEnviInterfMsg *msgs_exp_envi_hand_2_exp_envi_interf = NULL;
+
 static TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand = NULL;
-static bool connected_to_trial_hand = FALSE;
-static pthread_t connect_to_trial_hand_thread;
-static void *connect_to_trial_hand_thread_function( void *ptr );
+static ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand = NULL;
+
+static ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand = NULL;
+static ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand = NULL;   
+
+static bool connect_to_trial_hand(void);
+static bool connect_to_exp_envi_interf(void );
 
 bool create_exp_envi_handler_rt_thread(Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
+	msgs_exp_envi_interf_2_exp_envi_hand = allocate_shm_server_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand);
 	msgs_trial_hand_2_exp_envi_hand = allocate_shm_server_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand);
 
-	pthread_create( &connect_to_trial_hand_thread, NULL, connect_to_trial_hand_thread_function, NULL);
-	while (!connected_to_trial_hand) { sleep(1); }
-	msgs_exp_envi_dur_hand_2_exp_envi_hand = allocate_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(msgs_exp_envi_dur_hand_2_exp_envi_hand);
+	if (! connect_to_exp_envi_interf())
+		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "connect_to_exp_envi_interf().");	
 
-	if(! create_exp_envi_duration_handler_rt_thread(msgs_exp_envi_dur_hand_2_exp_envi_hand, &msgs_exp_envi_hand_2_exp_envi_dur_hand))
-		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "create_exp_envi_handler_rt_thread().");	
+	if (! connect_to_trial_hand())
+		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "connect_to_trial_hand().");	
+
+	msgs_exp_envi_dur_hand_2_exp_envi_hand = allocate_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(msgs_exp_envi_dur_hand_2_exp_envi_hand);
+	msgs_exp_envi_hand_2_exp_envi_dur_hand = allocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand);
+
+	if(! create_exp_envi_duration_handler_rt_thread(msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand))
+		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "create_exp_envi_duration_handler_rt_thread().");	
 
 	if (exp_envi_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -75,25 +86,66 @@ static void *rt_exp_envi_handler(void *args)
         return 0; 
 }
 
-static void *connect_to_trial_hand_thread_function( void *ptr )
+static bool connect_to_exp_envi_interf(void )
+{
+	ExpEnviInterf2ExpEnviHandMsgItem *msg_item;
+	char str_exp_envi_interf_2_exp_envi_hand_msg[EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];
+
+	msgs_exp_envi_hand_2_exp_envi_interf = allocate_shm_client_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf);
+	if (msgs_exp_envi_hand_2_exp_envi_interf == NULL)
+		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "msgs_exp_envi_hand_2_exp_envi_interf == NULL.");
+	if (!write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE, 0))
+		return print_message(ERROR_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer().");
+
+	while (1) 
+	{ 
+		while (get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(msgs_exp_envi_interf_2_exp_envi_hand, &msg_item))
+		{
+			get_exp_envi_interf_2_exp_envi_hand_msg_type_string(msg_item->msg_type, str_exp_envi_interf_2_exp_envi_hand_msg);
+			print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", str_exp_envi_interf_2_exp_envi_hand_msg);	
+			switch (msg_item->msg_type)
+			{
+				case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE:
+					print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "Connection to EXP_ENVI_INTERFACER is successful!!!");	
+					return TRUE;			
+				default:
+					print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", str_exp_envi_interf_2_exp_envi_hand_msg);	
+					return print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "default - switch.");
+			}
+		}
+		sleep(1); 
+	}
+	return print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "Wrong hit in the code.");
+}
+
+static bool connect_to_trial_hand(void )
 {
 	TrialHand2ExpEnviHandMsgItem *msg_item;
 	char str_trial_hand_2_exp_envi_hand_msg[TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];
 
-	while (get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(msgs_trial_hand_2_exp_envi_hand, &msg_item))
-	{
-		get_trial_hand_2_exp_envi_hand_msg_type_string(msg_item->msg_type, str_trial_hand_2_exp_envi_hand_msg);
-		print_message(INFO_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", str_trial_hand_2_exp_envi_hand_msg);	
-		switch (msg_item->msg_type)
+	while (1) 
+	{ 
+		while (get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(msgs_trial_hand_2_exp_envi_hand, &msg_item))
 		{
-			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE:
-				connected_to_trial_hand = TRUE;
-				return 0;			
-			default:
-				print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", str_trial_hand_2_exp_envi_hand_msg);	
-				return (void*)print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", "default - switch.");
+			get_trial_hand_2_exp_envi_hand_msg_type_string(msg_item->msg_type, str_trial_hand_2_exp_envi_hand_msg);
+			print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_exp_envi_hand_msg);	
+			switch (msg_item->msg_type)
+			{
+				case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE:
+					msgs_exp_envi_hand_2_trial_hand = allocate_shm_client_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand);
+					if (msgs_exp_envi_hand_2_trial_hand == NULL)
+						return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "msgs_exp_envi_hand_2_trial_hand == NULL.");	
+					if (!write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
+						return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");	
+					print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
+					return TRUE;		
+				default:
+					print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_exp_envi_hand_msg);	
+					return print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "default - switch.");
+			}
 		}
+		print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "Waiting for TRIAL_HANDLER to connect.");	
 		sleep(1);
 	}
-	return 0;
+	return print_message(BUG_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "Wrong hit in the code.");
 }

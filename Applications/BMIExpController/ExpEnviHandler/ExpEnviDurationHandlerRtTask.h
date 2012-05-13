@@ -13,7 +13,7 @@
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "HandleExpEnviHand2ExpEnviDurHandMsgs.h"
 
-bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg **msgs_exp_envi_hand_2_exp_envi_dur_hand);
+bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand);
 bool kill_exp_envi_duration_handler_rt_thread(void);
 
 

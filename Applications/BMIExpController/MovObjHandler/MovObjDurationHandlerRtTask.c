@@ -11,11 +11,10 @@ static bool rt_mov_obj_duration_handler_stay_alive = 1;
 
 static void *rt_mov_obj_duration_handler(void *args);
 
-bool create_mov_obj_duration_handler_rt_thread(MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg **msgs_mov_obj_hand_2_mov_obj_dur_hand)
+bool create_mov_obj_duration_handler_rt_thread(MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand)
 {
 	static_msgs_mov_obj_dur_hand_2_mov_obj_hand = msgs_mov_obj_dur_hand_2_mov_obj_hand;
-	*msgs_mov_obj_hand_2_mov_obj_dur_hand = allocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(*msgs_mov_obj_hand_2_mov_obj_dur_hand);
-	static_msgs_mov_obj_hand_2_mov_obj_dur_hand = *msgs_mov_obj_hand_2_mov_obj_dur_hand;
+	static_msgs_mov_obj_hand_2_mov_obj_dur_hand = msgs_mov_obj_hand_2_mov_obj_dur_hand;
 //	mov_obj_duration_status = MOV_OBJ_DUR_STATUS_OUTSIDE_MOV_OBJ_PHASE;
 	if (mov_obj_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_duration_handler_rt_thread", "CANNOT create rt_thread again.");	

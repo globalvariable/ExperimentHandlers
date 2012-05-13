@@ -11,11 +11,10 @@ static bool rt_trial_duration_handler_stay_alive = 1;
 
 static void *rt_trial_duration_handler(void *args);
 
-bool create_trial_duration_handler_rt_thread(TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand, TrialHand2TrialDurHandMsg **msgs_trial_hand_2_trial_dur_hand)
+bool create_trial_duration_handler_rt_thread(TrialDurHand2TrialHandMsg *msgs_trial_dur_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand)
 {
 	static_msgs_trial_dur_hand_2_trial_hand = msgs_trial_dur_hand_2_trial_hand;
-	*msgs_trial_hand_2_trial_dur_hand = allocate_trial_hand_2_trial_dur_hand_msg_buffer(*msgs_trial_hand_2_trial_dur_hand);
-	static_msgs_trial_hand_2_trial_dur_hand = *msgs_trial_hand_2_trial_dur_hand;
+	static_msgs_trial_hand_2_trial_dur_hand = msgs_trial_hand_2_trial_dur_hand;
 	trial_duration_status = TRIAL_DUR_STATUS_OUTSIDE_TRIAL_PHASE;
 	if (trial_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_duration_handler_rt_thread", "CANNOT create rt_thread again.");	

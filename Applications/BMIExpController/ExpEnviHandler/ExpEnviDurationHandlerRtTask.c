@@ -11,11 +11,10 @@ static bool rt_exp_envi_duration_handler_stay_alive = 1;
 
 static void *rt_exp_envi_duration_handler(void *args);
 
-bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg **msgs_exp_envi_hand_2_exp_envi_dur_hand)
+bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
 {
 	static_msgs_exp_envi_dur_hand_2_exp_envi_hand = msgs_exp_envi_dur_hand_2_exp_envi_hand;
-	*msgs_exp_envi_hand_2_exp_envi_dur_hand = allocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(*msgs_exp_envi_hand_2_exp_envi_dur_hand);
-	static_msgs_exp_envi_hand_2_exp_envi_dur_hand = *msgs_exp_envi_hand_2_exp_envi_dur_hand;
+	static_msgs_exp_envi_hand_2_exp_envi_dur_hand = msgs_exp_envi_hand_2_exp_envi_dur_hand;
 //	exp_envi_duration_status = EXP_ENVI_DUR_STATUS_OUTSIDE_EXP_ENVI_PHASE;
 	if (exp_envi_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_duration_handler_rt_thread", "CANNOT create rt_thread again.");	

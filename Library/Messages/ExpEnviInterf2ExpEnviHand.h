@@ -12,7 +12,7 @@ typedef unsigned int ExpEnviInterf2ExpEnviHandMsgAdditional;
 #define EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_STRING_LENGTH					100
 
 #define EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_NULL							0
-
+#define EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE						1
 
 
 #include <stdbool.h>

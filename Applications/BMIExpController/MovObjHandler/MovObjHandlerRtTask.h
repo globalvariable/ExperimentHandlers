@@ -8,6 +8,9 @@
 #include <rtai_nam2num.h>
 #include "../../../Library/Messages/Gui2MovObjHand.h"
 #include "../../../Library/Messages/TrialHand2MovObjHand.h"
+#include "../../../Library/Messages/MovObjHand2TrialHand.h"
+#include "../../../Library/Messages/MovObjHand2MovObjInterf.h"
+#include "../../../Library/Messages/MovObjInterf2MovObjHand.h"
 #include "../../../Library/Messages/MovObjDurHand2MovObjHand.h"
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../../BlueSpike/RtTasksData.h"

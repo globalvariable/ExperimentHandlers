@@ -8,6 +8,9 @@
 #include <rtai_nam2num.h>
 #include "../../../Library/Messages/Gui2ExpEnviHand.h"
 #include "../../../Library/Messages/TrialHand2ExpEnviHand.h"
+#include "../../../Library/Messages/ExpEnviHand2TrialHand.h"
+#include "../../../Library/Messages/ExpEnviHand2ExpEnviInterf.h"
+#include "../../../Library/Messages/ExpEnviInterf2ExpEnviHand.h"
 #include "../../../Library/Messages/ExpEnviDurHand2ExpEnviHand.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviDurHand.h"
 #include "../../../../BlueSpike/RtTasksData.h"

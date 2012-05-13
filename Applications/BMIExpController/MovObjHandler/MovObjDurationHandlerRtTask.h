@@ -13,7 +13,7 @@
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "HandleMovObjHand2MovObjDurHandMsgs.h"
 
-bool create_mov_obj_duration_handler_rt_thread(MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg **msgs_mov_obj_hand_2_mov_obj_dur_hand);
+bool create_mov_obj_duration_handler_rt_thread(MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand);
 bool kill_mov_obj_duration_handler_rt_thread(void);
 
 

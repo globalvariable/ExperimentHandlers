@@ -4,7 +4,10 @@ bool get_exp_envi_interf_2_exp_envi_hand_msg_type_string(ExpEnviInterf2ExpEnviHa
 {
 	switch (msg_type)
 	{
-
+		case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

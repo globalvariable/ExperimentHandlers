@@ -4,7 +4,10 @@ bool get_mov_obj_interf_2_mov_obj_hand_msg_type_string(MovObjInterf2MovObjHandMs
 {
 	switch (msg_type)
 	{
-
+		case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_NULL:
 			if (str != NULL)

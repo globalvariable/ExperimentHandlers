@@ -5,24 +5,34 @@ static bool rt_mov_obj_handler_stay_alive = 1;
 
 static void *rt_mov_obj_handler(void *args);
 
-static MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand = NULL;
-static MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand = NULL;    
+static MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand = NULL;
+static MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf = NULL;
+
 static TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand = NULL;
-static bool connected_to_trial_hand = FALSE;
-static pthread_t connect_to_trial_hand_thread;
-static void *connect_to_trial_hand_thread_function( void *ptr );
+static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand = NULL;
+
+static MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand = NULL;
+static MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand = NULL;   
+
+static bool connect_to_trial_hand(void);
+static bool connect_to_mov_obj_interf(void );
 
 bool create_mov_obj_handler_rt_thread(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
 {
-
+	msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);
 	msgs_trial_hand_2_mov_obj_hand = allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand);
 
-	pthread_create( &connect_to_trial_hand_thread, NULL, connect_to_trial_hand_thread_function, NULL);
-	while (!connected_to_trial_hand) { sleep(1); }
-	msgs_mov_obj_dur_hand_2_mov_obj_hand = allocate_mov_obj_dur_hand_2_mov_obj_hand_msg_buffer(msgs_mov_obj_dur_hand_2_mov_obj_hand);
+	if (! connect_to_mov_obj_interf())
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_mov_obj_interf().");	
 
-	if(! create_mov_obj_duration_handler_rt_thread(msgs_mov_obj_dur_hand_2_mov_obj_hand, &msgs_mov_obj_hand_2_mov_obj_dur_hand))
-		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "create_mov_obj_handler_rt_thread().");
+	if (! connect_to_trial_hand())
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_trial_hand().");	
+
+	msgs_mov_obj_dur_hand_2_mov_obj_hand = allocate_mov_obj_dur_hand_2_mov_obj_hand_msg_buffer(msgs_mov_obj_dur_hand_2_mov_obj_hand);
+	msgs_mov_obj_hand_2_mov_obj_dur_hand = allocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand);
+
+	if(! create_mov_obj_duration_handler_rt_thread(msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand))
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "create_mov_obj_duration_handler_rt_thread().");	
 
 	if (mov_obj_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -76,25 +86,66 @@ static void *rt_mov_obj_handler(void *args)
         return 0; 
 }
 
-static void *connect_to_trial_hand_thread_function( void *ptr )
+static bool connect_to_mov_obj_interf(void )
+{
+	MovObjInterf2MovObjHandMsgItem *msg_item;
+	char str_mov_obj_interf_2_mov_obj_hand_msg[MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
+
+	msgs_mov_obj_hand_2_mov_obj_interf = allocate_shm_client_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf);
+	if (msgs_mov_obj_hand_2_mov_obj_interf == NULL)
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "msgs_mov_obj_hand_2_mov_obj_interf == NULL.");
+	if (!write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE, 0))
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer().");
+
+	while (1) 
+	{ 
+		while (get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_interf_2_mov_obj_hand, &msg_item))
+		{
+			get_mov_obj_interf_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_mov_obj_interf_2_mov_obj_hand_msg);
+			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
+			switch (msg_item->msg_type)
+			{
+				case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
+					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Connection to MOV_OBJ_INTERFACER is successful!!!");	
+					return TRUE;			
+				default:
+					print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
+					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "default - switch.");
+			}
+		}
+		sleep(1); 
+	}
+	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Wrong hit in the code.");
+}
+
+static bool connect_to_trial_hand(void )
 {
 	TrialHand2MovObjHandMsgItem *msg_item;
 	char str_trial_hand_2_mov_obj_hand_msg[TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 
-	while (get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(msgs_trial_hand_2_mov_obj_hand, &msg_item))
-	{
-		get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_trial_hand_2_mov_obj_hand_msg);
-		print_message(INFO_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", str_trial_hand_2_mov_obj_hand_msg);	
-		switch (msg_item->msg_type)
+	while (1) 
+	{ 
+		while (get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(msgs_trial_hand_2_mov_obj_hand, &msg_item))
 		{
-			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE:
-				connected_to_trial_hand = TRUE;
-				return 0;			
-			default:
-				print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", str_trial_hand_2_mov_obj_hand_msg);	
-				return (void*)print_message(BUG_MSG ,"FirstBMICageManager", "FirstBMICageInterfacerRtTask", "connect_to_trial_hand_thread_function", "default - switch.");
+			get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_trial_hand_2_mov_obj_hand_msg);
+			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_mov_obj_hand_msg);	
+			switch (msg_item->msg_type)
+			{
+				case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE:
+					msgs_mov_obj_hand_2_trial_hand = allocate_shm_client_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand);
+					if (msgs_mov_obj_hand_2_trial_hand == NULL)
+						return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "msgs_mov_obj_hand_2_trial_hand == NULL.");	
+					if (!write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
+						return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");	
+					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
+					return TRUE;		
+				default:
+					print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_mov_obj_hand_msg);	
+					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "default - switch.");
+			}
 		}
+		print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Waiting for TRIAL_HANDLER to connect.");	
 		sleep(1);
 	}
-	return 0;
+	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Wrong hit in the code.");
 }
