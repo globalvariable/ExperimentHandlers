@@ -118,4 +118,22 @@ bool is_trial_type_used(TrialTypesData* trial_types_data, TrialType trial_type, 
 	return TRUE;
 }
 
+bool get_a_random_trial_type(TrialTypesData* trial_types_data, TrialType *trial_type)
+{
+	unsigned int trial_type_idx;
+	char str[TRIAL_TYPE_MAX_STRING_LENGTH];
+	static bool first = TRUE;
+	if (first)
+		srand ( time(NULL) );
+	first = FALSE;
 
+	trial_type_idx = (unsigned int)(trial_types_data->num_of_trial_types* get_rand_number()* RAND_MAX);
+	*trial_type = trial_types_data->types[trial_type_idx].type;
+	if (! get_trial_type_string(*trial_type, str))
+	{
+		*trial_type = TRIAL_TYPE_NULL;
+		return print_message(BUG_MSG ,"ExperimentHandlers", "TrialTypes", "get_a_random_trial_type", "! get_trial_type_string()."); 	
+	}
+	print_message(INFO_MSG ,"ExperimentHandlers", "TrialTypes", "get_a_random_trial_type", str); 	
+	return TRUE;
+}

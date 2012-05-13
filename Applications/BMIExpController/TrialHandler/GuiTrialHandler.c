@@ -8,6 +8,7 @@ static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;
 static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
 static GtkWidget *btn_disable_trials;
+static GtkWidget *btn_quit_trials;
 static TrialTypesCombo *combo_trial_type_stats;
 
 
@@ -21,7 +22,10 @@ static GtkWidget *lbl_num_of_rewarded_trials_of_trial_type;
 static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
+static void quit_trials_button_func (void);
 static void combo_trial_type_stats_func (void);
+
+
 
 bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
@@ -64,7 +68,10 @@ bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data,
 
 	btn_disable_trials = gtk_button_new_with_label("Disable");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_disable_trials, TRUE, TRUE, 0);
-	gtk_widget_set_sensitive(btn_disable_trials, FALSE);		
+	gtk_widget_set_sensitive(btn_disable_trials, FALSE);	
+
+	btn_quit_trials = gtk_button_new_with_label("Quit");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_quit_trials, TRUE, TRUE, 0);
 
        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
 
@@ -141,6 +148,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data,
 	g_signal_connect(G_OBJECT(btn_reset_connections), "clicked", G_CALLBACK(reset_connections_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_disable_trials), "clicked", G_CALLBACK(disable_trials_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_quit_trials), "clicked", G_CALLBACK(quit_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(combo_trial_type_stats->combo), "changed", G_CALLBACK(combo_trial_type_stats_func), NULL);
 
 	return TRUE;
@@ -157,14 +165,23 @@ static void enable_trials_button_func (void)
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 	gtk_widget_set_sensitive(btn_enable_trials, FALSE);		
 	gtk_widget_set_sensitive(btn_disable_trials, TRUE);	
+	gtk_widget_set_sensitive(btn_quit_trials, FALSE);		
+
 }
 
 static void disable_trials_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
-	gtk_widget_set_sensitive(btn_disable_trials, FALSE);		
 	gtk_widget_set_sensitive(btn_enable_trials, TRUE);	
+	gtk_widget_set_sensitive(btn_disable_trials, FALSE);		
+	gtk_widget_set_sensitive(btn_quit_trials, TRUE);		
+}
+
+static void quit_trials_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_QUIT, 0))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 }
 
 static void combo_trial_type_stats_func (void)

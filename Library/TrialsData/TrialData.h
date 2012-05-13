@@ -26,6 +26,6 @@ struct __TrialsHistory
 
 TrialsHistory* allocate_trials_history(TrialsHistory* hist, unsigned int buffer_size); 
 TrialsHistory* deallocate_trials_history(TrialsHistory* hist); 
-
+void increment_trials_history_write_idx(TrialsHistory* hist);
 
 #endif

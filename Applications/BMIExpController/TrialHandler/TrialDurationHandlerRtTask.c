@@ -1,6 +1,7 @@
 #include "TrialDurationHandlerRtTask.h"
 
 static TrialDurationStatus trial_duration_status = TRIAL_DUR_STATUS_NULL;   // Only trial duration handler can change trial status. 
+static TimeStamp handling_end_time;
 
 static TrialHand2TrialDurHandMsg *static_msgs_trial_hand_2_trial_dur_hand;    
 static TrialDurHand2TrialHandMsg *static_msgs_trial_dur_hand_2_trial_hand;    
@@ -15,7 +16,7 @@ bool create_trial_duration_handler_rt_thread(TrialDurHand2TrialHandMsg *msgs_tri
 {
 	static_msgs_trial_dur_hand_2_trial_hand = msgs_trial_dur_hand_2_trial_hand;
 	static_msgs_trial_hand_2_trial_dur_hand = msgs_trial_hand_2_trial_dur_hand;
-	trial_duration_status = TRIAL_DUR_STATUS_OUTSIDE_TRIAL_PHASE;
+	trial_duration_status = TRIAL_DUR_STATUS_HANDLING_DISABLED;
 	if (trial_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "TrialHandlerRtTask", "create_trial_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
 	trial_duration_handler_rt_thread =  rt_thread_create(rt_trial_duration_handler, NULL, 10000);
@@ -56,8 +57,14 @@ static void *rt_trial_duration_handler(void *args)
 		evaluate_and_save_jitter(TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
 		// routines
-		if (!handle_trial_handler_to_trial_dur_handler_msg(&trial_duration_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_trial_hand_2_trial_dur_hand)) {
+		if (!handle_trial_handler_to_trial_dur_handler_msg(&trial_duration_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_trial_hand_2_trial_dur_hand, &handling_end_time)) {
 			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! handle_trial_handler_to_trial_duration_handler_msg()."); break; }
+		if (shared_memory->rt_tasks_data.current_system_time >= handling_end_time)
+		{
+			trial_duration_status = TRIAL_DUR_STATUS_HANDLING_DISABLED;	
+			if (! write_to_trial_dur_hand_2_trial_hand_msg_buffer(static_msgs_trial_dur_hand_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TIMEOUT, 0)) {
+				print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! write_to_trial_dur_hand_2_trial_hand_msg_buffer()."); break; }
+		}	
 		// routines	
 		evaluate_and_save_period_run_time(TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }

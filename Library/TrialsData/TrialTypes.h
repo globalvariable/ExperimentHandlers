@@ -13,7 +13,7 @@ typedef unsigned int TrialType;
 #include <string.h>
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-
+#include "../../../BlueSpike/Library/Misc/Randn.h"
 
 
 struct __TrialTypeConstraints
@@ -55,7 +55,7 @@ bool get_trial_type_string(TrialType trial_type, char *str);
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx);
 bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, TimeStamp max_trial_length, TimeStamp trial_refractory);
 bool is_trial_type_used(TrialTypesData* trial_types_data, TrialType trial_type, bool *used);
-
+bool get_a_random_trial_type(TrialTypesData* trial_types_data, TrialType *trial_type);
 
 
 

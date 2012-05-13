@@ -4,9 +4,9 @@ bool get_trial_dur_hand_2_trial_hand_msg_type_string(TrialDurHand2TrialHandMsgTy
 {
 	switch (msg_type)
 	{
-		case TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TRIAL_PHASE_TIMEOUT:
+		case TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TIMEOUT:
 			if (str != NULL)
-				strcpy(str, "TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TRIAL_PHASE_TIMEOUT");
+				strcpy(str, "TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TIMEOUT");
 			return TRUE;	
 		case TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_EMERGENCY_EXIT:
 			if (str != NULL)

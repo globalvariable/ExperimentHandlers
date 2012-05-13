@@ -13,7 +13,7 @@ typedef unsigned int ExpEnviHand2TrialHandMsgAdditional;
 
 #define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NULL								0
 #define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE						1
-
+#define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_START_TRIAL_REQUEST			2
 
 
 

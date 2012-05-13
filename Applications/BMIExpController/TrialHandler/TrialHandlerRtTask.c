@@ -88,13 +88,13 @@ static void *rt_trial_handler(void *args)
 		evaluate_and_save_jitter(TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
 		// routines
-		if (!handle_gui_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_gui_2_trial_hand)) {
+		if (!handle_gui_to_trial_handler_msg(static_trial_types_data, &trial_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_gui_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
-		if (!handle_trial_dur_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_trial_dur_hand_2_trial_hand))  {
+		if (!handle_trial_dur_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
-		if (!handle_exp_envi_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_exp_envi_hand_2_trial_hand))  {
+		if (!handle_exp_envi_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
-		if (!handle_mov_obj_handler_to_trial_handler_msg(&trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_mov_obj_hand_2_trial_hand))  {
+		if (!handle_mov_obj_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, static_trial_stats_data, &trial_status, shared_memory->rt_tasks_data.current_system_time, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
 /*		handle_trial_duration_to_trial_handler_msg
 		handle_exp_envi_to_trial_handler_msg

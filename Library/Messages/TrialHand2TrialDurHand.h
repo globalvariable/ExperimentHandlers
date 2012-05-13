@@ -3,26 +3,29 @@
 
 //  MESSAGES FROM TRIAL HANDLER TO TRIAL DURATION HANDLER
 
-typedef struct __TrialHand2TrialDurHandMsg TrialHand2TrialDurHandMsg;
-typedef struct __TrialHand2TrialDurHandMsgItem TrialHand2TrialDurHandMsgItem;
-typedef unsigned int TrialHand2TrialDurHandMsgType;
-typedef unsigned int TrialHand2TrialDurHandMsgAdditional;
-
-
-#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_STRING_LENGTH					100
-
-#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_NULL							0
-#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_TRIAL_START					1
-#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_REFTACTORY_START			2
-#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_END_OF_TRIAL_PHASE			3     // When a phase of trial is complete, trial handler sends this to trial duration handler to cancel timer.
-
-
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include "MessageBuffersConfig.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+
+
+typedef struct __TrialHand2TrialDurHandMsg TrialHand2TrialDurHandMsg;
+typedef struct __TrialHand2TrialDurHandMsgItem TrialHand2TrialDurHandMsgItem;
+typedef unsigned int TrialHand2TrialDurHandMsgType;
+typedef TimeStamp TrialHand2TrialDurHandMsgAdditional;
+
+
+#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_STRING_LENGTH					100
+
+#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_NULL							0
+#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING	1
+#define TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING	2  // When a phase of trial is complete, trial handler sends this to trial duration handler to cancel timer.
+ 
+
+
+
 
 struct __TrialHand2TrialDurHandMsgItem
 {

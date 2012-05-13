@@ -4,17 +4,13 @@ bool get_trial_hand_2_trial_dur_hand_msg_type_string(TrialHand2TrialDurHandMsgTy
 {
 	switch (msg_type)
 	{
-		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_TRIAL_START:
+		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING:
 			if (str != NULL)
-				strcpy(str, "TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_TRIAL_START");
+				strcpy(str, "TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING");
 			return TRUE;	
-		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_REFTACTORY_START:
+		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING:
 			if (str != NULL)
-				strcpy(str, "TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_IN_REFTACTORY_START");
-			return TRUE;	
-		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_END_OF_TRIAL_PHASE:
-			if (str != NULL)
-				strcpy(str, "TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_END_OF_TRIAL_PHASE");
+				strcpy(str, "TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING");
 			return TRUE;	
 /////////////////////////		
 		case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_NULL:

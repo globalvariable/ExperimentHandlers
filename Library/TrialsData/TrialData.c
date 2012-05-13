@@ -26,3 +26,16 @@ TrialsHistory* deallocate_trials_history(TrialsHistory* hist)
 	print_message(INFO_MSG ,"TrialControllers", "TrialsData", "deallocate_trials_data", "Destroyed trials_data.");
 	return NULL;
 }
+
+void increment_trials_history_write_idx(TrialsHistory* hist)
+{
+	if ((hist->buff_write_idx+1) == hist->buffer_size)
+	{
+		hist->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"TrialControllers", "TrialsData", "increment_trials_history_write_idx", "Trials history buffer is FULL !!!.");		
+	}	
+	else
+	{
+		hist->buff_write_idx++;
+	}
+}
