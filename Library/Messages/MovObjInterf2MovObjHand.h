@@ -24,11 +24,13 @@ typedef unsigned int MovObjInterf2MovObjHandMsgAdditional;
 #include "MessageBuffersSharedMem.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+#include "../MovObjData/MovObjComponentTypes.h"
 
 struct __MovObjInterf2MovObjHandMsgItem
 {
 	TimeStamp 								msg_time;		
 	MovObjInterf2MovObjHandMsgType			msg_type;
+	MovObjCompNum							comp_num;
 	MovObjInterf2MovObjHandMsgAdditional		additional_data;
 };
 

@@ -26,12 +26,13 @@ typedef unsigned int ExpEnviHand2ExpEnviInterfMsgAdditional;
 #include "MessageBuffersSharedMem.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-
+#include "../ExpEnviData/ExpEnviComponentTypes.h"
 
 struct __ExpEnviHand2ExpEnviInterfMsgItem
 {
 	TimeStamp 								msg_time;		
 	ExpEnviHand2ExpEnviInterfMsgType			msg_type;
+	ExpEnviOutputCompNum					out_comp_num;
 	ExpEnviHand2ExpEnviInterfMsgAdditional		additional_data;
 };
 

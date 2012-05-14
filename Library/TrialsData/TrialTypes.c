@@ -62,11 +62,13 @@ TrialTypesData* deallocate_trial_types_data(TrialTypesData* data)
 bool get_trial_type_idx_in_trial_types_data(TrialTypesData* trial_types_data, TrialType trial_type, unsigned int *idx)
 {
 	unsigned int i;
-	*idx = trial_types_data->num_of_trial_types; 
+	unsigned int num_of_trial_types = trial_types_data->num_of_trial_types ;
+	TrialTypeData	*types = trial_types_data->types;
+	*idx = num_of_trial_types; 
 
-	for (i = 0; i < trial_types_data->num_of_trial_types; i++)
+	for (i = 0; i < num_of_trial_types; i++)
 	{
-		if (trial_type == trial_types_data->types[i].type)
+		if (trial_type == types[i].type)
 		{
 			*idx = i;
 			return TRUE;
@@ -78,7 +80,7 @@ bool add_trial_type_to_trial_types_data(TrialTypesData* trial_types_data, TrialT
 {
 	unsigned int i;
 	bool trial_type_used;
-	char temp[200];
+	char temp[TRIAL_TYPE_MAX_STRING_LENGTH];
 	TrialTypeData	*lcl_types;
 	if (!is_trial_type_used(trial_types_data, trial_type, &trial_type_used))
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "TrialTypes", "add_trial_type_to_trial_types_data", "! is_trial_type_used()");	

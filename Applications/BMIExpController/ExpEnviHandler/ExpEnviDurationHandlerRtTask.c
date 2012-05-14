@@ -1,6 +1,9 @@
 #include "ExpEnviDurationHandlerRtTask.h"
 
-static ExpEnviDurationStatus exp_envi_duration_status = EXP_ENVI_DUR_STATUS_NULL;   // Only exp envi duration handler can change exp envi status. 
+static ExpEnviInputsDurationStatus *exp_envi_inputs_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
+static TimeStamp *inputs_handling_end_time = NULL;
+static unsigned int num_of_input_components;
+///  Define the guys above for outputs as well when necessary. 
 
 static ExpEnviHand2ExpEnviDurHandMsg *static_msgs_exp_envi_hand_2_exp_envi_dur_hand;    
 static ExpEnviDurHand2ExpEnviHandMsg *static_msgs_exp_envi_dur_hand_2_exp_envi_hand;    
@@ -11,10 +14,13 @@ static bool rt_exp_envi_duration_handler_stay_alive = 1;
 
 static void *rt_exp_envi_duration_handler(void *args);
 
-bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
+bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand, unsigned int num_of_inp_comps)
 {
 	static_msgs_exp_envi_dur_hand_2_exp_envi_hand = msgs_exp_envi_dur_hand_2_exp_envi_hand;
 	static_msgs_exp_envi_hand_2_exp_envi_dur_hand = msgs_exp_envi_hand_2_exp_envi_dur_hand;
+	num_of_input_components = num_of_inp_comps;
+	exp_envi_inputs_duration_status = g_new0(ExpEnviInputsDurationStatus, num_of_inp_comps);
+	inputs_handling_end_time = g_new0(TimeStamp, num_of_inp_comps);
 //	exp_envi_duration_status = EXP_ENVI_DUR_STATUS_OUTSIDE_EXP_ENVI_PHASE;
 	if (exp_envi_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -34,6 +40,7 @@ static void *rt_exp_envi_duration_handler(void *args)
 	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time;
+	TimeStamp curr_system_time;
 
 	if (! check_rt_task_specs_to_init(EXP_ENVI_DURATION_HANDLER_CPU_ID, EXP_ENVI_DURATION_HANDLER_CPU_THREAD_ID, EXP_ENVI_DURATION_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
@@ -55,9 +62,12 @@ static void *rt_exp_envi_duration_handler(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(EXP_ENVI_DURATION_HANDLER_CPU_ID, EXP_ENVI_DURATION_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
+		curr_system_time = shared_memory->rt_tasks_data.current_system_time;
 		// routines
-		if (!handle_exp_envi_handler_to_exp_envi_dur_handler_msg(&exp_envi_duration_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_exp_envi_hand_2_exp_envi_dur_hand)) {
-			print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! handle_exp_envi_handler_to_exp_envi_duration_handler_msg()."); break; }
+		if (! handle_exp_envi_handler_to_exp_envi_dur_handler_msg(exp_envi_inputs_duration_status, curr_system_time, static_msgs_exp_envi_hand_2_exp_envi_dur_hand, inputs_handling_end_time)) {
+			print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! handle_exp_envi_handler_to_exp_envi_dur_handler_msg()."); break; }
+		if (! handle_exp_envi_handler_duration(exp_envi_inputs_duration_status, curr_system_time, inputs_handling_end_time, num_of_input_components, static_msgs_exp_envi_dur_hand_2_exp_envi_hand))  {
+			print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! handle_exp_envi_handler_duration()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(EXP_ENVI_DURATION_HANDLER_CPU_ID, EXP_ENVI_DURATION_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }

@@ -8,9 +8,9 @@ typedef unsigned int ExpEnviStatus;   // !!!ONLY!!! exp_envi_duration handler ca
 #include <gtk/gtk.h>
 #include <string.h>
 
-#define	EXP_ENVI_DUR_STATUS_MAX_STRING_LENGTH			100
+#define	EXP_ENVI_STATUS_MAX_STRING_LENGTH			100
 
-#define	EXP_ENVI_DUR_STATUS_NULL							0
+#define	EXP_ENVI_STATUS_NULL							0
 
 
 

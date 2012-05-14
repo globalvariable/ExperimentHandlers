@@ -8,7 +8,6 @@ typedef struct __ExpEnviInterf2ExpEnviHandMsgItem ExpEnviInterf2ExpEnviHandMsgIt
 typedef unsigned int ExpEnviInterf2ExpEnviHandMsgType;
 typedef unsigned int ExpEnviInterf2ExpEnviHandMsgAdditional;
 
-
 #define EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_STRING_LENGTH					100
 
 #define EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_NULL							0
@@ -24,18 +23,19 @@ typedef unsigned int ExpEnviInterf2ExpEnviHandMsgAdditional;
 #include "MessageBuffersSharedMem.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-
+#include "../ExpEnviData/ExpEnviComponentTypes.h"
 
 struct __ExpEnviInterf2ExpEnviHandMsgItem
 {
-	TimeStamp 								msg_time;		
+	TimeStamp 								msg_time;	
 	ExpEnviInterf2ExpEnviHandMsgType			msg_type;
+	ExpEnviInputCompNum						inp_comp_num;
 	ExpEnviInterf2ExpEnviHandMsgAdditional		additional_data;
 };
 
 struct __ExpEnviInterf2ExpEnviHandMsg		
 {
-	ExpEnviInterf2ExpEnviHandMsgItem		buff[EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_BUFF_SIZE];
+	ExpEnviInterf2ExpEnviHandMsgItem	buff[EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_BUFF_SIZE];
 	unsigned int						buff_write_idx;	// only one message sender can write into this buffer and edit this write index
 	unsigned int						buff_read_idx;	// only one request handler can edit this read index
 };
