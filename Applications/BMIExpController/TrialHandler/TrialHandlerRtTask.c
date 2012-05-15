@@ -2,11 +2,11 @@
 
 static TrialStatus trial_status = TRIAL_STATUS_NULL;   // Only trial handler can change trial status. 
 
-static TrialTypesData *static_trial_types_data;	
-static TrialStatsData *static_trial_stats_data; 
-static TrialsHistory *static_trials_history;   
+static TrialTypesData *static_trial_types_data = NULL;	
+static TrialStatsData *static_trial_stats_data = NULL; 
+static TrialsHistory *static_trials_history = NULL;   
 
-static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand;    
+static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;    
 
 static ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand = NULL;
 static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand = NULL;

@@ -1,6 +1,7 @@
 #include "MovObjDurationHandlerRtTask.h"
 
 static MovObjDurationStatus mov_obj_duration_status = MOV_OBJ_DUR_STATUS_NULL;   // Only mov obj duration handler can change mov obj status. 
+static TimeStamp handling_end_time = 0;
 
 static MovObjHand2MovObjDurHandMsg *static_msgs_mov_obj_hand_2_mov_obj_dur_hand;    
 static MovObjDurHand2MovObjHandMsg *static_msgs_mov_obj_dur_hand_2_mov_obj_hand;    
@@ -34,7 +35,7 @@ static void *rt_mov_obj_duration_handler(void *args)
 	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time;
-
+	TimeStamp curr_system_time;
 	if (! check_rt_task_specs_to_init(MOV_OBJ_DURATION_HANDLER_CPU_ID, MOV_OBJ_DURATION_HANDLER_CPU_THREAD_ID, MOV_OBJ_DURATION_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(MOV_OBJ_DURATION_HANDLER_TASK_NAME, MOV_OBJ_DURATION_HANDLER_TASK_PRIORITY, MOV_OBJ_DURATION_HANDLER_STACK_SIZE, MOV_OBJ_DURATION_HANDLER_MSG_SIZE,MOV_OBJ_DURATION_HANDLER_POLICY, 1 << ((MOV_OBJ_DURATION_HANDLER_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+MOV_OBJ_DURATION_HANDLER_CPU_THREAD_ID)))) {
@@ -55,9 +56,12 @@ static void *rt_mov_obj_duration_handler(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(MOV_OBJ_DURATION_HANDLER_CPU_ID, MOV_OBJ_DURATION_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
+		curr_system_time = shared_memory->rt_tasks_data.current_system_time;
 		// routines
-		if (!handle_mov_obj_handler_to_mov_obj_dur_handler_msg(&mov_obj_duration_status, shared_memory->rt_tasks_data.current_system_time, static_msgs_mov_obj_hand_2_mov_obj_dur_hand)) {
+		if (! handle_mov_obj_handler_to_mov_obj_dur_handler_msg(&mov_obj_duration_status, curr_system_time, static_msgs_mov_obj_hand_2_mov_obj_dur_hand, handling_end_time)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
+		if (! handle_mov_obj_handler_duration(&mov_obj_duration_status, curr_system_time, handling_end_time, static_msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
+			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(MOV_OBJ_DURATION_HANDLER_CPU_ID, MOV_OBJ_DURATION_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }

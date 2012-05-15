@@ -8,10 +8,14 @@ typedef unsigned int MovObjStatus;   // !!!ONLY!!! mov_obj_duration handler can 
 #include <gtk/gtk.h>
 #include <string.h>
 
-#define	MOV_OBJ_DUR_STATUS_MAX_STRING_LENGTH			100
+#define	MOV_OBJ_STATUS_MAX_STRING_LENGTH			100
 
-#define	MOV_OBJ_DUR_STATUS_NULL							0
-
+#define	MOV_OBJ_STATUS_NULL							0
+#define	MOV_OBJ_STATUS_STAYING_AT_START_POINT		1
+#define	MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL		2
+#define	MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT	3
+#define	MOV_OBJ_STATUS_REACHED_TARGET_POINT		4
+#define	MOV_OBJ_STATUS_RESETTING_TO_START_POINT	5
 
 
 bool get_mov_obj_status_type_string(MovObjStatus mov_obj_status_type, char *str);   // pass NULL if you only want checking (to be faster) 

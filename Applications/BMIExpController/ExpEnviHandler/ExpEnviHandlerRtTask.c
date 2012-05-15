@@ -85,13 +85,13 @@ static void *rt_exp_envi_handler(void *args)
 		curr_system_time = shared_memory->rt_tasks_data.current_system_time;
 		// routines
 		if (! handle_gui_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, static_msgs_gui_2_exp_envi_hand)) {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
 		if (! handle_exp_envi_dur_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_dur_hand_2_exp_envi_hand))  {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
 		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand))  {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
 		if (! handle_exp_envi_interf_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_interf_2_exp_envi_hand))  {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_interf_to_exp_envi_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_interf_to_exp_envi_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }

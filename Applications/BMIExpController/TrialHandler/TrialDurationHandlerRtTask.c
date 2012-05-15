@@ -1,7 +1,7 @@
 #include "TrialDurationHandlerRtTask.h"
 
 static TrialDurationStatus trial_duration_status = TRIAL_DUR_STATUS_NULL;   // Only trial duration handler can change trial status. 
-static TimeStamp handling_end_time;
+static TimeStamp handling_end_time = 0;
 
 static TrialHand2TrialDurHandMsg *static_msgs_trial_hand_2_trial_dur_hand;    
 static TrialDurHand2TrialHandMsg *static_msgs_trial_dur_hand_2_trial_hand;    

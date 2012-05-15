@@ -16,8 +16,13 @@
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "MovObjDurationHandlerRtTask.h"
+#include "../../../Library/MovObjData/MovObjData.h"
+#include "HandleGui2MovObjHandMsgs.h"
+#include "HandleMovObjDurHand2MovObjHandMsgs.h"
+#include "HandleTrialHand2MovObjHandMsgs.h"
+#include "HandleMovObjInterf2MovObjHandMsgs.h"
 
-bool create_mov_obj_handler_rt_thread(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
+bool create_mov_obj_handler_rt_thread(MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
 bool kill_mov_obj_handler_rt_thread(void);
 
 

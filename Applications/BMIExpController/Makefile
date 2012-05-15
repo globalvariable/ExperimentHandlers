@@ -147,8 +147,8 @@ ExpEnviHandler/HandleExpEnviHandDur.o: ExpEnviHandler/HandleExpEnviHandDur.c
 
 ############## MOV_OBJ_HANDLER ############## 
 
-MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o ### MovObjHandler
+MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o MovObjHandler/HandleMovObjHandDur.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o MovObjHandler/HandleMovObjHandDur.o ### MovObjHandler
 
 MovObjHandler/Gui.o: MovObjHandler/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/Gui
@@ -165,6 +165,21 @@ MovObjHandler/MovObjDurationHandlerRtTask.o: MovObjHandler/MovObjDurationHandler
 MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o: MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs
 
+MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o: MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs
+
+MovObjHandler/HandleTrialHand2MovObjHandMsgs.o: MovObjHandler/HandleTrialHand2MovObjHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleTrialHand2MovObjHandMsgs
+
+MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o: MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjInterf2MovObjHandMsgs
+
+MovObjHandler/HandleGui2MovObjHandMsgs.o: MovObjHandler/HandleGui2MovObjHandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleGui2MovObjHandMsgs
+
+MovObjHandler/HandleMovObjHandDur.o: MovObjHandler/HandleMovObjHandDur.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjHandDur
+
 ../../Library/Messages/Gui2MovObjHand.o: ../../Library/Messages/Gui2MovObjHand.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2MovObjHand
 
@@ -179,6 +194,12 @@ MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o: MovObjHandler/HandleMovObjHa
 
 ../../Library/Messages/MovObjHand2MovObjDurHand.o: ../../Library/Messages/MovObjHand2MovObjDurHand.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/MovObjHand2MovObjDurHand
+
+../../Library/MovObjData/MovObjComponentTypes.o: ../../Library/MovObjData/MovObjComponentTypes.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/MovObjData/MovObjComponentTypes
+
+../../Library/MovObjData/MovObjData.o: ../../Library/MovObjData/MovObjData.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/MovObjData/MovObjData
 
 ############## FIRST_BMI_CAGE_INTERFACER ############## 
 

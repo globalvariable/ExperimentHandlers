@@ -2,11 +2,11 @@
 
 static ExpEnviInputsDurationStatus *exp_envi_inputs_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
 static TimeStamp *inputs_handling_end_time = NULL;
-static unsigned int num_of_input_components;
+static unsigned int num_of_input_components = 0;
 ///  Define the guys above for outputs as well when necessary. 
 
-static ExpEnviHand2ExpEnviDurHandMsg *static_msgs_exp_envi_hand_2_exp_envi_dur_hand;    
-static ExpEnviDurHand2ExpEnviHandMsg *static_msgs_exp_envi_dur_hand_2_exp_envi_hand;    
+static ExpEnviHand2ExpEnviDurHandMsg *static_msgs_exp_envi_hand_2_exp_envi_dur_hand = NULL;    
+static ExpEnviDurHand2ExpEnviHandMsg *static_msgs_exp_envi_dur_hand_2_exp_envi_hand = NULL;    
 
 static int exp_envi_duration_handler_rt_thread = 0;
 static bool rt_exp_envi_duration_handler_stay_alive = 1;
