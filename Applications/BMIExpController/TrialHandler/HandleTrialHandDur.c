@@ -14,11 +14,11 @@ bool handle_trial_handler_duration(TrialDurationStatus *trial_duration_status, T
 			{
 				*trial_duration_status = TRIAL_DUR_STATUS_HANDLING_DISABLED;	
 				if (! write_to_trial_dur_hand_2_trial_hand_msg_buffer(msgs_trial_dur_hand_2_trial_hand, current_time, TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_TIMEOUT, 0))
-					return print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! write_to_trial_dur_hand_2_trial_hand_msg_buffer()."); 
+					return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialHandDur", "handle_trial_handler_duration", "! write_to_trial_dur_hand_2_trial_hand_msg_buffer()."); 
 			}	
 			break;	// do nothing
 		default: 
-			return print_message(BUG_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", str_dur_status);		
+			return print_message(BUG_MSG ,"TrialHandler", "HandleTrialHandDur", "handle_trial_handler_duration", str_dur_status);		
 	}
 	return TRUE;
 }

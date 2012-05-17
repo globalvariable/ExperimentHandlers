@@ -27,14 +27,63 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 	ExpEnviHand2ExpEnviInterfMsgItem *msg_item;
 	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
 
+	exp_envi_rs232_tx.command.all_command = 0;
+
 	while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
 	{
 		get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
 		print_message(INFO_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
 		switch (msg_item->msg_type)
 		{
-			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE:
+			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH:
+				switch (msg_item->out_comp_num)
+				{
+					case LEFT_LED:
+						exp_envi_rs232_tx.command.LeftLED = 1;			
+						 break;			
+					case RIGHT_LED:
+						exp_envi_rs232_tx.command.RightLED = 1;			
+						 break;	
+					case VALVE:
+						exp_envi_rs232_tx.command.OpenValve = 1;			
+						 break;			
+					case LEVER_SOLENOID:
+						exp_envi_rs232_tx.command.EnableLever = 1;			
+						 break;	
+					case BUZZER:
+						exp_envi_rs232_tx.command.Buzzer = 1;			
+						 break;	
+					default:
+						print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
+						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", "default - switch.");
+				}
 				 break;			
+			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW:
+				switch (msg_item->out_comp_num)
+				{
+					case LEFT_LED:
+						exp_envi_rs232_tx.command.LeftLED = 0;			
+						 break;			
+					case RIGHT_LED:
+						exp_envi_rs232_tx.command.RightLED = 0;			
+						 break;	
+					case VALVE:
+						exp_envi_rs232_tx.command.OpenValve = 0;			
+						 break;			
+					case LEVER_SOLENOID:
+						exp_envi_rs232_tx.command.EnableLever = 0;			
+						 break;	
+					case BUZZER:
+						exp_envi_rs232_tx.command.Buzzer = 0;			
+						 break;	
+					default:
+						print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
+						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", "default - switch.");
+				}
+				 break;	
+			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET:
+				exp_envi_rs232_tx.command.ResetTrial = 0;			
+				 break;	
 			default:
 				print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
 				return print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", "default - switch.");

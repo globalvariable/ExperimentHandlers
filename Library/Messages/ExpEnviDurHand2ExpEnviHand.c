@@ -4,7 +4,14 @@ bool get_exp_envi_dur_hand_2_exp_envi_hand_msg_type_string(ExpEnviDurHand2ExpEnv
 {
 	switch (msg_type)
 	{
-
+		case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MIN:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MIN");
+			return TRUE;
+		case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MAX:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MAX");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)
@@ -38,13 +45,14 @@ ExpEnviDurHand2ExpEnviHandMsg* deallocate_exp_envi_dur_hand_2_exp_envi_hand_msg_
 }
 
 
-bool write_to_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(ExpEnviDurHand2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviDurHand2ExpEnviHandMsgType msg_type, ExpEnviDurHand2ExpEnviHandMsgAdditional additional_data)
+bool write_to_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(ExpEnviDurHand2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviDurHand2ExpEnviHandMsgType msg_type, ExpEnviInputCompNum inp_comp_num, ExpEnviDurHand2ExpEnviHandMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	ExpEnviDurHand2ExpEnviHandMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
+	buff[*idx].inp_comp_num = inp_comp_num;
 	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_BUFF_SIZE)
 		*idx = 0;

@@ -12,6 +12,7 @@ typedef struct __ExpEnviData ExpEnviData;
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "ExpEnviComponentTypes.h"
+#include "../Status/ExpEnviComponentStatus.h"
 
 struct __ExpEnviInputCompTypeConstraints
 {
@@ -26,9 +27,7 @@ struct __ExpEnviInputCompTypeConstraints
 struct __ExpEnviInputCompTypeData
 {
 	ExpEnviInputCompType					type;
-	bool								status;		// high - low
-	TimeStamp							status_start_time;
-	TimeStamp							status_min_end_time;	// the ending time for a status to be counted as complete. 
+	ExpEnviCompStatus					status;		// high - low
 	unsigned int							low_2_high_switch_occured;
 	unsigned int							high_2_low_switch_occured;
 	ExpEnviInputCompTypeConstraints		constraints;
@@ -37,11 +36,11 @@ struct __ExpEnviInputCompTypeData
 struct __ExpEnviOutputCompTypeData
 {
 	ExpEnviOutputCompType				type;
-	bool								status;		// high - low
+	ExpEnviCompStatus					status;		// high - low
 	TimeStamp							status_start_time;
 };
 
-struct __ExpEnviData
+struct __ExpEnviData   // DO NOT BRING EXP ENVI STATUS HERE. IT IS KIND OF PRIVATE WHICH CAN BE CHANGED BY EXP ENVI HANDLER
 {
 	ExpEnviInputCompTypeData		*inp_comp_types;
 	unsigned int					num_of_inp_comps;

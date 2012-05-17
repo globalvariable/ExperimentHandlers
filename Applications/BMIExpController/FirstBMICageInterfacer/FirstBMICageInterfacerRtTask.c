@@ -45,6 +45,7 @@ static void *rt_cage_interfacer(void *args)
 	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time, i;
+	TimeStamp curr_system_time;
 	char rx_buff[RX_BUFF_LEN];
 	char tx_buff[TX_BUFF_LEN];	
 
@@ -63,6 +64,7 @@ static void *rt_cage_interfacer(void *args)
 
 	curr_time = rt_get_cpu_time_ns();
 	prev_time = curr_time;	
+	curr_system_time = shared_memory->rt_tasks_data.current_system_time;
         while (rt_cage_interfacer_stay_alive) 
 	{
 		// routines
@@ -78,9 +80,10 @@ static void *rt_cage_interfacer(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
+		curr_system_time = shared_memory->rt_tasks_data.current_system_time;
 		if (! read_from_rs232_com1(rx_buff, RX_BUFF_LEN))  {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! read_from_rs232_com1().");  break; }	
-		if (! handle_exp_envi_interf_2_exp_envi_hand_msgs(rx_buff)) {
+		if (! handle_exp_envi_interf_2_exp_envi_hand_msgs(rx_buff, msgs_exp_envi_interf_2_exp_envi_hand, curr_system_time)) {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_exp_envi_interf_2_exp_envi_hand_msgs()."); break; }	
 		if (! handle_mov_obj_interf_2_mov_obj_hand_msgs(rx_buff)) {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_interf_2_mov_obj_hand_msgs()."); break; }	
@@ -110,7 +113,7 @@ static bool connect_to_exp_envi_hand(void )
 					msgs_exp_envi_interf_2_exp_envi_hand = allocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand);
 					if (msgs_exp_envi_interf_2_exp_envi_hand == NULL)
 						return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand", "msgs_exp_envi_interf_2_exp_envi_hand == NULL.");	
-					if (!write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE, 0))
+					if (!write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE, EXP_ENVI_COMP_NUM_NULL, 0))
 						return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand", "write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer().");	
 					print_message(INFO_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand", "Connection to EXP_ENVI_HANDLER is successful!!!");	
 					return TRUE;		

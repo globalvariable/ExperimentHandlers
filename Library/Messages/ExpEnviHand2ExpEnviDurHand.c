@@ -4,7 +4,18 @@ bool get_exp_envi_hand_2_exp_envi_dur_hand_msg_type_string(ExpEnviHand2ExpEnviDu
 {
 	switch (msg_type)
 	{
-
+		case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_LOW_2_HIGH:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_LOW_2_HIGH");
+			return TRUE;
+		case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_HIGH_2_LOW:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_HIGH_2_LOW");
+			return TRUE;
+		case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_TIMER:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_TIMER");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_NULL:
 			if (str != NULL)
@@ -38,14 +49,16 @@ ExpEnviHand2ExpEnviDurHandMsg* deallocate_exp_envi_hand_2_exp_envi_dur_hand_msg_
 }
 
 
-bool write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviDurHandMsgType msg_type, ExpEnviHand2ExpEnviDurHandMsgAdditional additional_data)
+bool write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviDurHandMsgType msg_type, ExpEnviInputCompNum inp_comp_num, ExpEnviHand2ExpEnviDurHandMsgAdditional additional_data_0, ExpEnviHand2ExpEnviDurHandMsgAdditional additional_data_1)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	ExpEnviHand2ExpEnviDurHandMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data = additional_data;
+	buff[*idx].inp_comp_num = inp_comp_num;
+	buff[*idx].additional_data_0 = additional_data_0;
+	buff[*idx].additional_data_1 = additional_data_1;
 	if ((*idx + 1) == EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

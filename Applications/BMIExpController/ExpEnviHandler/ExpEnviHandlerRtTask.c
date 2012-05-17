@@ -86,12 +86,12 @@ static void *rt_exp_envi_handler(void *args)
 		// routines
 		if (! handle_gui_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, static_msgs_gui_2_exp_envi_hand)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
+		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_hand_2_exp_envi_dur_hand))  {
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
+		if (! handle_exp_envi_interf_to_exp_envi_handler_msg(static_exp_envi_data, curr_system_time, msgs_exp_envi_interf_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand ))  {
+			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_interf_to_exp_envi_handler_msg()."); break; }
 		if (! handle_exp_envi_dur_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_dur_hand_2_exp_envi_hand))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
-		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand))  {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
-		if (! handle_exp_envi_interf_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_interf_2_exp_envi_hand))  {
-			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_interf_to_exp_envi_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }
@@ -110,7 +110,7 @@ static bool connect_to_exp_envi_interf(void )
 	msgs_exp_envi_hand_2_exp_envi_interf = allocate_shm_client_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf);
 	if (msgs_exp_envi_hand_2_exp_envi_interf == NULL)
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "msgs_exp_envi_hand_2_exp_envi_interf == NULL.");
-	if (!write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE, 0))
+	if (!write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE, EXP_ENVI_COMP_NUM_NULL, 0))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer().");
 
 	while (1) 

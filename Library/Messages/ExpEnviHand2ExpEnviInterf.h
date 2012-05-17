@@ -13,9 +13,9 @@ typedef unsigned int ExpEnviHand2ExpEnviInterfMsgAdditional;
 
 #define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_NULL							0
 #define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE					1
-
-
-
+#define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH					2
+#define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW					3
+#define EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET							4
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
@@ -53,7 +53,7 @@ ExpEnviHand2ExpEnviInterfMsg* deallocate_exp_envi_hand_2_exp_envi_interf_msg_buf
 ExpEnviHand2ExpEnviInterfMsg* allocate_shm_server_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer);
 ExpEnviHand2ExpEnviInterfMsg* allocate_shm_client_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer);
 ExpEnviHand2ExpEnviInterfMsg* deallocate_shm_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer);
-bool write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviInterfMsgType msg_type, ExpEnviHand2ExpEnviInterfMsgAdditional additional_data);
+bool write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviInterfMsgType msg_type, ExpEnviOutputCompNum out_comp_num, ExpEnviHand2ExpEnviInterfMsgAdditional additional_data);
 bool get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(ExpEnviHand2ExpEnviInterfMsg* msg_buffer, ExpEnviHand2ExpEnviInterfMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 

@@ -8,6 +8,14 @@ bool get_exp_envi_interf_2_exp_envi_hand_msg_type_string(ExpEnviInterf2ExpEnviHa
 			if (str != NULL)
  				strcpy(str, "EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_I_AM_ALIVE");
 			return TRUE;
+		case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_LOW_2_HIGH:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_LOW_2_HIGH");
+			return TRUE;
+		case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_HIGH_2_LOW:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_HIGH_2_LOW");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)
@@ -73,12 +81,13 @@ ExpEnviInterf2ExpEnviHandMsg* deallocate_shm_exp_envi_interf_2_exp_envi_hand_msg
 	rtai_free(nam2num(EXP_ENVI_INTERF_2_EXP_ENVI_HAND_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviInterf2ExpEnviHandMsgType msg_type, ExpEnviInterf2ExpEnviHandMsgAdditional additional_data)
+bool write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviInterf2ExpEnviHandMsgType msg_type, ExpEnviInputCompNum inp_comp_num, ExpEnviInterf2ExpEnviHandMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	ExpEnviInterf2ExpEnviHandMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
+	buff[*idx].inp_comp_num = inp_comp_num;
 	buff[*idx].msg_type = msg_type;
 	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_BUFF_SIZE)

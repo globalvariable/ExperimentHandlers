@@ -6,14 +6,9 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-typedef unsigned int ExpEnviInputCompNum;		
+#define EXP_ENVI_COMP_NUM_NULL	0xFFFFFFFF	
+typedef unsigned int ExpEnviInputCompNum;	
 typedef unsigned int ExpEnviOutputCompNum;				
-
-#define EXP_ENVI_INPUT_STATUS_HIGH	TRUE
-#define EXP_ENVI_INPUT_STATUS_LOW	FALSE
-#define EXP_ENVI_OUTPUT_STATUS_HIGH	TRUE
-#define EXP_ENVI_OUTPUT_STATUS_LOW	FALSE
-
 
 typedef unsigned int ExpEnviInputCompType;					
 

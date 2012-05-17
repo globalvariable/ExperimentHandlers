@@ -74,13 +74,14 @@ ExpEnviHand2ExpEnviInterfMsg* deallocate_shm_exp_envi_hand_2_exp_envi_interf_msg
 	rtai_free(nam2num(EXP_ENVI_HAND_2_EXP_ENVI_INTERF_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviInterfMsgType msg_type, ExpEnviHand2ExpEnviInterfMsgAdditional additional_data)
+bool write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(ExpEnviHand2ExpEnviInterfMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviInterfMsgType msg_type, ExpEnviOutputCompNum out_comp_num, ExpEnviHand2ExpEnviInterfMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	ExpEnviHand2ExpEnviInterfMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
+	buff[*idx].out_comp_num = out_comp_num;
 	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_BUFF_SIZE)
 		*idx = 0;

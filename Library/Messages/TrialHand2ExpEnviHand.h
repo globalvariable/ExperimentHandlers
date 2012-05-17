@@ -13,8 +13,8 @@ typedef unsigned int TrialHand2ExpEnviHandMsgAdditional;
 
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL							0
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE				1
-#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL					2
-#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL					3		// send trial type as additional
+#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL					2		// send trial type as additional
+#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL					3
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD			4	
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT		5	
 
