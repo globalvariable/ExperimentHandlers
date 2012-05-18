@@ -150,6 +150,7 @@ static bool connect_to_trial_hand(void )
 			{
 				case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE:
 					msgs_mov_obj_hand_2_trial_hand = allocate_shm_client_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand);
+					sleep(1);
 					if (msgs_mov_obj_hand_2_trial_hand == NULL)
 						return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "msgs_mov_obj_hand_2_trial_hand == NULL.");	
 					if (!write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))

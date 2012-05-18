@@ -16,6 +16,7 @@ typedef struct __ExpEnviData ExpEnviData;
 
 struct __ExpEnviInputCompTypeConstraints
 {
+	ExpEnviCompStatus	initial_status;		// high - low
 	TimeStamp			max_high_status_duration;		
 	TimeStamp			min_high_status_duration;	
 	TimeStamp			max_low_status_duration;			
@@ -28,8 +29,8 @@ struct __ExpEnviInputCompTypeData
 {
 	ExpEnviInputCompType					type;
 	ExpEnviCompStatus					status;		// high - low
-	unsigned int							low_2_high_switch_occured;
-	unsigned int							high_2_low_switch_occured;
+	unsigned int							low_2_high_switch_success;
+	unsigned int							high_2_low_switch_success;
 	ExpEnviInputCompTypeConstraints		constraints;
 };
 
@@ -37,7 +38,6 @@ struct __ExpEnviOutputCompTypeData
 {
 	ExpEnviOutputCompType				type;
 	ExpEnviCompStatus					status;		// high - low
-	TimeStamp							status_start_time;
 };
 
 struct __ExpEnviData   // DO NOT BRING EXP ENVI STATUS HERE. IT IS KIND OF PRIVATE WHICH CAN BE CHANGED BY EXP ENVI HANDLER
@@ -52,7 +52,7 @@ ExpEnviData* allocate_exp_envi_data(ExpEnviData* data);
 ExpEnviData* deallocate_exp_envi_data(ExpEnviData* data);
 
 bool get_input_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviInputCompType comp_type, unsigned int *idx);
-bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCompType comp_type, bool initial_status, TimeStamp max_high_status_duration, TimeStamp min_high_status_duration,TimeStamp max_low_status_duration, TimeStamp min_low_status_duration, unsigned int num_of_low_2_high_switch, unsigned int num_of_high_2_low_switch);
+bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration, TimeStamp max_high_status_duration, TimeStamp min_low_status_duration, TimeStamp max_low_status_duration, unsigned int num_of_low_2_high_switch, unsigned int num_of_high_2_low_switch, ExpEnviCompStatus initial_status);
 bool is_input_component_type_used(ExpEnviData* data, ExpEnviInputCompType comp_type, bool *used);
 
 bool get_output_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, unsigned int *idx);

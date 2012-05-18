@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "../../../Library/Status/ExpEnviStatus.h"
 #include "../../../Library/ExpEnviData/ExpEnviData.h"
+#include "../../../Library/ExpEnviData/ExpEnviEvaluate.h"
 #include "../../../Library/Messages/TrialHand2ExpEnviHand.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviInterf.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviDurHand.h"
