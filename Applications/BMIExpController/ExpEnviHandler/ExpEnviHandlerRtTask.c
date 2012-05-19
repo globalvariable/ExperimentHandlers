@@ -25,6 +25,8 @@ static bool connect_to_exp_envi_interf(void );
 
 bool create_exp_envi_handler_rt_thread(ExpEnviData *exp_envi_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
+	exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
+
 	static_exp_envi_data = exp_envi_data;
 	static_msgs_gui_2_exp_envi_hand = msgs_gui_2_exp_envi_hand;
 

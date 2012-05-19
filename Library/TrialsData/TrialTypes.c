@@ -124,12 +124,13 @@ bool get_a_random_trial_type(TrialTypesData* trial_types_data, TrialType *trial_
 {
 	unsigned int trial_type_idx;
 	char str[TRIAL_TYPE_MAX_STRING_LENGTH];
+	double rand_num;
 	static bool first = TRUE;
 	if (first)
 		srand ( time(NULL) );
 	first = FALSE;
 
-	trial_type_idx = (unsigned int)(trial_types_data->num_of_trial_types* get_rand_number()* RAND_MAX);
+	trial_type_idx = (unsigned int)(trial_types_data->num_of_trial_types * get_rand_number());
 	*trial_type = trial_types_data->types[trial_type_idx].type;
 	if (! get_trial_type_string(*trial_type, str))
 	{

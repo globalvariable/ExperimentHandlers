@@ -14,7 +14,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialTypesData *trial_types_dat
 		print_message(INFO_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
 		switch (msg_item->msg_type)
 		{
-			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST:	
+			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST:	// Mov Obj send this out whether when it reaches target or threshold depending on its programming
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
@@ -41,7 +41,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialTypesData *trial_types_dat
 						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 				}
 				break;
-			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST:     	
+			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST:     // mov obj handler sends this after it stayed at target enough	
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
@@ -51,6 +51,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialTypesData *trial_types_dat
 						trial_type = trials_history->history[trials_history->buff_write_idx].trial_type;
 						if (! get_trial_type_idx_in_trial_types_data(trial_types_data, trial_type, &trial_type_idx))
 							return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "get_trial_type_idx_in_trial_types_data()");
+						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + trial_types_data->types[trial_type_idx].constraints.trial_refractory))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))

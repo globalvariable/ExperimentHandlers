@@ -9,6 +9,18 @@ bool get_exp_envi_hand_2_exp_envi_interf_msg_type_string(ExpEnviHand2ExpEnviInte
 			if (str != NULL)
  				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE");
 			return TRUE;
+		case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH");
+			return TRUE;
+		case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW");
+			return TRUE;
+		case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_NULL:
 			if (str != NULL)

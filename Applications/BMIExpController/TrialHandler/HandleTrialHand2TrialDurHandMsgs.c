@@ -29,7 +29,7 @@ bool handle_trial_handler_to_trial_dur_handler_msg(TrialDurationStatus *trial_du
 						return print_message(BUG_MSG ,"TrialHandler", "HandleTrialHand2TrialDurHandMsgs", "handle_trial_handler_to_trial_dur_handler_msg", str_dur_status);
 				}
 				break;
-			case TRIAL_DUR_STATUS_HANDLING_DISABLED:	
+			case TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING:	
 				switch (*trial_duration_status)
 				{
 					case TRIAL_DUR_STATUS_HANDLING_ENABLED:

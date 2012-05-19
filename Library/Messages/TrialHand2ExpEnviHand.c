@@ -9,6 +9,10 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL");
+			return TRUE;
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL:
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL");

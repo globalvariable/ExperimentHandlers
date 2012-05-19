@@ -27,7 +27,7 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 	ExpEnviHand2ExpEnviInterfMsgItem *msg_item;
 	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
 
-	exp_envi_rs232_tx.command.all_command = 0;
+	exp_envi_rs232_tx.command.ResetTrial = 0;
 
 	while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
 	{
@@ -48,7 +48,7 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 						exp_envi_rs232_tx.command.OpenValve = 1;			
 						 break;			
 					case LEVER_SOLENOID:
-						exp_envi_rs232_tx.command.EnableLever = 1;			
+						exp_envi_rs232_tx.command.EnableLever = 1;		// have to send 1 for every tx when in trial. 	
 						 break;	
 					case BUZZER:
 						exp_envi_rs232_tx.command.Buzzer = 1;			
@@ -82,7 +82,7 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 				}
 				 break;	
 			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET:
-				exp_envi_rs232_tx.command.ResetTrial = 0;			
+				exp_envi_rs232_tx.command.ResetTrial = 1;			
 				 break;	
 			default:
 				print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	

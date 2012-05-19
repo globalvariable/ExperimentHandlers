@@ -15,27 +15,45 @@ bool handle_exp_envi_interf_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, 
 				switch (msg_item->inp_comp_num)
 				{
 					case IR_BEAM:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, IR_BEAM, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, IR_BEAM, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[IR_BEAM]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_low_2_high_event().");
 						if (!valid)
 							break;
-						ASAGIDAKINI HANDLE ET.
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.min_high_status_duration + current_time, exp_envi_data->inp_comp_types[IR_BEAM].constraints.max_high_status_duration + current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.min_high_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.max_high_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
+							break;
 					case LEFT_LEVER:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, LEFT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, LEFT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[LEFT_LEVER]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_low_2_high_event().");
 						if (!valid)
 							break;
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.min_high_status_duration + current_time, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.max_high_status_duration + current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.min_high_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.max_high_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						 break;	
 					case RIGHT_LEVER:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, RIGHT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, RIGHT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[RIGHT_LEVER]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_low_2_high_event().");
 						if (!valid)
 							break;
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.min_high_status_duration +current_time, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.max_high_status_duration +current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.min_high_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.max_high_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						 break;			
 					default:
@@ -47,27 +65,45 @@ bool handle_exp_envi_interf_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, 
 				switch (msg_item->inp_comp_num)
 				{
 					case IR_BEAM:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, IR_BEAM, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, IR_BEAM, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_high_2_low_event(&(exp_envi_data->inp_comp_types[IR_BEAM]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_high_2_low_event().");
 						if (!valid)
 							break;
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.min_low_status_duration + current_time, exp_envi_data->inp_comp_types[IR_BEAM].constraints.max_low_status_duration + current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.min_low_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, IR_BEAM, exp_envi_data->inp_comp_types[IR_BEAM].constraints.max_low_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						 break;			
 					case LEFT_LEVER:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, LEFT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, LEFT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_high_2_low_event(&(exp_envi_data->inp_comp_types[LEFT_LEVER]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_high_2_low_event().");
 						if (!valid)
 							break;
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time, EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.min_low_status_duration +current_time, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.max_low_status_duration + current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.min_low_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, LEFT_LEVER, exp_envi_data->inp_comp_types[LEFT_LEVER].constraints.max_low_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						 break;	
 					case RIGHT_LEVER:
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER, RIGHT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, RIGHT_LEVER, 0))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						if (! exp_envi_input_high_2_low_event(&(exp_envi_data->inp_comp_types[RIGHT_LEVER]), &valid))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "exp_envi_input_high_2_low_event().");
 						if (!valid)
 							break;
-						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time, EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.min_low_status_duration + current_time, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.max_low_status_duration + current_time))
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.min_low_status_duration + current_time))
+							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");			
+						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER, RIGHT_LEVER, exp_envi_data->inp_comp_types[RIGHT_LEVER].constraints.max_low_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						 break;			
 					default:
