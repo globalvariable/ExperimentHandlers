@@ -16,7 +16,7 @@ bool create_mov_obj_duration_handler_rt_thread(MovObjDurHand2MovObjHandMsg *msgs
 {
 	static_msgs_mov_obj_dur_hand_2_mov_obj_hand = msgs_mov_obj_dur_hand_2_mov_obj_hand;
 	static_msgs_mov_obj_hand_2_mov_obj_dur_hand = msgs_mov_obj_hand_2_mov_obj_dur_hand;
-//	mov_obj_duration_status = MOV_OBJ_DUR_STATUS_OUTSIDE_MOV_OBJ_PHASE;
+	mov_obj_duration_status = MOV_OBJ_DUR_STATUS_TIMER_OFF;
 	if (mov_obj_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
 	mov_obj_duration_handler_rt_thread =  rt_thread_create(rt_mov_obj_duration_handler, NULL, 10000);

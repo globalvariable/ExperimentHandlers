@@ -1,6 +1,7 @@
 #include "ExpEnviHandlerRtTask.h"
 
 static ExpEnviStatus exp_envi_status = EXP_ENVI_STATUS_NULL;   // Only trial handler can change trial status. 
+static TrialType exp_envi_trial_type_status = TRIAL_TYPE_NULL;   // Only trial handler can change trial status. 
 
 static int exp_envi_handler_rt_thread = 0;
 static bool rt_exp_envi_handler_stay_alive = 1;
@@ -26,6 +27,7 @@ static bool connect_to_exp_envi_interf(void );
 bool create_exp_envi_handler_rt_thread(ExpEnviData *exp_envi_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
 	exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
+	exp_envi_trial_type_status = TRIAL_TYPE_UNSPECIFIED; 
 
 	static_exp_envi_data = exp_envi_data;
 	static_msgs_gui_2_exp_envi_hand = msgs_gui_2_exp_envi_hand;
@@ -88,7 +90,7 @@ static void *rt_exp_envi_handler(void *args)
 		// routines
 		if (! handle_gui_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, static_msgs_gui_2_exp_envi_hand)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
-		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_hand_2_exp_envi_dur_hand))  {
+		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, &exp_envi_trial_type_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_hand_2_exp_envi_dur_hand))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
 		if (! handle_exp_envi_interf_to_exp_envi_handler_msg(static_exp_envi_data, curr_system_time, msgs_exp_envi_interf_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand ))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_interf_to_exp_envi_handler_msg()."); break; }

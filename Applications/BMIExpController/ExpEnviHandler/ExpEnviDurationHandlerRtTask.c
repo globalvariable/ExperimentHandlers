@@ -30,7 +30,7 @@ bool create_exp_envi_duration_handler_rt_thread(ExpEnviDurHand2ExpEnviHandMsg *m
 		exp_envi_inputs_max_duration_status[i] = EXP_ENVI_INPUTS_MAX_DUR_STATUS_TIMER_OFF;
 	inputs_handling_end_time_min = g_new0(TimeStamp, num_of_inp_comps);
 	inputs_handling_end_time_max = g_new0(TimeStamp, num_of_inp_comps);
-//	exp_envi_duration_status = EXP_ENVI_DUR_STATUS_OUTSIDE_EXP_ENVI_PHASE;
+
 	if (exp_envi_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
 	exp_envi_duration_handler_rt_thread =  rt_thread_create(rt_exp_envi_duration_handler, NULL, 10000);

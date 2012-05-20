@@ -6,7 +6,6 @@ bool handle_trial_dur_handler_to_trial_handler_msg(TrialTypesData *trial_types_d
 	TrialDurHand2TrialHandMsgItem *msg_item;
 	char str_trial_dur_msg[TRIAL_DUR_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
 	char str_status[TRIAL_STATUS_MAX_STRING_LENGTH];
-	unsigned int trial_type_idx;
 	while (get_next_trial_dur_hand_2_trial_hand_msg_buffer_item(msgs_trial_dur_hand_2_trial_hand, &msg_item))
 	{
 		get_trial_dur_hand_2_trial_hand_msg_type_string(msg_item->msg_type, str_trial_dur_msg);
@@ -19,17 +18,8 @@ bool handle_trial_dur_handler_to_trial_handler_msg(TrialTypesData *trial_types_d
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
-						*trial_status = TRIAL_STATUS_IN_REFRACTORY;
-						if (! get_trial_type_idx_in_trial_types_data(trial_types_data, trials_history->history[trials_history->buff_write_idx].trial_type, &trial_type_idx))
-							return print_message(BUG_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "get_trial_type_idx_in_trial_types_data()");
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + trial_types_data->types[trial_type_idx].constraints.trial_refractory))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL, 0))
+						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
-						trials_history->history[trials_history->buff_write_idx].trial_end_time = current_time;
-						increment_trials_history_write_idx(trials_history);
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
 						*trial_status = TRIAL_STATUS_START_TRIAL_AVAILABLE;

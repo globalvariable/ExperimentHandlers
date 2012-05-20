@@ -1,0 +1,52 @@
+#ifndef MOV_OBJ_DIRECTION_TYPES_H
+#define MOV_OBJ_DIRECTION_TYPES_H
+
+#include <stdbool.h>
+#include <gtk/gtk.h>
+#include <string.h>
+
+typedef unsigned int MovObjDirectionType;
+
+#define	MOV_OBJ_DIRECTION_TYPE_MAX_STRING_LENGTH						100
+
+#define	MOV_OBJ_DIRECTION_NULL											0
+
+#define	MOV_OBJ_DIRECTION_LEFT											1
+#define	MOV_OBJ_DIRECTION_RIGHT											2
+#define	MOV_OBJ_DIRECTION_UP											3
+#define	MOV_OBJ_DIRECTION_DOWN											4
+#define	MOV_OBJ_DIRECTION_FORWARD										5
+#define	MOV_OBJ_DIRECTION_BACKWARD									6
+#define	MOV_OBJ_DIRECTION_UP_LEFT										7
+#define	MOV_OBJ_DIRECTION_UP_RIGHT										8
+#define	MOV_OBJ_DIRECTION_DOWN_LEFT									9
+#define	MOV_OBJ_DIRECTION_DOWN_RIGHT									10
+#define	MOV_OBJ_DIRECTION_FORWARD_UP									11
+#define	MOV_OBJ_DIRECTION_FORWARD_DOWN								12
+#define	MOV_OBJ_DIRECTION_FORWARD_LEFT									13
+#define	MOV_OBJ_DIRECTION_FORWARD_RIGHT								14
+#define	MOV_OBJ_DIRECTION_FORWARD_UP_LEFT								15
+#define	MOV_OBJ_DIRECTION_FORWARD_UP_RIGHT							16
+#define	MOV_OBJ_DIRECTION_FORWARD_DOWN_LEFT							17
+#define	MOV_OBJ_DIRECTION_FORWARD_DOWN_RIGHT							18
+#define	MOV_OBJ_DIRECTION_BACKWARD_UP									19
+#define	MOV_OBJ_DIRECTION_BACKWARD_DOWN								20
+#define	MOV_OBJ_DIRECTION_BACKWARD_LEFT								21
+#define	MOV_OBJ_DIRECTION_BACKWARD_RIGHT								22
+#define	MOV_OBJ_DIRECTION_BACKWARD_UP_LEFT							23
+#define	MOV_OBJ_DIRECTION_BACKWARD_UP_RIGHT							24
+#define	MOV_OBJ_DIRECTION_BACKWARD_DOWN_LEFT							25
+#define	MOV_OBJ_DIRECTION_BACKWARD_DOWN_RIGHT							26
+
+
+#define	MOV_OBJ_DIRECTION_ROTATE_CLOCKWISE								101
+#define	MOV_OBJ_DIRECTION_ROTATE_COUNTER_CLOCKWISE					102
+
+#define	MOV_OBJ_DIRECTION_STATIONARY									201
+
+bool get_mov_obj_direction_type_string(MovObjDirectionType direction_type, char *str);
+
+
+
+
+#endif

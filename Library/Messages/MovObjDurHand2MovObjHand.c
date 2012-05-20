@@ -4,7 +4,10 @@ bool get_mov_obj_dur_hand_2_mov_obj_hand_msg_type_string(MovObjDurHand2MovObjHan
 {
 	switch (msg_type)
 	{
-
+		case MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_TIMEOUT:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_TIMEOUT");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_NULL:
 			if (str != NULL)

@@ -15,6 +15,7 @@ typedef unsigned int TrialHand2MovObjHandMsgAdditional;
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE				1
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL					2
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL					3		// send trial type as additional
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT				4		// send trial type as additional
 
 
 #include <stdbool.h>

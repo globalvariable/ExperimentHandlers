@@ -9,6 +9,10 @@ bool get_mov_obj_hand_2_mov_obj_interf_msg_type_string(MovObjHand2MovObjInterfMs
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE");
 			return TRUE;
+		case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_NULL:
 			if (str != NULL)
@@ -74,14 +78,17 @@ MovObjHand2MovObjInterfMsg* deallocate_shm_mov_obj_hand_2_mov_obj_interf_msg_buf
 	rtai_free(nam2num(MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjInterfMsgType msg_type, MovObjHand2MovObjInterfMsgAdditional additional_data)
+bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjInterfMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location);
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	MovObjHand2MovObjInterfMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data = additional_data;
+	buff[*idx].comp_num = comp_num;
+	buff[*idx].direction = direction;
+	buff[*idx].speed = speed;
+	buff[*idx].location = location;
 	if ((*idx + 1) == MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

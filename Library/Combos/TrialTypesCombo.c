@@ -29,21 +29,5 @@ bool update_trial_types_combo(TrialTypesData *trial_types_data, TrialTypesCombo 
 	return TRUE;	
 }
 
-AllTrialTypesCombo* allocate_all_trial_types_combo(void)
-{
-	unsigned int i;
-	char temp[TRIAL_TYPE_MAX_STRING_LENGTH];
-	AllTrialTypesCombo *combo;
-	combo = g_new0(AllTrialTypesCombo, 1);
-	combo->combo = gtk_combo_box_new_text();
 
-	for (i=0; i < NUM_OF_ALL_TRIAL_TYPES; i++)
-	{
-		get_trial_type_string(i, temp);
-	 	gtk_combo_box_append_text(GTK_COMBO_BOX(combo->combo), &temp[11]);    // ignore uncessary string part
-	} 
-	combo->num_of_texts = NUM_OF_ALL_TRIAL_TYPES;
-	gtk_combo_box_set_active (GTK_COMBO_BOX(combo->combo), 1);
-	return combo;
-}
 

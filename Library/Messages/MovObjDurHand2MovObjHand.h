@@ -12,7 +12,7 @@ typedef unsigned int MovObjDurHand2MovObjHandMsgAdditional;
 #define MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
 
 #define MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_NULL							0
-
+#define MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_TIMEOUT						1
 
 
 

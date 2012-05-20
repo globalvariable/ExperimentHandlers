@@ -85,7 +85,7 @@ static void *rt_cage_interfacer(void *args)
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! read_from_rs232_com1().");  break; }	
 		if (! handle_exp_envi_interf_2_exp_envi_hand_msgs(rx_buff, msgs_exp_envi_interf_2_exp_envi_hand, curr_system_time)) {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_exp_envi_interf_2_exp_envi_hand_msgs()."); break; }	
-		if (! handle_mov_obj_interf_2_mov_obj_hand_msgs(rx_buff)) {
+		if (! handle_mov_obj_interf_2_mov_obj_hand_msgs(rx_buff, msgs_mov_obj_interf_2_mov_obj_hand, curr_system_time)) {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_interf_2_mov_obj_hand_msgs()."); break; }	
 		// routines	
         }

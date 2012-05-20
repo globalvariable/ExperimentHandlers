@@ -3,24 +3,25 @@
 
 //  MESSAGES FROM MOV OBJ HANDLER TO MOV OBJ DURATION HANDLER
 
-typedef struct __MovObjHand2MovObjDurHandMsg MovObjHand2MovObjDurHandMsg;
-typedef struct __MovObjHand2MovObjDurHandMsgItem MovObjHand2MovObjDurHandMsgItem;
-typedef unsigned int MovObjHand2MovObjDurHandMsgType;
-typedef unsigned int MovObjHand2MovObjDurHandMsgAdditional;
-
-
-#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_STRING_LENGTH					100
-
-#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_NULL							0
-
-
-
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include "MessageBuffersConfig.h"
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+
+typedef struct __MovObjHand2MovObjDurHandMsg MovObjHand2MovObjDurHandMsg;
+typedef struct __MovObjHand2MovObjDurHandMsgItem MovObjHand2MovObjDurHandMsgItem;
+typedef unsigned int MovObjHand2MovObjDurHandMsgType;
+typedef TimeStamp MovObjHand2MovObjDurHandMsgAdditional;
+
+
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_STRING_LENGTH					100
+
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_NULL							0
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER					1
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER				2
+
 
 struct __MovObjHand2MovObjDurHandMsgItem
 {

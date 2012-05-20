@@ -9,13 +9,9 @@ bool get_exp_envi_status_type_string(ExpEnviStatus exp_envi_status_type, char *s
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_STATUS_OUT_OF_TRIAL");
 			return TRUE;
-		case EXP_ENVI_STATUS_LEFT_TARGET_SELECTED:
+		case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
 			if (str != NULL)
-				strcpy(str, "EXP_ENVI_STATUS_LEFT_TARGET_SELECTED");
-			return TRUE;
-		case EXP_ENVI_STATUS_RIGHT_TARGET_SELECTED:
-			if (str != NULL)
-				strcpy(str, "EXP_ENVI_STATUS_RIGHT_TARGET_SELECTED");
+				strcpy(str, "EXP_ENVI_STATUS_COMPONENTS_AVAILABLE");
 			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_STATUS_NULL:

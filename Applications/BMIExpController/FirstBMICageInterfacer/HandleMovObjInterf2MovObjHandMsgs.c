@@ -16,12 +16,19 @@ struct __MovObjRS232RX
 static struct __MovObjRS232RX  mov_obj_prev_status =  { .location.location = 0 };
 static struct __MovObjRS232RX  mov_obj_rs232_rx =  { .location.location = 0 };
 
-static MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand = NULL;
-
-bool handle_mov_obj_interf_2_mov_obj_hand_msgs(char *rx_buff)
+bool handle_mov_obj_interf_2_mov_obj_hand_msgs(char *rx_buff, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, TimeStamp current_time)
 {
 	mov_obj_rs232_rx.location.high = rx_buff[0];
 	mov_obj_rs232_rx.location.low = rx_buff[1];
+
+	if (mov_obj_prev_status.location.location != mov_obj_rs232_rx.location.location)       // Motor moved
+	{
+		if (! write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand, current_time, ONE_D_ACTUATOR, MOV_OBJ_DIRECTION_NULL, MOV_OBJ_SPEED_NULL,  	(mov_obj_rs232_rx.location.location*(80/272.0))   // send location in means of millitmeters.
+			return print_message(ERROR_MSG ,"FirstBMICageManager", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_interf_2_mov_obj_hand_msgs", "! write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer().");
+	
+		mov_obj_prev_status.location.location = mov_obj_rs232_rx.location.location;
+
+	}
 	return TRUE;
 }
 

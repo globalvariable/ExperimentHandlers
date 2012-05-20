@@ -4,7 +4,7 @@
 #include "../../../Library/Messages/MovObjInterf2MovObjHand.h"
 
 
-bool handle_mov_obj_interf_2_mov_obj_hand_msgs(char *rx_buff);
+bool handle_mov_obj_interf_2_mov_obj_hand_msgs(char *rx_buff, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, TimeStamp current_time);
 
 
 

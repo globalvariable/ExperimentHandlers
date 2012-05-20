@@ -4,6 +4,11 @@ bool get_trial_type_string(TrialType trial_type, char *str)  // pass NULL for on
 {
 	switch (trial_type)
 	{
+		case TRIAL_TYPE_UNSPECIFIED:
+			if (str != NULL)
+				strcpy(str, "TRIAL_TYPE_UNSPECIFIED");
+			return TRUE;
+
 ////            RT_TRIALS    (REAL_TIME)
 		case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:
 			if (str != NULL)
@@ -124,7 +129,6 @@ bool get_a_random_trial_type(TrialTypesData* trial_types_data, TrialType *trial_
 {
 	unsigned int trial_type_idx;
 	char str[TRIAL_TYPE_MAX_STRING_LENGTH];
-	double rand_num;
 	static bool first = TRUE;
 	if (first)
 		srand ( time(NULL) );

@@ -6,14 +6,14 @@
 typedef struct __MovObjInterf2MovObjHandMsg MovObjInterf2MovObjHandMsg;
 typedef struct __MovObjInterf2MovObjHandMsgItem MovObjInterf2MovObjHandMsgItem;
 typedef unsigned int MovObjInterf2MovObjHandMsgType;
-typedef unsigned int MovObjInterf2MovObjHandMsgAdditional;
+typedef double MovObjInterf2MovObjHandMsgAdditional;  
 
 
 #define MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
 
 #define MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_NULL							0
 #define MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE						1
-
+#define MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_DIRECTION_SPEED_LOCATION		2
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
@@ -31,7 +31,9 @@ struct __MovObjInterf2MovObjHandMsgItem
 	TimeStamp 								msg_time;		
 	MovObjInterf2MovObjHandMsgType			msg_type;
 	MovObjCompNum							comp_num;
-	MovObjInterf2MovObjHandMsgAdditional		additional_data;
+	MovObjDirectionType						direction;
+	MovObjSpeedType							speed;
+	MovObjLocationType						location;
 };
 
 struct __MovObjInterf2MovObjHandMsg		
@@ -51,7 +53,7 @@ MovObjInterf2MovObjHandMsg* deallocate_mov_obj_interf_2_mov_obj_hand_msg_buffer(
 MovObjInterf2MovObjHandMsg* allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
 MovObjInterf2MovObjHandMsg* allocate_shm_client_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
 MovObjInterf2MovObjHandMsg* deallocate_shm_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
-bool write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer, TimeStamp msg_time, MovObjInterf2MovObjHandMsgType msg_type, MovObjInterf2MovObjHandMsgAdditional additional_data);
+bool write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer, TimeStamp msg_time, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, 	MovObjLocationType location);
 bool get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(MovObjInterf2MovObjHandMsg* msg_buffer, MovObjInterf2MovObjHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

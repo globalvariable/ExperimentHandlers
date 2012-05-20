@@ -42,12 +42,14 @@ struct __TrialTypesData
 
 #define	TRIAL_TYPE_NULL									0
 
-#define	TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET				1
-#define	TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET				2
-#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_LEFT			3
-#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_RIGHT			4
+#define	TRIAL_TYPE_UNSPECIFIED							1	/// it is not like TRIAL_TYPE_NULL. it is unspecified for mov obj handler and exp envi handler, for instance during refractory.
 
-#define	NUM_OF_ALL_TRIAL_TYPES							5
+#define	TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET				2
+#define	TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET				3
+#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_LEFT			4
+#define	TRIAL_TYPE_RAT_TRAINING_ROBOT_TO_RIGHT			5
+
+
 
 TrialTypesData* allocate_trial_types_data(TrialTypesData* data);
 TrialTypesData* deallocate_trial_types_data(TrialTypesData* data);
