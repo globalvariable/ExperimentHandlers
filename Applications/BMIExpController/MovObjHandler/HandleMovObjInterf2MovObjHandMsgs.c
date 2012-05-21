@@ -8,7 +8,7 @@ bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovO
 	MovObjInterf2MovObjHandMsgItem *msg_item;
 	char str_mov_obj_interf_msg[MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
-	double location;
+	MovObjLocationType location;
 	while (get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_interf_2_mov_obj_hand, &msg_item))
 	{
 		get_mov_obj_interf_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_mov_obj_interf_msg);
@@ -16,6 +16,8 @@ bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovO
 		switch (msg_item->msg_type)
 		{
 			case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_DIRECTION_SPEED_LOCATION:	
+				location = msg_item->location;
+				printf("Location: %f\n", location);			
 				switch (*mov_obj_status)
 				{
 					case MOV_OBJ_STATUS_OUT_OF_TRIAL:
@@ -29,15 +31,14 @@ bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovO
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
 						switch (mov_obj_trial_type_status)
 						{
-							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	// left locations are below zero
-								location = msg_item->location;
-								if (location <= (-mov_obj_data->glo_constraints.current_threshold))
+							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	// left locations are above zero
+								if (location >= (+mov_obj_data->glo_constraints.current_threshold))
 								{
 									*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS;  // handle_mov_obj_handler_status handles robot to convenient target. 
 								}	
 								break;
-							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:  // right locations are above zero
-								if (location >= (+mov_obj_data->glo_constraints.current_threshold))
+							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:  // right locations are below zero
+								if (location <= (-mov_obj_data->glo_constraints.current_threshold))
 								{
 									*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS; // handle_mov_obj_handler_status handles robot to convenient target. 
 								}	

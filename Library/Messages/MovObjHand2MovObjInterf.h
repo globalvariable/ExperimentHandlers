@@ -27,6 +27,10 @@ typedef unsigned int MovObjHand2MovObjInterfMsgAdditional;
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../MovObjData/MovObjComponentTypes.h"
+#include "../MovObjData/MovObjDirectionTypes.h"
+#include "../MovObjData/MovObjSpeedType.h"
+#include "../MovObjData/MovObjLocationType.h"
+
 
 struct __MovObjHand2MovObjInterfMsgItem
 {

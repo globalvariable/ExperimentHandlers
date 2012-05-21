@@ -28,7 +28,7 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 	while (get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(msgs_mov_obj_hand_2_mov_obj_interf, &msg_item))
 	{
 		get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
-		print_message(INFO_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", str_mov_obj_hand_2_mov_obj_interf_msg);	
+//		print_message(INFO_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", str_mov_obj_hand_2_mov_obj_interf_msg);	
 		switch (msg_item->msg_type)
 		{
 			case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION:
@@ -36,13 +36,15 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 				{
 					case ONE_D_ACTUATOR:
 						mov_obj_rs232_tx.command.Speed = msg_item->speed;
+						printf ("Speed: %f\n", msg_item->speed);
+						printf ("Speed int: %d\n", mov_obj_rs232_tx.command.Speed);
 						switch (msg_item->direction)
 						{
-							case MOV_OBJ_DIRECTION_LEFT:		// left direction is 1, right is 0
-								mov_obj_rs232_tx.command.Direction = 1;
+							case MOV_OBJ_DIRECTION_LEFT:		// left direction is 0, right is 1
+								mov_obj_rs232_tx.command.Direction = 0;
 								break;
 							case MOV_OBJ_DIRECTION_RIGHT:		// left direction is 1, right is 0
-								mov_obj_rs232_tx.command.Direction = 0;
+								mov_obj_rs232_tx.command.Direction = 1;
 								break;
 							case MOV_OBJ_DIRECTION_STATIONARY:   // might come from neural net output
 								mov_obj_rs232_tx.command.Speed = 0;			
@@ -62,7 +64,7 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 		}
 	}
 
-	tx_buff[1] = mov_obj_rs232_tx.command.all_command;
+	tx_buff[0] = mov_obj_rs232_tx.command.all_command;
 
 	return TRUE;
 }

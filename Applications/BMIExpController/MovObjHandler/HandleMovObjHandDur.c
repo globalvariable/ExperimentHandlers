@@ -3,7 +3,7 @@
 
 bool handle_mov_obj_handler_duration(MovObjDurationStatus *mov_obj_duration_status, TimeStamp current_time, TimeStamp handling_end_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand)
 {
-	char str_dur_status[MOV_OBJ_INPUTS_MIN_DUR_STATUS_MAX_STRING_LENGTH];
+	char str_dur_status[MOV_OBJ_DUR_STATUS_MAX_STRING_LENGTH];
 
 	switch (*mov_obj_duration_status)
 	{
@@ -18,7 +18,7 @@ bool handle_mov_obj_handler_duration(MovObjDurationStatus *mov_obj_duration_stat
 			}	
 			break;
 		default: 
-			get_mov_obj_dur_status_type_string(*mov_obj_dur_status, str_dur_status);  
+			get_mov_obj_dur_status_type_string(*mov_obj_duration_status, str_dur_status);  
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjHandDur", "handle_mov_obj_handler_duration", str_dur_status);		
 	}
 	return TRUE;

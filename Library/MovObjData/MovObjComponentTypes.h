@@ -7,7 +7,9 @@
 #include <string.h>
 
 
-typedef unsigned int MovObjCompNum;				
+typedef unsigned int MovObjCompNum;
+
+#define	MOV_OBJ_COMPONENT_NUM_NULL						0xFFFFFFFF			
 
 
 typedef unsigned int MovObjCompType;					

@@ -11,6 +11,7 @@ typedef struct __MovObjData MovObjData;
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "MovObjComponentTypes.h"
+#include "MovObjLocationType.h"
 
 struct __MovObjConstraints
 {

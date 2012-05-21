@@ -78,7 +78,7 @@ MovObjHand2MovObjInterfMsg* deallocate_shm_mov_obj_hand_2_mov_obj_interf_msg_buf
 	rtai_free(nam2num(MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjInterfMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location);
+bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjInterfMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);

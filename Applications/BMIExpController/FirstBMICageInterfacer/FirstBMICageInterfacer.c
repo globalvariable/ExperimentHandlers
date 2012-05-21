@@ -9,7 +9,7 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "shared_memory == NULL.");
 
 	if (! enable_rs232_com1_9600_baud()) 
-		print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "! enable_rs232_com1_9600_baud().");
+		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "! enable_rs232_com1_9600_baud().");
 
 	if(! create_cage_interfacer_rt_thread())
 		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "create_cage_interfacer_rt_thread().");

@@ -25,6 +25,9 @@ typedef double MovObjInterf2MovObjHandMsgAdditional;
 #include "../../../BlueSpike/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../MovObjData/MovObjComponentTypes.h"
+#include "../MovObjData/MovObjDirectionTypes.h"
+#include "../MovObjData/MovObjSpeedType.h"
+#include "../MovObjData/MovObjLocationType.h"
 
 struct __MovObjInterf2MovObjHandMsgItem
 {
@@ -53,7 +56,7 @@ MovObjInterf2MovObjHandMsg* deallocate_mov_obj_interf_2_mov_obj_hand_msg_buffer(
 MovObjInterf2MovObjHandMsg* allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
 MovObjInterf2MovObjHandMsg* allocate_shm_client_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
 MovObjInterf2MovObjHandMsg* deallocate_shm_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer);
-bool write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer, TimeStamp msg_time, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, 	MovObjLocationType location);
+bool write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(MovObjInterf2MovObjHandMsg* msg_buffer, TimeStamp msg_time, MovObjInterf2MovObjHandMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location);
 bool get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(MovObjInterf2MovObjHandMsg* msg_buffer, MovObjInterf2MovObjHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

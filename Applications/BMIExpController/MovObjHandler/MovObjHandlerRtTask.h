@@ -21,6 +21,7 @@
 #include "HandleMovObjDurHand2MovObjHandMsgs.h"
 #include "HandleTrialHand2MovObjHandMsgs.h"
 #include "HandleMovObjInterf2MovObjHandMsgs.h"
+#include "HandleMovObjHandStatus.h"
 
 bool create_mov_obj_handler_rt_thread(MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
 bool kill_mov_obj_handler_rt_thread(void);

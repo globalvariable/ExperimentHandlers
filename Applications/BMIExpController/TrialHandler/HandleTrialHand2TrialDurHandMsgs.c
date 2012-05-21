@@ -36,9 +36,7 @@ bool handle_trial_handler_to_trial_dur_handler_msg(TrialDurationStatus *trial_du
 						*trial_duration_status = TRIAL_DUR_STATUS_HANDLING_DISABLED;
 						break;
 					case TRIAL_DUR_STATUS_HANDLING_DISABLED:
-						print_message(BUG_MSG ,"TrialHandler", "HandleTrialHand2TrialDurHandMsgs", "handle_trial_handler_to_trial_dur_handler_msg", str_trial_hand_msg);
-						get_trial_dur_status_type_string(*trial_duration_status, str_dur_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleTrialHand2TrialDurHandMsgs", "handle_trial_handler_to_trial_dur_handler_msg", str_dur_status);
+						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleTrialHand2TrialDurHandMsgs", "handle_trial_handler_to_trial_dur_handler_msg", str_trial_hand_msg);
 						get_trial_dur_status_type_string(*trial_duration_status, str_dur_status);   

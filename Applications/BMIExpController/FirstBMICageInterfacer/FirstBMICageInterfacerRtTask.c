@@ -144,7 +144,7 @@ static bool connect_to_mov_obj_hand(void )
 					msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_client_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);
 					if (msgs_mov_obj_interf_2_mov_obj_hand == NULL)
 						return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand", "msgs_mov_obj_interf_2_mov_obj_hand == NULL.");	
-					if (!write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE, 0))
+					if (!write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE, MOV_OBJ_COMPONENT_NUM_NULL,MOV_OBJ_DIRECTION_NULL,MOV_OBJ_SPEED_NULL, MOV_OBJ_LOCATION_NULL))
 						return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand", "write_to_mov_obj_interf_2_mov_obj_hand_msg_buffer().");	
 					print_message(INFO_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand", "Connection to MOV_OBJ_HANDLER is successful!!!");	
 					return TRUE;		

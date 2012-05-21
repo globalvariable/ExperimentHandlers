@@ -79,6 +79,8 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 						*exp_envi_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
 						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW, LEFT_LED, 0))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
+						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW, RIGHT_LED, 0))
+							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
 						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW, LEVER_SOLENOID, 0))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
 						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_RESET, EXP_ENVI_COMP_NUM_NULL, 0))

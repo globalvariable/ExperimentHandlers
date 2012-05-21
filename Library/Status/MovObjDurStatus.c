@@ -3,7 +3,7 @@
 
 bool get_mov_obj_dur_status_type_string(MovObjDurationStatus mov_obj_dur_status_type, char *str)   // pass NULL if you only want checking (to be faster) 
 {
-	switch (mov_obj_inputs_min_dur_status_type)
+	switch (mov_obj_dur_status_type)
 	{
 		case MOV_OBJ_DUR_STATUS_TIMER_ON:
 			if (str != NULL)
