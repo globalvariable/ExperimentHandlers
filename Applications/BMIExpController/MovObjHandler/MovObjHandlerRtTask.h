@@ -13,6 +13,8 @@
 #include "../../../Library/Messages/MovObjInterf2MovObjHand.h"
 #include "../../../Library/Messages/MovObjDurHand2MovObjHand.h"
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
+#include "../../../Library/Messages/MovObjHand2NeuralNet.h"
+#include "../../../Library/Messages/NeuralNet2MovObjHand.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "MovObjDurationHandlerRtTask.h"

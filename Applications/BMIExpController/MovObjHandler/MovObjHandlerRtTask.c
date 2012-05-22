@@ -21,7 +21,11 @@ static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand = NULL;
 static MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand = NULL;
 static MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand = NULL;   
 
+static MovObjHand2NeuralNetMsg *msgs_mov_obj_hand_2_neural_net = NULL;
+static NeuralNet2MovObjHandMsg *msgs_neural_net_2_mov_obj_hand = NULL;
+
 static bool connect_to_trial_hand(void);
+static bool connect_to_neural_net(void);
 static bool connect_to_mov_obj_interf(void );
 
 bool create_mov_obj_handler_rt_thread(MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
@@ -37,6 +41,9 @@ bool create_mov_obj_handler_rt_thread(MovObjData *mov_obj_data, Gui2MovObjHandMs
 
 	if (! connect_to_mov_obj_interf())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_mov_obj_interf().");	
+
+	if (!connect_to_neural_net())
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_neural_net().");	
 
 	if (! connect_to_trial_hand())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_trial_hand().");	
@@ -131,13 +138,43 @@ static bool connect_to_mov_obj_interf(void )
 					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Connection to MOV_OBJ_INTERFACER is successful!!!");	
 					return TRUE;			
 				default:
-					print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
-					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "default - switch.");
+					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
 			}
 		}
 		sleep(1); 
 	}
 	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Wrong hit in the code.");
+}
+
+static bool connect_to_neural_net(void)
+{
+	NeuralNet2MovObjHandMsgItem *msg_item;
+	char str_neural_net_2_mov_obj_hand_msg[NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
+
+	msgs_mov_obj_hand_2_neural_net = allocate_shm_client_mov_obj_hand_2_neural_net_msg_buffer(msgs_mov_obj_hand_2_neural_net);
+	if (msgs_mov_obj_hand_2_neural_net == NULL)
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "msgs_mov_obj_hand_2_neural_net == NULL.");
+	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer(msgs_mov_obj_hand_2_neural_net, shared_memory->rt_tasks_data.current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, 0))
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
+
+	while (1) 
+	{ 
+		while (get_next_neural_net_2_mov_obj_hand_msg_buffer_item(msgs_neural_net_2_mov_obj_hand, &msg_item))
+		{
+			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_neural_net_2_mov_obj_hand_msg);
+			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
+			switch (msg_item->msg_type)
+			{
+				case NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
+					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");	
+					return TRUE;			
+				default:
+					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
+			}
+		}
+		sleep(1); 
+	}
+	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Wrong hit in the code.");
 }
 
 static bool connect_to_trial_hand(void )
@@ -163,12 +200,11 @@ static bool connect_to_trial_hand(void )
 					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
 					return TRUE;		
 				default:
-					print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_mov_obj_hand_msg);	
-					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "default - switch.");
+					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_mov_obj_hand_msg);	
 			}
 		}
 		print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Waiting for TRIAL_HANDLER to connect.");	
 		sleep(1);
 	}
-	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Wrong hit in the code.");
+	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Wrong hit in the code.");
 }
