@@ -16,7 +16,7 @@
 #include "HandleMovObjInterf2MovObjHandMsgs.h"
 #include "../../../Library/RS232/RS232Handler.h"
 
-bool create_cage_interfacer_rt_thread(void);
+bool create_cage_interfacer_rt_thread(RtTasksData *rt_tasks_data);
 bool kill_cage_interfacer_rt_thread(void);
 
 

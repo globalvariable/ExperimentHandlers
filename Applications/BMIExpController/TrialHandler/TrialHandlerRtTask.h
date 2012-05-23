@@ -17,6 +17,8 @@
 #include "../../../Library/Messages/MovObjHand2TrialHand.h"
 #include "../../../Library/Messages/TrialHand2ExpEnviHand.h"
 #include "../../../Library/Messages/TrialHand2MovObjHand.h"
+#include "../../../Library/Messages/TrialHand2NeuralNet.h"
+#include "../../../Library/Messages/NeuralNet2TrialHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
@@ -25,7 +27,7 @@
 #include "HandleExpEnviHand2TrialHandMsgs.h"
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-bool create_trial_handler_rt_thread(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand);
+bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand);
 bool kill_trial_handler_rt_thread(void);
 
 

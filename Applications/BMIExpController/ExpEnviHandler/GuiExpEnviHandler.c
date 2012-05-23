@@ -1,10 +1,13 @@
 #include "GuiExpEnviHandler.h"
 
+static RtTasksData *static_rt_tasks_data = NULL;
+
 static Gui2ExpEnviHandMsg *static_msgs_gui_2_exp_envi_hand;    
 
-
-bool create_exp_envi_handler_tab(GtkWidget *tabs, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
+bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
+	static_rt_tasks_data = rt_tasks_data;
+
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
 	static_msgs_gui_2_exp_envi_hand = msgs_gui_2_exp_envi_hand;

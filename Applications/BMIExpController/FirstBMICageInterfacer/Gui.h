@@ -8,7 +8,7 @@
 #include "GuiCageInterfacer.h"
 
 // Functions
-void create_gui_handler(void);
+void create_gui_handler(RtTasksData *rt_tasks_data);
 
 
 

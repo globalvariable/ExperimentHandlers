@@ -1,11 +1,14 @@
 #include "GuiMovObjHandler.h"
 
+static RtTasksData *static_rt_tasks_data = NULL;
+
 static Gui2MovObjHandMsg *static_msgs_gui_2_mov_obj_hand;    
 
-
-bool create_mov_obj_handler_tab(GtkWidget *tabs, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
+bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
+
+	static_rt_tasks_data = rt_tasks_data;
 
 	static_msgs_gui_2_mov_obj_hand = msgs_gui_2_mov_obj_hand;
 

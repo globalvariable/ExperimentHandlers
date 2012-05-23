@@ -9,7 +9,7 @@
 #include "../../../Library/Messages/Gui2ExpEnviHand.h"
 
 // Functions
-void create_gui_handler(Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand);
+void create_gui_handler(RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand);
 
 
 

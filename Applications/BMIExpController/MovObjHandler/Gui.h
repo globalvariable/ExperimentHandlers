@@ -9,7 +9,7 @@
 #include "../../../Library/Messages/Gui2MovObjHand.h"
 
 // Functions
-void create_gui_handler(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
+void create_gui_handler(RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
 
 
 

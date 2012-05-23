@@ -6,7 +6,6 @@
 typedef struct __NeuralNet2MovObjHandMsg NeuralNet2MovObjHandMsg;
 typedef struct __NeuralNet2MovObjHandMsgItem NeuralNet2MovObjHandMsgItem;
 typedef unsigned int NeuralNet2MovObjHandMsgType;
-typedef unsigned int NeuralNet2MovObjHandMsgAdditional;
 
 
 #define NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100

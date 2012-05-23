@@ -1,5 +1,7 @@
 #include "GuiTrialHandler.h"
 
+static RtTasksData *static_rt_tasks_data = NULL;
+
 static TrialTypesData *static_trial_types_data = NULL;	
 static TrialStatsData *static_trial_stats_data = NULL; 
 static TrialsHistory *static_trials_history = NULL;   
@@ -27,9 +29,11 @@ static void combo_trial_type_stats_func (void);
 
 
 
-bool create_trial_handler_tab(GtkWidget *tabs, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
+
+	static_rt_tasks_data = rt_tasks_data;
 
 	static_trial_types_data = trial_types_data;
 	static_trial_stats_data = trial_stats;
@@ -161,7 +165,7 @@ static void reset_connections_button_func (void)
 
 static void enable_trials_button_func (void)
 {
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING, 0))
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 	gtk_widget_set_sensitive(btn_enable_trials, FALSE);		
 	gtk_widget_set_sensitive(btn_disable_trials, TRUE);	
@@ -171,7 +175,7 @@ static void enable_trials_button_func (void)
 
 static void disable_trials_button_func (void)
 {
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING, 0))
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 	gtk_widget_set_sensitive(btn_enable_trials, TRUE);	
 	gtk_widget_set_sensitive(btn_disable_trials, FALSE);		
@@ -180,7 +184,7 @@ static void disable_trials_button_func (void)
 
 static void quit_trials_button_func (void)
 {
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, GUI_2_TRIAL_HAND_MSG_QUIT, 0))
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_QUIT, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 }
 

@@ -10,7 +10,7 @@
 #include "../../../Library/Messages/Gui2TrialHand.h"
 
 // Functions
-void create_gui_handler(TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand);
+void create_gui_handler(RtTasksData *rt_tasks_data, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand);
 
 
 

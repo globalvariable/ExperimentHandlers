@@ -1,9 +1,13 @@
 #include "GuiCageInterfacer.h"
 
 
-bool create_cage_interfacer_tab(GtkWidget *tabs)
+static RtTasksData *static_rt_tasks_data = NULL;
+
+bool create_cage_interfacer_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
+
+	static_rt_tasks_data = rt_tasks_data;
 
         frame = gtk_frame_new ("");
         frame_label = gtk_label_new ("     Cage Interfacer    ");      

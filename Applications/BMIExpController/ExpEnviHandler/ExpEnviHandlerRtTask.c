@@ -1,5 +1,7 @@
 #include "ExpEnviHandlerRtTask.h"
 
+static RtTasksData *static_rt_tasks_data = NULL;
+
 static ExpEnviStatus exp_envi_status = EXP_ENVI_STATUS_NULL;   // Only trial handler can change trial status. 
 static TrialType exp_envi_trial_type_status = TRIAL_TYPE_NULL;   // Only trial handler can change trial status. 
 
@@ -24,8 +26,10 @@ static ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand = N
 static bool connect_to_trial_hand(void);
 static bool connect_to_exp_envi_interf(void );
 
-bool create_exp_envi_handler_rt_thread(ExpEnviData *exp_envi_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
+bool create_exp_envi_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviData *exp_envi_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
 {
+	static_rt_tasks_data = rt_tasks_data;
+
 	exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
 	exp_envi_trial_type_status = TRIAL_TYPE_UNSPECIFIED; 
 
@@ -44,7 +48,7 @@ bool create_exp_envi_handler_rt_thread(ExpEnviData *exp_envi_data, Gui2ExpEnviHa
 	msgs_exp_envi_dur_hand_2_exp_envi_hand = allocate_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(msgs_exp_envi_dur_hand_2_exp_envi_hand);
 	msgs_exp_envi_hand_2_exp_envi_dur_hand = allocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand);
 
-	if(! create_exp_envi_duration_handler_rt_thread(msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_data->num_of_inp_comps))
+	if(! create_exp_envi_duration_handler_rt_thread(rt_tasks_data, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_data->num_of_inp_comps))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "create_exp_envi_duration_handler_rt_thread().");	
 
 	if (exp_envi_handler_rt_thread !=0)
@@ -66,11 +70,11 @@ static void *rt_exp_envi_handler(void *args)
         RTIME period;
 	unsigned int prev_time, curr_time;
 	TimeStamp curr_system_time;
-	if (! check_rt_task_specs_to_init(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_PERIOD))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(EXP_ENVI_HANDLER_TASK_NAME, EXP_ENVI_HANDLER_TASK_PRIORITY, EXP_ENVI_HANDLER_STACK_SIZE, EXP_ENVI_HANDLER_MSG_SIZE,EXP_ENVI_HANDLER_POLICY, 1 << ((EXP_ENVI_HANDLER_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+EXP_ENVI_HANDLER_CPU_THREAD_ID)))) {
 		print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_PERIOD, EXP_ENVI_HANDLER_POSITIVE_JITTER_THRES, EXP_ENVI_HANDLER_NEGATIVE_JITTER_THRES))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_PERIOD, EXP_ENVI_HANDLER_POSITIVE_JITTER_THRES, EXP_ENVI_HANDLER_NEGATIVE_JITTER_THRES))  {
 		print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
         period = nano2count(EXP_ENVI_HANDLER_PERIOD);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
@@ -84,9 +88,9 @@ static void *rt_exp_envi_handler(void *args)
 	{
         	rt_task_wait_period();
 		curr_time = rt_get_cpu_time_ns();
-		evaluate_and_save_jitter(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
+		evaluate_and_save_jitter(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, prev_time, curr_time);
 		prev_time = curr_time;
-		curr_system_time = shared_memory->rt_tasks_data.current_system_time;
+		curr_system_time = static_rt_tasks_data->current_system_time;
 		// routines
 		if (! handle_gui_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, static_msgs_gui_2_exp_envi_hand)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
@@ -97,7 +101,7 @@ static void *rt_exp_envi_handler(void *args)
 		if (! handle_exp_envi_dur_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_trial_hand))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
 		// routines	
-		evaluate_and_save_period_run_time(EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
+		evaluate_and_save_period_run_time(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);
@@ -114,7 +118,7 @@ static bool connect_to_exp_envi_interf(void )
 	msgs_exp_envi_hand_2_exp_envi_interf = allocate_shm_client_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf);
 	if (msgs_exp_envi_hand_2_exp_envi_interf == NULL)
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "msgs_exp_envi_hand_2_exp_envi_interf == NULL.");
-	if (!write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE, EXP_ENVI_COMP_NUM_NULL, 0))
+	if (!write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, static_rt_tasks_data->current_system_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE, EXP_ENVI_COMP_NUM_NULL, 0))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_exp_envi_interf", "write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer().");
 
 	while (1) 
@@ -156,7 +160,7 @@ static bool connect_to_trial_hand(void )
 					sleep(1);
 					if (msgs_exp_envi_hand_2_trial_hand == NULL)
 						return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "msgs_exp_envi_hand_2_trial_hand == NULL.");	
-					if (!write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, shared_memory->rt_tasks_data.current_system_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
+					if (!write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, static_rt_tasks_data->current_system_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
 						return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");	
 					print_message(INFO_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
 					return TRUE;		

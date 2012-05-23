@@ -2,11 +2,11 @@
 #define GUI_CAGE_INTERFACER_H
 
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/SharedMemory.h"
+#include "../../../../BlueSpike/RtTasksData.h"
 
 
 
-bool create_cage_interfacer_tab(GtkWidget *tabs);
+bool create_cage_interfacer_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data);
 
 
 #endif

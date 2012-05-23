@@ -1,6 +1,6 @@
 #include "Gui.h"
 
-void create_gui_handler(void)
+void create_gui_handler(RtTasksData *rt_tasks_data)
 {
 	GtkWidget *window, *vbox, *tabs;
 
@@ -19,7 +19,7 @@ void create_gui_handler(void)
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (tabs), GTK_POS_TOP);
         gtk_box_pack_start(GTK_BOX(vbox),tabs, TRUE, TRUE, 0);
 
-	if (!create_cage_interfacer_tab(tabs))
+	if (!create_cage_interfacer_tab(tabs, rt_tasks_data))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_exp_envi_handler_gui().");
 
 	gtk_widget_show_all(window);

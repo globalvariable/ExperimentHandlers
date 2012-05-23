@@ -3,11 +3,11 @@
 
 #include "../../../Library/Messages/Gui2ExpEnviHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/SharedMemory.h"
+#include "../../../../BlueSpike/RtTasksData.h"
 
 
 
-bool create_exp_envi_handler_tab(GtkWidget *tabs, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand);
+bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand);
 
 
 #endif

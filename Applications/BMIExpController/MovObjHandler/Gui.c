@@ -1,6 +1,6 @@
 #include "Gui.h"
 
-void create_gui_handler(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
+void create_gui_handler(RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
 {
 	GtkWidget *window, *vbox, *tabs;
 
@@ -19,7 +19,7 @@ void create_gui_handler(Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (tabs), GTK_POS_TOP);
         gtk_box_pack_start(GTK_BOX(vbox),tabs, TRUE, TRUE, 0);
 
-	if (!create_mov_obj_handler_tab(tabs, msgs_gui_2_mov_obj_hand))
+	if (!create_mov_obj_handler_tab(tabs, rt_tasks_data, msgs_gui_2_mov_obj_hand))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_mov_obj_handler_gui().");
 
 	gtk_widget_show_all(window);
