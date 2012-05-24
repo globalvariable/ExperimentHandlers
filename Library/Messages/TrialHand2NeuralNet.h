@@ -13,7 +13,7 @@ typedef unsigned int TrialHand2NeuralNetMsgAdditional;
 
 #define TRIAL_HAND_2_NEURAL_NET_MSG_NULL								0
 #define TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
-
+#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT				2
 
 
 #include <stdbool.h>
@@ -30,7 +30,8 @@ struct __TrialHand2NeuralNetMsgItem
 {
 	TimeStamp 								msg_time;		
 	TrialHand2NeuralNetMsgType				msg_type;
-	TrialHand2NeuralNetMsgAdditional			additional_data;
+	TrialHand2NeuralNetMsgAdditional			additional_data_0;
+	TrialHand2NeuralNetMsgAdditional			additional_data_1;
 };
 
 struct __TrialHand2NeuralNetMsg		// Requests to TrialControllers
@@ -50,7 +51,7 @@ TrialHand2NeuralNetMsg* deallocate_trial_hand_2_neural_net_msg_buffer(TrialHand2
 TrialHand2NeuralNetMsg* allocate_shm_server_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer);
 TrialHand2NeuralNetMsg* allocate_shm_client_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer);
 TrialHand2NeuralNetMsg* deallocate_shm_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer);
-bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data);
+bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data_0, TrialHand2NeuralNetMsgAdditional additional_data_1);
 bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* msg_buffer, TrialHand2NeuralNetMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

@@ -9,6 +9,10 @@ bool get_trial_hand_2_neural_net_msg_type_string(TrialHand2NeuralNetMsgType msg_
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE");
 			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_NEURAL_NET_MSG_NULL:
 			if (str != NULL)
@@ -74,14 +78,15 @@ TrialHand2NeuralNetMsg* deallocate_shm_trial_hand_2_neural_net_msg_buffer(TrialH
 	rtai_free(nam2num(TRIAL_HAND_2_NEURAL_NET_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data)
+bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data_0, TrialHand2NeuralNetMsgAdditional additional_data_1)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	TrialHand2NeuralNetMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data = additional_data;
+	buff[*idx].additional_data_0 = additional_data_0;
+	buff[*idx].additional_data_1 = additional_data_1;
 	if ((*idx + 1) == TRIAL_HAND_2_NEURAL_NET_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
