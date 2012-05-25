@@ -14,7 +14,8 @@ typedef unsigned int MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_NULL								0
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE						1
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST				2		// sends it out when the robot reached the threshold point.
-#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				3		// sends it out when the timeout after reaching to target appears
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST			3		// sends it out when the robot reached the threshold point.
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				4		// sends it out when the timeout after reaching to target appears
 
 
 #include <stdbool.h>

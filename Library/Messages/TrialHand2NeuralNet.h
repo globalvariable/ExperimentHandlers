@@ -13,8 +13,9 @@ typedef unsigned int TrialHand2NeuralNetMsgAdditional;
 
 #define TRIAL_HAND_2_NEURAL_NET_MSG_NULL								0
 #define TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
-#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT				2
-
+#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED				2
+#define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						3
+#define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					4
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

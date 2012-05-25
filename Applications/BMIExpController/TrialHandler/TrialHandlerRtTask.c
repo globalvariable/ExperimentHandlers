@@ -102,11 +102,11 @@ static void *rt_trial_handler(void *args)
 		// routines
 		if (!handle_gui_to_trial_handler_msg(static_trial_types_data, &trial_status, curr_system_time, static_msgs_gui_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
-		if (!handle_trial_dur_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, curr_system_time, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
+		if (!handle_trial_dur_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, curr_system_time, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
-		if (!handle_exp_envi_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, curr_system_time, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
+		if (!handle_exp_envi_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, &trial_status, curr_system_time, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
-		if (!handle_mov_obj_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, static_trial_stats_data, &trial_status, curr_system_time, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand))  {
+		if (!handle_mov_obj_handler_to_trial_handler_msg(static_trial_types_data, static_trials_history, static_trial_stats_data, &trial_status, curr_system_time, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		

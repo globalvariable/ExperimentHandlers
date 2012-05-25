@@ -18,6 +18,7 @@ bool handle_trial_handler_duration(TrialDurationStatus *trial_duration_status, T
 			}	
 			break;	// do nothing
 		default: 
+			get_trial_dur_status_type_string(*trial_duration_status, str_dur_status);  
 			return print_message(BUG_MSG ,"TrialHandler", "HandleTrialHandDur", "handle_trial_handler_duration", str_dur_status);		
 	}
 	return TRUE;

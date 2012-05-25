@@ -21,7 +21,7 @@ typedef struct __TrialStatusEvents TrialStatusEvents;
 
 struct __TrialStatusEventItem
 {
-	TimeStamp	trial_status_start_time;   
+	TimeStamp	status_start_time;   
 	TrialStatus	trial_status;	// this is set before trial start during simulations. behaviors determines this during in vivo experiments.
 	TrialType		trial_type;	// left, right, tracjectroy right etc. 
 };
@@ -38,6 +38,6 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str);   /
 
 TrialStatusEvents* allocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events, unsigned int buffer_size, TimeStamp status_change_latency);
 TrialStatusEvents* deallocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events);
-void write_to_trial_status_events_buffer(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status, TrialType trial_type);   // it can have multiple readers. so no read_idx defined.
+void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status, TrialType trial_type);   // it can have multiple readers. so no read_idx defined.
 bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem **event_item);
 #endif

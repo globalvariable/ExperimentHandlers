@@ -57,12 +57,12 @@ TrialStatusEvents* deallocate_trial_status_events_buffer(TrialStatusEvents* tria
 	print_message(INFO_MSG ,"ExperimentHandlers", "TrialStatus", "allocate_trial_status_events", "Destroyed trial_status_events.");
 	return NULL;
 }
-void write_to_trial_status_events_buffer(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status, TrialType trial_type)   // it can have multiple readers. so no read_idx defined.
+void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status, TrialType trial_type)   // it can have multiple readers. so no read_idx defined.
 {
 	unsigned int *idx;
 	idx = &(trial_status_events->buff_write_idx);
 	TrialStatusEventItem *buff = trial_status_events->buff;
-	buff[*idx].trial_status_start_time = trial_status_start_time + trial_status_events->status_change_latency;
+	buff[*idx].status_start_time = trial_status_start_time + trial_status_events->status_change_latency;
 	buff[*idx].trial_status = trial_status;
 	buff[*idx].trial_type = trial_type;
 	if ((*idx + 1) == trial_status_events->buffer_size)

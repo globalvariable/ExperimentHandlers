@@ -9,9 +9,17 @@ bool get_trial_hand_2_neural_net_msg_type_string(TrialHand2NeuralNetMsgType msg_
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE");
 			return TRUE;
-		case TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT:
+		case TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED:
 			if (str != NULL)
- 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_EVENT");
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED");
+			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN");
+			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN");
 			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_NEURAL_NET_MSG_NULL:
