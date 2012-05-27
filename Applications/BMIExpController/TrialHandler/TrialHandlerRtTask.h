@@ -19,6 +19,8 @@
 #include "../../../Library/Messages/TrialHand2MovObjHand.h"
 #include "../../../Library/Messages/TrialHand2NeuralNet.h"
 #include "../../../Library/Messages/NeuralNet2TrialHand.h"
+#include "../../../Library/Messages/TrialHand2SpikeGen.h"
+#include "../../../Library/Messages/SpikeGen2TrialHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"

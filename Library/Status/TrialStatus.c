@@ -82,4 +82,10 @@ bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_ev
 		(*read_idx)++;
 	return TRUE;
 }
-
+TrialStatusEventItem get_last_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events)
+{
+	if  (trial_status_events->buff_write_idx == 0)
+		return trial_status_events->buff[trial_status_events->buffer_size-1];
+	else
+		return trial_status_events->buff[trial_status_events->buff_write_idx-1];
+}

@@ -1,7 +1,7 @@
 #ifndef TRIAL_HAND_2_NEURAL_NET_H
 #define TRIAL_HAND_2_NEURAL_NET_H
 
-//  MESSAGES FROM MOV OBJ HANDLER TO NEURAL NET
+//  MESSAGES FROM TRIAL HANDLER TO NEURAL NET
 
 typedef struct __TrialHand2NeuralNetMsg TrialHand2NeuralNetMsg;
 typedef struct __TrialHand2NeuralNetMsgItem TrialHand2NeuralNetMsgItem;
