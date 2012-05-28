@@ -23,7 +23,7 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 	char str_mov_obj_hand_2_mov_obj_interf_msg[MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_STRING_LENGTH];
 	char str_direction_type[MOV_OBJ_DIRECTION_TYPE_MAX_STRING_LENGTH];	
 
-	mov_obj_rs232_tx.command.all_command = 0;
+//	mov_obj_rs232_tx.command.all_command = 0;
 
 	while (get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(msgs_mov_obj_hand_2_mov_obj_interf, &msg_item))
 	{

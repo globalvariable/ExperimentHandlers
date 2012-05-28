@@ -28,6 +28,8 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
 
 	exp_envi_rs232_tx.command.ResetTrial = 0;  /// commands should be saved through periods except ResetTrial
+	exp_envi_rs232_tx.command.OpenValve = 0;  /// commands should be saved through periods except OpenValve
+	exp_envi_rs232_tx.command.Buzzer = 0;  /// commands should be saved through periods except Buzzer
 
 	while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
 	{

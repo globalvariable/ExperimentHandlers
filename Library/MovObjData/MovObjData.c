@@ -62,6 +62,7 @@ bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_ty
 	data->comp_types[data->num_of_comps].comp_constraints.stay_at_start_duration = stay_at_start_duration;
 	data->comp_types[data->num_of_comps].comp_constraints.stay_at_target_duration = stay_at_target_duration;
 	data->comp_types[data->num_of_comps].comp_constraints.initial_threshold = initial_threshold;
+	data->comp_types[data->num_of_comps].comp_constraints.current_threshold = initial_threshold;
 	data->comp_types[data->num_of_comps].comp_constraints.threshold_increment_amount = threshold_increment_amount;
 	data->num_of_comps++;
 	print_message(INFO_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", temp);	
@@ -91,6 +92,7 @@ bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_sta
 	data->glo_constraints.stay_at_start_duration = stay_at_start_duration;
 	data->glo_constraints.stay_at_target_duration = stay_at_target_duration;
 	data->glo_constraints.initial_threshold = initial_threshold;
+	data->glo_constraints.current_threshold = initial_threshold;
 	data->glo_constraints.threshold_increment_amount = threshold_increment_amount;	
 	data->glo_constraints.target_location = target_location;	
 	return TRUE;
