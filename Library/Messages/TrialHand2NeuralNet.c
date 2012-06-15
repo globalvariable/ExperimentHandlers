@@ -64,6 +64,7 @@ TrialHand2NeuralNetMsg* allocate_shm_server_trial_hand_2_neural_net_msg_buffer(T
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(TRIAL_HAND_2_NEURAL_NET_SHM_NAME), sizeof(TrialHand2NeuralNetMsg));
+	memset(msg_buffer, 0, sizeof(TrialHand2NeuralNetMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "TrialHand2NeuralNet", "allocate_shm_server_trial_hand_2_neural_net_msg_buffer", "Created shm_server_trial_hand_2_neural_net_msg_buffer.");
 	return msg_buffer;	
 }

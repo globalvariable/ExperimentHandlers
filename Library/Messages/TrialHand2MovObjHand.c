@@ -63,6 +63,7 @@ TrialHand2MovObjHandMsg* allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffe
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(TRIAL_HAND_2_MOV_OBJ_HAND_SHM_NAME), sizeof(TrialHand2MovObjHandMsg));
+	memset(msg_buffer, 0, sizeof(TrialHand2MovObjHandMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "TrialHand2MovObjHand", "allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer", "Created shm_server_trial_hand_2_mov_obj_hand_msg_buffer.");
 	return msg_buffer;	
 }

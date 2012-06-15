@@ -55,6 +55,7 @@ MovObjInterf2MovObjHandMsg* allocate_shm_server_mov_obj_interf_2_mov_obj_hand_ms
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(MOV_OBJ_INTERF_2_MOV_OBJ_HAND_SHM_NAME), sizeof(MovObjInterf2MovObjHandMsg));
+	memset(msg_buffer, 0, sizeof(MovObjInterf2MovObjHandMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "MovObjInterf2MovObjHand", "allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer", "Created shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer.");
 	return msg_buffer;	
 }

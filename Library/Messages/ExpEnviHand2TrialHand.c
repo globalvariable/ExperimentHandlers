@@ -56,6 +56,7 @@ ExpEnviHand2TrialHandMsg* allocate_shm_server_exp_envi_hand_2_trial_hand_msg_buf
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(EXP_ENVI_HAND_2_TRIAL_HAND_SHM_NAME), sizeof(ExpEnviHand2TrialHandMsg));
+	memset(msg_buffer, 0, sizeof(ExpEnviHand2TrialHandMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviHand2TrialHand", "allocate_shm_server_exp_envi_hand_2_trial_hand_msg_buffer", "Created shm_server_exp_envi_hand_2_trial_hand_msg_buffer.");
 	return msg_buffer;	
 }

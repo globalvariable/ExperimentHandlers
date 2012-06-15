@@ -52,6 +52,7 @@ MovObjHand2NeuralNetMsg* allocate_shm_server_mov_obj_hand_2_neural_net_msg_buffe
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(MOV_OBJ_HAND_2_NEURAL_NET_SHM_NAME), sizeof(MovObjHand2NeuralNetMsg));
+	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "MovObjHand2NeuralNet", "allocate_shm_server_mov_obj_hand_2_neural_net_msg_buffer", "Created shm_server_mov_obj_hand_2_neural_net_msg_buffer.");
 	return msg_buffer;	
 }

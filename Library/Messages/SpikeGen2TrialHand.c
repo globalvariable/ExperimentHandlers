@@ -51,6 +51,7 @@ SpikeGen2TrialHandMsg* allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(Spi
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(SPIKE_GEN_2_TRIAL_HAND_SHM_NAME), sizeof(SpikeGen2TrialHandMsg));
+	memset(msg_buffer, 0, sizeof(SpikeGen2TrialHandMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "SpikeGen2TrialHand", "allocate_shm_server_spike_gen_2_trial_hand_msg_buffer", "Created shm_server_spike_gen_2_trial_hand_msg_buffer.");
 	return msg_buffer;	
 }

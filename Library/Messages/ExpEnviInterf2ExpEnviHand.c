@@ -59,6 +59,7 @@ ExpEnviInterf2ExpEnviHandMsg* allocate_shm_server_exp_envi_interf_2_exp_envi_han
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(EXP_ENVI_INTERF_2_EXP_ENVI_HAND_SHM_NAME), sizeof(ExpEnviInterf2ExpEnviHandMsg));
+	memset(msg_buffer, 0, sizeof(ExpEnviInterf2ExpEnviHandMsg));
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviInterf2ExpEnviHand", "allocate_shm_server_exp_envi_interf_2_exp_envi_hand_msg_buffer", "Created shm_server_exp_envi_interf_2_exp_envi_hand_msg_buffer.");
 	return msg_buffer;	
 }
