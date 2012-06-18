@@ -53,11 +53,11 @@ static void *rt_cage_interfacer(void *args)
 	char rx_buff[RX_BUFF_LEN];
 	char tx_buff[TX_BUFF_LEN];	
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_PERIOD))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID,  FIRST_BMI_CAGE_INTERF_PERIOD))  {
 		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! check_rt_task_specs_to_init()."); exit(1); }	
-        if (! (handler = rt_task_init_schmod(FIRST_BMI_CAGE_INTERF_TASK_NAME, FIRST_BMI_CAGE_INTERF_TASK_PRIORITY, FIRST_BMI_CAGE_INTERF_STACK_SIZE, FIRST_BMI_CAGE_INTERF_MSG_SIZE,FIRST_BMI_CAGE_INTERF_POLICY, 1 << ((FIRST_BMI_CAGE_INTERF_CPU_ID*MAX_NUM_OF_THREADS_PER_CPU)+FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID)))) {
+        if (! (handler = rt_task_init_schmod(FIRST_BMI_CAGE_INTERF_TASK_NAME, FIRST_BMI_CAGE_INTERF_TASK_PRIORITY, FIRST_BMI_CAGE_INTERF_STACK_SIZE, FIRST_BMI_CAGE_INTERF_MSG_SIZE,FIRST_BMI_CAGE_INTERF_POLICY, 1 << ((FIRST_BMI_CAGE_INTERF_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID)))) {
 		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_PERIOD, FIRST_BMI_CAGE_INTERF_POSITIVE_JITTER_THRES, FIRST_BMI_CAGE_INTERF_NEGATIVE_JITTER_THRES))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, FIRST_BMI_CAGE_INTERF_PERIOD, FIRST_BMI_CAGE_INTERF_POSITIVE_JITTER_THRES, FIRST_BMI_CAGE_INTERF_NEGATIVE_JITTER_THRES, "FirstBMICageInterfacer"))  {
 		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
         period = nano2count(FIRST_BMI_CAGE_INTERF_PERIOD);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
@@ -79,10 +79,10 @@ static void *rt_cage_interfacer(void *args)
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_hand_2_mov_obj_interf_msgs()."); break; }	
 		if (! write_to_rs232_com1(tx_buff, TX_BUFF_LEN)) {
 			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! write_to_rs232_com1()."); break; }	
-		evaluate_and_save_period_run_time(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, curr_time, rt_get_cpu_time_ns());		
+		evaluate_and_save_period_run_time(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		
         	rt_task_wait_period();
 		curr_time = rt_get_cpu_time_ns();
-		evaluate_and_save_jitter(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, prev_time, curr_time);
+		evaluate_and_save_jitter(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, prev_time, curr_time);
 		prev_time = curr_time;
 		curr_system_time = static_rt_tasks_data->current_system_time;
 		if (! read_from_rs232_com1(rx_buff, RX_BUFF_LEN))  {
