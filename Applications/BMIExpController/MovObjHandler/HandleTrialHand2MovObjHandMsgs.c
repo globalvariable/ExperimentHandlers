@@ -82,8 +82,11 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 						print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);	
 						get_mov_obj_status_type_string(*mov_obj_status, str_mov_obj_status);   
 						return print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_mov_obj_status);	
-					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
+					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL: 
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL;	  // handle_mov_obj_handler_status handles robot to convenient target. 
+						// cancel binning timer for sending commands to interfacer
+						if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER, mov_obj_data->glo_constraints.stay_at_target_duration + current_time))
+							return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
 						break;
 					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:
 						print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);	

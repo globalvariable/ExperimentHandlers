@@ -12,8 +12,7 @@ typedef unsigned int NeuralNet2MovObjHandMsgType;
 
 #define NEURAL_NET_2_MOV_OBJ_HAND_MSG_NULL							0
 #define NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE						1
-#define NEURAL_NET_2_MOV_OBJ_HAND_MSG_DIRECTION_SPEED_LOCATION		2
-
+#define NEURAL_NET_2_MOV_OBJ_HAND_MSG_SPIKE_OUTPUT					2
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
@@ -31,19 +30,20 @@ typedef unsigned int NeuralNet2MovObjHandMsgType;
 
 struct __NeuralNet2MovObjHandMsgItem
 {
-	TimeStamp 								msg_time;		
-	NeuralNet2MovObjHandMsgType				msg_type;
-	MovObjCompNum							comp_num;
-	MovObjDirectionType						direction;
-	MovObjSpeedType							speed;
-	MovObjLocationType						location;
+	TimeStamp 					msg_time;		
+	NeuralNet2MovObjHandMsgType	msg_type;
+	unsigned int					layer_num;
+	unsigned int					nrn_grp_num;
+	unsigned int					neuron_num;
+	TimeStamp 					spike_time;		
 };
 
 struct __NeuralNet2MovObjHandMsg		// Requests to TrialControllers
 {
-	NeuralNet2MovObjHandMsgItem		buff[NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE];
-	unsigned int						buff_write_idx;	// only one message sender can write into this buffer and edit this write index
-	unsigned int						buff_read_idx;	// only one request handler can edit this read index
+	pthread_mutex_t 				mutex;		// otherwise multiple thread of SNN simulator can corrupt this data
+	NeuralNet2MovObjHandMsgItem	buff[NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE];
+	unsigned int					buff_write_idx;	// only one message sender can write into this buffer and edit this write index
+	unsigned int					buff_read_idx;	// only one request handler can edit this read index
 };
 
 bool get_neural_net_2_mov_obj_hand_msg_type_string(NeuralNet2MovObjHandMsgType msg_type, char *str);
@@ -56,7 +56,7 @@ NeuralNet2MovObjHandMsg* deallocate_neural_net_2_mov_obj_hand_msg_buffer(NeuralN
 NeuralNet2MovObjHandMsg* allocate_shm_server_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer);
 NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer);
 NeuralNet2MovObjHandMsg* deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer);
-bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location);
+bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, unsigned int layer_num, unsigned int nrn_grp_num, unsigned int neuron_num, TimeStamp spike_time);
 bool get_next_neural_net_2_mov_obj_hand_msg_buffer_item(NeuralNet2MovObjHandMsg* msg_buffer, NeuralNet2MovObjHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

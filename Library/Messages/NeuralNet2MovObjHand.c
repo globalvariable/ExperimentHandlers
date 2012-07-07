@@ -8,9 +8,9 @@ bool get_neural_net_2_mov_obj_hand_msg_type_string(NeuralNet2MovObjHandMsgType m
 			if (str != NULL)
  				strcpy(str, "NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE");
 			return TRUE;
-		case NEURAL_NET_2_MOV_OBJ_HAND_MSG_DIRECTION_SPEED_LOCATION:
+		case NEURAL_NET_2_MOV_OBJ_HAND_MSG_SPIKE_OUTPUT:
 			if (str != NULL)
- 				strcpy(str, "NEURAL_NET_2_MOV_OBJ_HAND_MSG_DIRECTION_SPEED_LOCATION");
+ 				strcpy(str, "NEURAL_NET_2_MOV_OBJ_HAND_MSG_SPIKE_OUTPUT");
 			return TRUE;
 /////////////////////////		
 		case NEURAL_NET_2_MOV_OBJ_HAND_MSG_NULL:
@@ -34,6 +34,7 @@ NeuralNet2MovObjHandMsg* allocate_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet
 		return msg_buffer;
 	}  
 	msg_buffer = g_new0(NeuralNet2MovObjHandMsg,1);
+	pthread_mutex_init(&(msg_buffer->mutex), NULL);
 	print_message(INFO_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "allocate_neural_net_2_mov_obj_hand_msg_buffer", "Created neural_net_2_mov_obj_hand_msg_buffer.");
 	return msg_buffer;	
 }
@@ -78,21 +79,23 @@ NeuralNet2MovObjHandMsg* deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer(Neu
 	rtai_free(nam2num(NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME), msg_buffer);	
 	return NULL;
 }
-bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location)
+bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, unsigned int layer_num, unsigned int nrn_grp_num, unsigned int neuron_num, TimeStamp spike_time)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	NeuralNet2MovObjHandMsgItem *buff = msg_buffer->buff;
+
+	pthread_mutex_lock(&(msg_buffer->mutex));
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].comp_num = comp_num;
-	buff[*idx].direction = direction;
-	buff[*idx].speed = speed;
-	buff[*idx].location = location;
+	buff[*idx].layer_num = layer_num;
+	buff[*idx].nrn_grp_num = nrn_grp_num;
+	buff[*idx].neuron_num = neuron_num;
 	if ((*idx + 1) == NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
 		(*idx)++;
+	pthread_mutex_unlock(&(msg_buffer->mutex));
 	if (*idx == msg_buffer->buff_read_idx)
 		return print_message(BUG_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "write_to_neural_net_2_mov_obj_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;

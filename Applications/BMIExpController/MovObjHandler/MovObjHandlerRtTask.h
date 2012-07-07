@@ -25,6 +25,7 @@
 #include "HandleMovObjInterf2MovObjHandMsgs.h"
 #include "HandleMovObjHandStatus.h"
 #include "HandleNeuralNet2MovObjHandMsgs.h"
+#include "HandleSpikeDataBuff.h"
 
 bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand);
 bool kill_mov_obj_handler_rt_thread(void);
