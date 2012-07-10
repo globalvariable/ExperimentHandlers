@@ -1,9 +1,7 @@
 #include "FirstBMICageInterfacerRtTask.h"
 
-#define RX_BUFF_LEN		3
-#define TX_BUFF_LEN		2
-
 static RtTasksData *static_rt_tasks_data = NULL;
+static RS232Data *static_rs_232_data = NULL;
 
 static int cage_interfacer_rt_thread = 0;
 static bool rt_cage_interfacer_stay_alive = 1;
@@ -16,20 +14,31 @@ static ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand = NULL
 static MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf = NULL;
 static MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand = NULL;
 
+static RS232Hand2RS232DurHandMsg *msgs_rs232_hand_2_rs232_dur_hand = NULL;
+static RS232DurHand2RS232HandMsg *msgs_rs232_dur_hand_2_rs232_hand = NULL;
+
 static bool connect_to_exp_envi_hand(void);
 static bool connect_to_mov_obj_hand(void);
 
-bool create_cage_interfacer_rt_thread(RtTasksData *rt_tasks_data)
+bool create_cage_interfacer_rt_thread(RtTasksData *rt_tasks_data, RS232Data *rs_232_data)
 {
 	static_rt_tasks_data = rt_tasks_data;
+	static_rs_232_data = rs_232_data;
 
 	msgs_exp_envi_hand_2_exp_envi_interf = allocate_shm_server_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf);
 	msgs_mov_obj_hand_2_mov_obj_interf = allocate_shm_server_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf);
 
+	msgs_rs232_hand_2_rs232_dur_hand = allocate_rs232_hand_2_rs232_dur_hand_msg_buffer(msgs_rs232_hand_2_rs232_dur_hand);
+	msgs_rs232_dur_hand_2_rs232_hand = allocate_rs232_dur_hand_2_rs232_hand_msg_buffer(msgs_rs232_dur_hand_2_rs232_hand);
+
+
+	if (! create_rs232_duration_handler_data(rs_232_data->num_of_comps))
+		return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "! create_rs232_duration_handler_data().");	
+
 	if (! connect_to_exp_envi_hand())
-		return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "connect_to_exp_envi_hand().");	
+		return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "! connect_to_exp_envi_hand().");	
 	if (! connect_to_mov_obj_hand())
-		return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "connect_to_exp_envi_hand().");	
+		return print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "! connect_to_exp_envi_hand().");	
 
 	if (cage_interfacer_rt_thread != 0)
 		return print_message(BUG_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "create_cage_interfacer_rt_thread", "CANNOT create rt_thread again.");	
@@ -48,10 +57,8 @@ static void *rt_cage_interfacer(void *args)
 {
 	RT_TASK *handler;
         RTIME period;
-	unsigned int prev_time, curr_time, i;
+	unsigned int prev_time, curr_time;
 	TimeStamp curr_system_time;
-	char rx_buff[RX_BUFF_LEN];
-	char tx_buff[TX_BUFF_LEN];	
 
 	if (! check_rt_task_specs_to_init(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID,  FIRST_BMI_CAGE_INTERF_PERIOD))  {
 		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! check_rt_task_specs_to_init()."); exit(1); }	
@@ -69,28 +76,25 @@ static void *rt_cage_interfacer(void *args)
 	curr_time = rt_get_cpu_time_ns();
 	prev_time = curr_time;	
 	curr_system_time = static_rt_tasks_data->current_system_time;
+
+	if (!write_to_rs232_hand_2_rs232_dur_hand_msg_buffer(msgs_rs232_hand_2_rs232_dur_hand, curr_system_time, RS232_HAND_2_RS232_DUR_HAND_MSG_ENABLE_TX_TIMER, 0, static_rs_232_data->comp_data[0].tx_period+curr_system_time))  {
+		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "HandleRS232DurHand2RS232HandMsgs", "handle_rs232_dur_handler_to_rs232_handler_msgs", "! write_to_rs232_hand_2_rs232_dur_hand_msg_buffer().");exit(1); }	
+
         while (rt_cage_interfacer_stay_alive) 
 	{
-		// routines
-		for (i = 0; i < TX_BUFF_LEN; i++)  tx_buff[i] = 0;
-		if (! handle_exp_envi_hand_2_exp_envi_interf_msgs(msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_interf_2_exp_envi_hand, tx_buff)) {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_exp_envi_hand_2_exp_envi_interf_msgs()."); break; }	
-		if (! handle_mov_obj_hand_2_mov_obj_interf_msgs(msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_interf_2_mov_obj_hand, tx_buff)) {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_hand_2_mov_obj_interf_msgs()."); break; }	
-		if (! write_to_rs232_com1(tx_buff, TX_BUFF_LEN)) {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! write_to_rs232_com1()."); break; }	
-		evaluate_and_save_period_run_time(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		
         	rt_task_wait_period();
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, prev_time, curr_time);
 		prev_time = curr_time;
 		curr_system_time = static_rt_tasks_data->current_system_time;
-		if (! read_from_rs232_com1(rx_buff, RX_BUFF_LEN))  {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! read_from_rs232_com1().");  break; }	
-		if (! handle_exp_envi_interf_2_exp_envi_hand_msgs(rx_buff, msgs_exp_envi_interf_2_exp_envi_hand, curr_system_time)) {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_exp_envi_interf_2_exp_envi_hand_msgs()."); break; }	
-		if (! handle_mov_obj_interf_2_mov_obj_hand_msgs(rx_buff, msgs_mov_obj_interf_2_mov_obj_hand, curr_system_time)) {
-			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_mov_obj_interf_2_mov_obj_hand_msgs()."); break; }	
+		// routines
+		if (! handle_rs232_duration_handler(curr_system_time, msgs_rs232_dur_hand_2_rs232_hand)) {
+			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_rs232_handler_duration()."); break; }	
+		if (! handle_rs232_handler_to_rs232_dur_handler_msgs(static_rs_232_data, curr_system_time, msgs_rs232_dur_hand_2_rs232_hand, msgs_rs232_hand_2_rs232_dur_hand)) {
+			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_rs232_handler_to_rs232_dur_handler_msgs()."); break; }	
+		if (! handle_rs232_dur_hand_to_rs232_hand_msgs(static_rs_232_data, curr_system_time, msgs_exp_envi_hand_2_exp_envi_interf, msgs_exp_envi_interf_2_exp_envi_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_interf_2_mov_obj_hand, msgs_rs232_dur_hand_2_rs232_hand, msgs_rs232_hand_2_rs232_dur_hand)) {
+			print_message(ERROR_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "rt_cage_interfacer", "! handle_rs232_dur_handler_to_rs232_handler_msgs()."); break; }	
+		evaluate_and_save_period_run_time(static_rt_tasks_data, FIRST_BMI_CAGE_INTERF_CPU_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_ID, FIRST_BMI_CAGE_INTERF_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		
 		// routines	
         }
 	rt_make_soft_real_time();

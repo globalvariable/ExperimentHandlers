@@ -171,8 +171,8 @@ ExpEnviHandler/HandleExpEnviHandDur.o: ExpEnviHandler/HandleExpEnviHandDur.c
 
 ############## MOV_OBJ_HANDLER ############## 
 
-MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o MovObjHandler/HandleMovObjHandDur.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o MovObjHandler/HandleMovObjHandStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/MovObjDurationHandlerRtTask.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o MovObjHandler/HandleMovObjHandDur.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o MovObjHandler/HandleMovObjHandStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ### MovObjHandler
+MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/MovObjHand2MovObjInterf.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ### MovObjHandler
 
 MovObjHandler/Gui.o: MovObjHandler/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/Gui
@@ -182,9 +182,6 @@ MovObjHandler/MovObjHandlerRtTask.o: MovObjHandler/MovObjHandlerRtTask.c
 
 MovObjHandler/GuiMovObjHandler.o: MovObjHandler/GuiMovObjHandler.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/GuiMovObjHandler
-
-MovObjHandler/MovObjDurationHandlerRtTask.o: MovObjHandler/MovObjDurationHandlerRtTask.c 
-	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/MovObjDurationHandlerRtTask
 
 MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o: MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs
@@ -200,12 +197,6 @@ MovObjHandler/HandleMovObjInterf2MovObjHandMsgs.o: MovObjHandler/HandleMovObjInt
 
 MovObjHandler/HandleGui2MovObjHandMsgs.o: MovObjHandler/HandleGui2MovObjHandMsgs.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleGui2MovObjHandMsgs
-
-MovObjHandler/HandleMovObjHandDur.o: MovObjHandler/HandleMovObjHandDur.c
-	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjHandDur
-
-MovObjHandler/HandleMovObjHandStatus.o: MovObjHandler/HandleMovObjHandStatus.c
-	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleMovObjHandStatus
 
 MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o: MovObjHandler/HandleNeuralNet2MovObjHandMsgs.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o
@@ -257,8 +248,8 @@ MovObjHandler/HandleSpikeDataBuff.o: MovObjHandler/HandleSpikeDataBuff.c
 
 ############## FIRST_BMI_CAGE_INTERFACER ############## 
 
-FirstBMICageInterfacer/FirstBMICageInterfacer: FirstBMICageInterfacer/FirstBMICageInterfacer.c FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o ../../Library/Messages/ExpEnviInterf2ExpEnviHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/MovObjData/MovObjDirectionTypes.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o ../../Library/Messages/ExpEnviInterf2ExpEnviHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/MovObjData/MovObjDirectionTypes.o ### FirstBMICageInterfacer
+FirstBMICageInterfacer/FirstBMICageInterfacer: FirstBMICageInterfacer/FirstBMICageInterfacer.c FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o ../../Library/Messages/ExpEnviInterf2ExpEnviHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/MovObjData/MovObjDirectionTypes.o ../../Library/RS232/RS232Data.o FirstBMICageInterfacer/HandleRS232Hand2RS232DurHandMsgs.o FirstBMICageInterfacer/HandleRS232DurHand2RS232HandMsgs.o ../../Library/Messages/RS232Hand2RS232DurHand.o ../../Library/Messages/RS232DurHand2RS232Hand.o ../../Library/Status/RS232DurStatus.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< FirstBMICageInterfacer/Gui.o ../../../BlueSpike/Library/Misc/Misc.o FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o FirstBMICageInterfacer/GuiCageInterfacer.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Messages/ExpEnviHand2ExpEnviInterf.o ../../Library/Messages/MovObjHand2MovObjInterf.o ../../Library/RS232/RS232Handler.o FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o FirstBMICageInterfacer/HandleMovObjHand2MovObjInterfMsgs.o FirstBMICageInterfacer/HandleExpEnviInterf2ExpEnviHandMsgs.o FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o ../../Library/Messages/ExpEnviInterf2ExpEnviHand.o ../../Library/Messages/MovObjInterf2MovObjHand.o ../../Library/MovObjData/MovObjDirectionTypes.o ../../Library/RS232/RS232Data.o FirstBMICageInterfacer/HandleRS232Hand2RS232DurHandMsgs.o FirstBMICageInterfacer/HandleRS232DurHand2RS232HandMsgs.o ../../Library/Messages/RS232Hand2RS232DurHand.o ../../Library/Messages/RS232DurHand2RS232Hand.o ../../Library/Status/RS232DurStatus.o ### FirstBMICageInterfacer
 
 FirstBMICageInterfacer/Gui.o: FirstBMICageInterfacer/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/Gui
@@ -268,6 +259,12 @@ FirstBMICageInterfacer/FirstBMICageInterfacerRtTask.o: FirstBMICageInterfacer/Fi
 
 FirstBMICageInterfacer/GuiCageInterfacer.o: FirstBMICageInterfacer/GuiCageInterfacer.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/GuiCageInterfacer
+
+FirstBMICageInterfacer/HandleRS232Hand2RS232DurHandMsgs.o: FirstBMICageInterfacer/HandleRS232Hand2RS232DurHandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleRS232Hand2RS232DurHandMsgs
+
+FirstBMICageInterfacer/HandleRS232DurHand2RS232HandMsgs.o: FirstBMICageInterfacer/HandleRS232DurHand2RS232HandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleRS232DurHand2RS232HandMsgs
 
 FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.o: FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### FirstBMICageInterfacer/HandleExpEnviHand2ExpEnviInterfMsgs
@@ -287,11 +284,23 @@ FirstBMICageInterfacer/HandleMovObjInterf2MovObjHandMsgs.o: FirstBMICageInterfac
 ../../Library/Messages/MovObjHand2MovObjInterf.o: ../../Library/Messages/MovObjHand2MovObjInterf.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/MovObjHand2MovObjInterf
 
+../../Library/Messages/RS232Hand2RS232DurHand.o: ../../Library/Messages/RS232Hand2RS232DurHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/RS232Hand2RS232DurHand
+
+../../Library/Messages/RS232DurHand2RS232Hand.o: ../../Library/Messages/RS232DurHand2RS232Hand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/RS232DurHand2RS232Hand
+
 ../../Library/RS232/RS232Handler.o: ../../Library/RS232/RS232Handler.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/RS232/RS232Handler
 
+../../Library/RS232/RS232Data.o: ../../Library/RS232/RS232Data.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/RS232/RS232Data
+
+../../Library/Status/RS232DurStatus.o: ../../Library/Status/RS232DurStatus.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/RS232DurStatus
+
 clean:
-	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o FirstBMICageInterfacer/FirstBMICageInterfacer FirstBMICageInterfacer/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o ../../Library/RS232/*.o ../../Library/ExpEnviData/*.o ../../Library/MovObjData/*.o ../../../IzNeuronSimulators/Library/SpikeData/*.o
+	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o FirstBMICageInterfacer/FirstBMICageInterfacer FirstBMICageInterfacer/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o ../../Library/RS232/*.o ../../Library/ExpEnviData/*.o ../../Library/MovObjData/*.o ../../../IzNeuronSimulators/Library/SpikeData/*.o 
 
 .PHONY: clean
 

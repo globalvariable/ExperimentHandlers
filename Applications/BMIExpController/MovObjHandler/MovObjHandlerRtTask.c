@@ -28,9 +28,6 @@ static NeuralNet2MovObjHandMsg *msgs_neural_net_2_mov_obj_hand = NULL;
 
 static SpikeData *scheduled_spike_data = NULL;
 
-static unsigned int left_layer_spike_counter = 0;
-static unsigned int right_layer_spike_counter = 0;
-
 static bool connect_to_trial_hand(void);
 static bool connect_to_neural_net(void);
 static bool connect_to_mov_obj_interf(void );
@@ -60,9 +57,6 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mo
 	msgs_mov_obj_hand_2_mov_obj_dur_hand = allocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand);
 
 	scheduled_spike_data = allocate_spike_data(scheduled_spike_data, NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE);
-
-	if(! create_mov_obj_duration_handler_rt_thread(static_rt_tasks_data, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand))
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "create_mov_obj_duration_handler_rt_thread().");	
 
 	if (mov_obj_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -111,14 +105,15 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
 		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }
-		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, &left_layer_spike_counter, &right_layer_spike_counter, msgs_mov_obj_hand_2_mov_obj_interf))  {
-			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }
-		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data, &left_layer_spike_counter, &right_layer_spike_counter ))  {
+		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data ))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_spike_data_buff()."); break; }
-		/// finally handle according to status. it tells the last word to interfacer
-		if (! handle_mov_obj_handler_status(mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_hand_2_mov_obj_interf)) {	
+		if (! handle_mov_obj_handler_to_mov_obj_dur_handler_msg(curr_system_time, msgs_mov_obj_hand_2_mov_obj_dur_hand)) {
+			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
+		if (! handle_mov_obj_handler_duration(curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
+			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
+		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

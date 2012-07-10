@@ -3,11 +3,13 @@
 
 #include "../../../Library/Status/MovObjDurStatus.h"
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
+#include "../../../Library/Messages/MovObjDurHand2MovObjHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/TimeStamp.h"
 
 
-bool handle_mov_obj_handler_to_mov_obj_dur_handler_msg(MovObjDurationStatus *mov_obj_dur_status, TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, TimeStamp handling_end_time);
+bool handle_mov_obj_handler_duration(TimeStamp current_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand);
+bool handle_mov_obj_handler_to_mov_obj_dur_handler_msg(TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand);
 
 
 

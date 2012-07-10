@@ -50,6 +50,8 @@ bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_ty
 	bool comp_type_used;
 	char temp[MOV_OBJ_COMPONENT_TYPE_MAX_STRING_LENGTH];
 	MovObjCompTypeData	*lcl_comp_types;
+	if (stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", "stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");	
 	if (!is_mov_obj_component_type_used(data, comp_type, &comp_type_used))
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", "! is_component_type_used()");	
 	if (comp_type_used)
@@ -94,6 +96,8 @@ bool is_mov_obj_component_type_used(MovObjData* data, MovObjCompType comp_type, 
 }
 bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_start_duration, TimeStamp stay_at_target_duration, MovObjLocationType initial_threshold, MovObjLocationType threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval)
 {
+	if (stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "set_global_constraints_mov_obj_data", "stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");	
 	data->glo_constraints.stay_at_start_duration = stay_at_start_duration;
 	data->glo_constraints.stay_at_target_duration = stay_at_target_duration;
 	data->glo_constraints.initial_threshold = initial_threshold;
