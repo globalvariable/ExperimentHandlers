@@ -18,7 +18,6 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 	{
 		if (item->peak_time < previous_system_time)
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
-		previous_system_time = current_time;
 		if (item->peak_time >= current_time)	
 			break;    
 
@@ -92,6 +91,7 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "Invalid Output Layer Number.");
 		}
 	}
+	previous_system_time = current_time;
 	return TRUE;
 }
 

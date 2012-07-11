@@ -91,6 +91,7 @@ bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_
 	buff[*idx].layer_num = layer_num;
 	buff[*idx].nrn_grp_num = nrn_grp_num;
 	buff[*idx].neuron_num = neuron_num;
+	buff[*idx].spike_time = spike_time;
 	if ((*idx + 1) == NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

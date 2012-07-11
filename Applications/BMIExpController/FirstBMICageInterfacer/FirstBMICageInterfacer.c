@@ -14,7 +14,7 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "! enable_rs232_com1_9600_baud().");
 
 	rs_232_data = allocate_rs232_data(rs_232_data);
-	if (! add_component_to_rs232_data(rs_232_data, 14000000, 10000000))   // 10 ms for TX, 5 ms for RX which is set by TX timeout.  // 4800 baud rate sends 5 byte data in 1 ms. So 5 ms seems secure. This leads 5 ms jittter in sending commands to motor controller. i.e. MovObjHandler sends every 100 ms, motor controller receives it every 100+-5 ms
+	if (! add_component_to_rs232_data(rs_232_data, 10000000, 8000000))   // 10 ms for TX, 5 ms for RX which is set by TX timeout.  // 4800 baud rate sends 5 byte data in 1 ms. So 5 ms seems secure. This leads 5 ms jittter in sending commands to motor controller. i.e. MovObjHandler sends every 100 ms, motor controller receives it every 100+-5 ms
 		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "! add_component_to_rs232_data().");
 	if(! create_cage_interfacer_rt_thread(rt_tasks_data, rs_232_data))
 		return print_message(ERROR_MSG ,"BMIExpController", "FirstBMICageManager", "main", "create_cage_interfacer_rt_thread().");
