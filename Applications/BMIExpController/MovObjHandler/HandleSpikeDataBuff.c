@@ -11,17 +11,23 @@ static unsigned int right_layer_spike_counter = 0;
 
 bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time, SpikeData *scheduled_spike_data)
 {
-	SpikeTimeStampItem item;
+	SpikeTimeStampItem *item;
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
+	unsigned int			*read_idx, write_idx, buffer_size;;
 
-	while (get_next_spike_data_item(scheduled_spike_data, &item))
+	read_idx = &(scheduled_spike_data->buff_idx_read);
+	write_idx = scheduled_spike_data->buff_idx_write;	
+	buffer_size = scheduled_spike_data->buffer_size;
+
+	while ((*read_idx) != write_idx)		
 	{
-		if (item.peak_time < previous_system_time)
-			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item.peak_time < previous_system_time.");    	
-		if (item.peak_time >= current_time)	
+		item = &(scheduled_spike_data->buff[*read_idx]);
+		if (item->peak_time < previous_system_time)
+			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+		if (item->peak_time >= current_time)	
 			break;    
 
-		switch (item.mwa_or_layer)
+		switch (item->mwa_or_layer)
 		{
 			case OUTPUT_LAYER_FOR_LEFT_MOVE:
 				switch (mov_obj_status)
@@ -90,6 +96,10 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			default:
 				return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "Invalid Output Layer Number.");
 		}
+		if ((*read_idx + 1) == buffer_size)
+			*read_idx = 0;
+		else
+			(*read_idx)++;
 	}
 	previous_system_time = current_time;
 	return TRUE;

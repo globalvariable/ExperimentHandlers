@@ -23,8 +23,8 @@ static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand = NULL;
 static MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand = NULL;
 static MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand = NULL;   
 
-static MovObjHand2NeuralNetMsg *msgs_mov_obj_hand_2_neural_net = NULL;
-static NeuralNet2MovObjHandMsg *msgs_neural_net_2_mov_obj_hand = NULL;
+static MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread = NULL;
+static NeuralNet2MovObjHandMsgMultiThread *msgs_neural_net_2_mov_obj_hand_multi_thread = NULL;
 
 static SpikeData *scheduled_spike_data = NULL;
 
@@ -44,7 +44,8 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mo
 
 	msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);
 	msgs_trial_hand_2_mov_obj_hand = allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand);
-	msgs_neural_net_2_mov_obj_hand = allocate_shm_server_neural_net_2_mov_obj_hand_msg_buffer(msgs_neural_net_2_mov_obj_hand);
+	msgs_neural_net_2_mov_obj_hand_multi_thread = allocate_shm_server_neural_net_2_mov_obj_hand_multi_thread_msg_buffer(msgs_neural_net_2_mov_obj_hand_multi_thread);
+	msgs_mov_obj_hand_2_neural_net_multi_thread = g_new0(MovObjHand2NeuralNetMsgMultiThread, 1); 
 
 	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_neural_net().");	
@@ -76,6 +77,7 @@ static void *rt_mov_obj_handler(void *args)
 	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time;
+	unsigned int i;
 	TimeStamp curr_system_time;
 	if (! check_rt_task_specs_to_init(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
@@ -97,6 +99,11 @@ static void *rt_mov_obj_handler(void *args)
 	msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_read_idx = msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	static_msgs_gui_2_mov_obj_hand->buff_read_idx = static_msgs_gui_2_mov_obj_hand->buff_write_idx;
 
+	for (i = 0; i < (NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS); i++)
+	{
+		((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_read_idx = ((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	}
+
         while (rt_mov_obj_handler_stay_alive) 
 	{
         	rt_task_wait_period();
@@ -111,7 +118,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
 		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }
-		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand, scheduled_spike_data))  {
+		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }
 		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data ))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_spike_data_buff()."); break; }
@@ -198,26 +205,35 @@ static bool connect_to_neural_net(void)
 {
 	NeuralNet2MovObjHandMsgItem msg_item;
 	char str_neural_net_2_mov_obj_hand_msg[NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
-
-	msgs_mov_obj_hand_2_neural_net = allocate_shm_client_mov_obj_hand_2_neural_net_msg_buffer(msgs_mov_obj_hand_2_neural_net);
-	if (msgs_mov_obj_hand_2_neural_net == NULL)
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "msgs_mov_obj_hand_2_neural_net == NULL.");
-	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer(msgs_mov_obj_hand_2_neural_net, static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, 0))
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
-
+	unsigned int i, num_of_alive_responses = 0;
+	
+	for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+	{
+		(*msgs_mov_obj_hand_2_neural_net_multi_thread)[i] = allocate_shm_client_mov_obj_hand_2_neural_net_multi_thread_msg_buffer_item(msgs_mov_obj_hand_2_neural_net_multi_thread, i);
+		if ((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i] == NULL)
+			return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "msgs_mov_obj_hand_2_neural_net == NULL.");
+		if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, 0))
+			return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
+	}
 	while (1) 
-	{ 
-		while (get_next_neural_net_2_mov_obj_hand_msg_buffer_item(msgs_neural_net_2_mov_obj_hand, &msg_item))
-		{
-			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_neural_net_2_mov_obj_hand_msg);
-			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
-			switch (msg_item.msg_type)
+	{
+		for (i = 0; i < (NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS); i++)
+		{ 
+			while (get_next_neural_net_2_mov_obj_hand_msg_buffer_item((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i], &msg_item))
 			{
-				case NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
-					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");	
-					return TRUE;			
-				default:
-					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
+				get_neural_net_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_neural_net_2_mov_obj_hand_msg);
+				print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
+				switch (msg_item.msg_type)
+				{
+					case NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
+						print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");	
+						num_of_alive_responses++;
+						if (num_of_alive_responses == (NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS))
+							return TRUE;
+						break;			
+					default:
+						return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
+				}
 			}
 		}
 		sleep(1); 

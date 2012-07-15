@@ -1,11 +1,17 @@
 #ifndef NEURAL_NET_2_MOV_OBJ_HAND_H
 #define NEURAL_NET_2_MOV_OBJ_HAND_H
 
+#define NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS IZ_PS_NETWORK_SIM_NUM_OF_DEDICATED_CPUS*MAX_NUM_OF_CPU_THREADS_PER_CPU
+
 //  MESSAGES FROM NEURAL NET TO MOV OBJ HANDLER
 
 typedef struct __NeuralNet2MovObjHandMsg NeuralNet2MovObjHandMsg;
 typedef struct __NeuralNet2MovObjHandMsgItem NeuralNet2MovObjHandMsgItem;
 typedef unsigned int NeuralNet2MovObjHandMsgType;
+#include "../../../BlueSpike/RtTasksData.h"
+typedef NeuralNet2MovObjHandMsg *NeuralNet2MovObjHandMsgPtr;
+typedef NeuralNet2MovObjHandMsgPtr NeuralNet2MovObjHandMsgMultiThread[NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS];
+
 
 
 #define NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
@@ -40,7 +46,6 @@ struct __NeuralNet2MovObjHandMsgItem
 
 struct __NeuralNet2MovObjHandMsg		// Requests to TrialControllers
 {
-	pthread_mutex_t 				mutex;		// otherwise multiple thread of SNN simulator can corrupt this data
 	NeuralNet2MovObjHandMsgItem	buff[NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE];
 	unsigned int					buff_write_idx;	// only one message sender can write into this buffer and edit this write index
 	unsigned int					buff_read_idx;	// only one request handler can edit this read index
@@ -58,5 +63,10 @@ NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_msg_buffe
 NeuralNet2MovObjHandMsg* deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer);
 bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, unsigned int layer_num, unsigned int nrn_grp_num, unsigned int neuron_num, TimeStamp spike_time);
 bool get_next_neural_net_2_mov_obj_hand_msg_buffer_item(NeuralNet2MovObjHandMsg* msg_buffer, NeuralNet2MovObjHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
+
+NeuralNet2MovObjHandMsgMultiThread* allocate_shm_server_neural_net_2_mov_obj_hand_multi_thread_msg_buffer(NeuralNet2MovObjHandMsgMultiThread* msg_buffers);
+NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer_item(NeuralNet2MovObjHandMsgMultiThread* msg_buffers, unsigned int msg_buffer_num);
+NeuralNet2MovObjHandMsgMultiThread* deallocate_shm_neural_net_2_mov_obj_hand_multi_thread_msg_buffer(NeuralNet2MovObjHandMsgMultiThread* msg_buffers);
+
 
 #endif

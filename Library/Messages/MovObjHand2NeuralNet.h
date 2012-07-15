@@ -1,13 +1,17 @@
 #ifndef MOV_OBJ_HAND_2_NEURAL_NET_H
 #define MOV_OBJ_HAND_2_NEURAL_NET_H
 
+#define NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS IZ_PS_NETWORK_SIM_NUM_OF_DEDICATED_CPUS*MAX_NUM_OF_CPU_THREADS_PER_CPU
+
 //  MESSAGES FROM MOV OBJ HANDLER TO NEURAL NET
 
 typedef struct __MovObjHand2NeuralNetMsg MovObjHand2NeuralNetMsg;
 typedef struct __MovObjHand2NeuralNetMsgItem MovObjHand2NeuralNetMsgItem;
 typedef unsigned int MovObjHand2NeuralNetMsgType;
 typedef unsigned int MovObjHand2NeuralNetMsgAdditional;
-
+#include "../../../BlueSpike/RtTasksData.h"
+typedef MovObjHand2NeuralNetMsg *MovObjHand2NeuralNetMsgPtr;
+typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS];
 
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_STRING_LENGTH						100
 
@@ -52,5 +56,9 @@ MovObjHand2NeuralNetMsg* allocate_shm_client_mov_obj_hand_2_neural_net_msg_buffe
 MovObjHand2NeuralNetMsg* deallocate_shm_mov_obj_hand_2_neural_net_msg_buffer(MovObjHand2NeuralNetMsg* msg_buffer);
 bool write_to_mov_obj_hand_2_neural_net_msg_buffer(MovObjHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, MovObjHand2NeuralNetMsgType msg_type, MovObjHand2NeuralNetMsgAdditional additional_data);
 bool get_next_mov_obj_hand_2_neural_net_msg_buffer_item(MovObjHand2NeuralNetMsg* msg_buffer, MovObjHand2NeuralNetMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
+
+MovObjHand2NeuralNetMsgMultiThread* allocate_shm_server_mov_obj_hand_2_neural_net_multi_thread_msg_buffer(MovObjHand2NeuralNetMsgMultiThread* msg_buffers);
+MovObjHand2NeuralNetMsg* allocate_shm_client_mov_obj_hand_2_neural_net_multi_thread_msg_buffer_item(MovObjHand2NeuralNetMsgMultiThread* msg_buffers, unsigned int msg_buffer_num);
+MovObjHand2NeuralNetMsgMultiThread* deallocate_shm_mov_obj_hand_2_neural_net_multi_thread_msg_buffer(MovObjHand2NeuralNetMsgMultiThread* msg_buffers);
 
 #endif
