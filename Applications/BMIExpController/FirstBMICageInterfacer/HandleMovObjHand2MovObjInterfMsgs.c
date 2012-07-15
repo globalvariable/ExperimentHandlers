@@ -19,7 +19,7 @@ static struct __MovObjRS232TX  mov_obj_rs232_tx = { .command.all_command = 0 };
 
 bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, char *tx_buff)
 {
-	MovObjHand2MovObjInterfMsgItem *msg_item;
+	MovObjHand2MovObjInterfMsgItem msg_item;
 	char str_mov_obj_hand_2_mov_obj_interf_msg[MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_STRING_LENGTH];
 	char str_direction_type[MOV_OBJ_DIRECTION_TYPE_MAX_STRING_LENGTH];	
 
@@ -27,18 +27,18 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 
 	while (get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(msgs_mov_obj_hand_2_mov_obj_interf, &msg_item))
 	{
-		get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
+		get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item.msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
 //		print_message(INFO_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", str_mov_obj_hand_2_mov_obj_interf_msg);	
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION:
-				switch (msg_item->comp_num)
+				switch (msg_item.comp_num)
 				{
 					case ONE_D_ACTUATOR:
-						mov_obj_rs232_tx.command.Speed = msg_item->speed;
-						printf ("Speed: %f\n", msg_item->speed);
+						mov_obj_rs232_tx.command.Speed = msg_item.speed;
+						printf ("Speed: %f\n", msg_item.speed);
 						printf ("Speed int: %d\n", mov_obj_rs232_tx.command.Speed);
-						switch (msg_item->direction)
+						switch (msg_item.direction)
 						{
 							case MOV_OBJ_DIRECTION_LEFT:		// left direction is 0, right is 1
 								mov_obj_rs232_tx.command.Direction = 0;
@@ -50,13 +50,13 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 								mov_obj_rs232_tx.command.Speed = 0;			
 								break;
 							default:
-								get_mov_obj_direction_type_string(msg_item->direction, str_direction_type);
+								get_mov_obj_direction_type_string(msg_item.direction, str_direction_type);
 								return print_message(BUG_MSG ,"BMISimulationTrialController", "ExpEnviMovObjInterfacerHandler", "exp_envi_mov_obj_interfacer_handler", str_direction_type);
 						}
 						break;			
 					default:
 						print_message(BUG_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", str_mov_obj_hand_2_mov_obj_interf_msg);	
-						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", "switch (msg_item->comp_num).");
+						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleMovObjHand2MovObjInterfMsgs", "handle_mov_obj_hand_2_mov_obj_interf_msgs", "switch (msg_item.comp_num).");
 				}
 				break;			
 			default:

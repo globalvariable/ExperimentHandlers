@@ -34,7 +34,7 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str)   //
 }
 
 TrialStatusEvents* allocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events, unsigned int buffer_size, TimeStamp status_change_latency)
-{
+{	// IT IS ESPECIALLY FOR GRAPHS TO INDICATE THE TRIAL STATUS CHANGE TIMES
 	if (trial_status_events != NULL)
 	{
 		trial_status_events = deallocate_trial_status_events_buffer(trial_status_events);
@@ -71,11 +71,15 @@ void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeSta
 		(*idx)++;
 	return ;	
 }
-bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem **event_item)
+bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem *event_item)
 {
+	TrialStatusEventItem *buff_item;
 	if (*read_idx == trial_status_events->buff_write_idx)
 		return FALSE;
-	*event_item = &(trial_status_events->buff[*read_idx]);	
+	buff_item = &(trial_status_events->buff[*read_idx]);	
+	event_item->status_start_time = buff_item->status_start_time;   
+	event_item->trial_status = buff_item->trial_status;   
+	event_item->trial_type = buff_item->trial_type;   
 	if ((*read_idx + 1) == trial_status_events->buffer_size)
 		*read_idx = 0;
 	else

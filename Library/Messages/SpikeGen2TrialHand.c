@@ -90,13 +90,17 @@ bool write_to_spike_gen_2_trial_hand_msg_buffer(SpikeGen2TrialHandMsg* msg_buffe
 		return print_message(BUG_MSG ,"ExperimentHandlers", "SpikeGen2TrialHand", "write_to_spike_gen_2_trial_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_spike_gen_2_trial_hand_msg_buffer_item(SpikeGen2TrialHandMsg* msg_buffer, SpikeGen2TrialHandMsgItem **msg_item)
+bool get_next_spike_gen_2_trial_hand_msg_buffer_item(SpikeGen2TrialHandMsg* msg_buffer, SpikeGen2TrialHandMsgItem *msg_item)
 {
 	unsigned int *idx;
+	SpikeGen2TrialHandMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->additional_data = buff_item->additional_data;	
 	if ((*idx + 1) == SPIKE_GEN_2_TRIAL_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

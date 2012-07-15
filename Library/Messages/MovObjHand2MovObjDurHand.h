@@ -43,6 +43,6 @@ bool get_mov_obj_hand_2_mov_obj_dur_hand_msg_type_string(MovObjHand2MovObjDurHan
 MovObjHand2MovObjDurHandMsg* allocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(MovObjHand2MovObjDurHandMsg* msg_buffer);
 MovObjHand2MovObjDurHandMsg* deallocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(MovObjHand2MovObjDurHandMsg* msg_buffer);
 bool write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(MovObjHand2MovObjDurHandMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjDurHandMsgType msg_type, MovObjHand2MovObjDurHandMsgAdditional additional_data);
-bool get_next_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer_item(MovObjHand2MovObjDurHandMsg* msg_buffer, MovObjHand2MovObjDurHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer_item(MovObjHand2MovObjDurHandMsg* msg_buffer, MovObjHand2MovObjDurHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

@@ -55,6 +55,8 @@ static void *rt_trial_duration_handler(void *args)
         mlockall(MCL_CURRENT | MCL_FUTURE);
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
+	static_msgs_trial_hand_2_trial_dur_hand->buff_read_idx = static_msgs_trial_hand_2_trial_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+
         while (rt_trial_duration_handler_stay_alive) 
 	{
         	rt_task_wait_period();

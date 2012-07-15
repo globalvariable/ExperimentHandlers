@@ -5,14 +5,14 @@
 
 bool handle_gui_to_trial_handler_msg(TrialTypesData *trial_types_data, TrialStatus *trial_status, TimeStamp current_time, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHand2TrialDurHandMsg* msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen)
 {
-	Gui2TrialHandMsgItem *msg_item;
+	Gui2TrialHandMsgItem msg_item;
 	char str_gui_msg[GUI_2_TRIAL_HAND_MSG_STRING_LENGTH];
 	char str_status[TRIAL_STATUS_MAX_STRING_LENGTH];
 	while (get_next_gui_2_trial_hand_msg_buffer_item(msgs_gui_2_trial_hand, &msg_item))
 	{
-		get_gui_2_trial_hand_msg_type_string(msg_item->msg_type, str_gui_msg);
+		get_gui_2_trial_hand_msg_type_string(msg_item.msg_type, str_gui_msg);
 		print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING:	
 				switch (*trial_status)

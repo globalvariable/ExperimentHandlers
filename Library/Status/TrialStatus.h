@@ -26,7 +26,7 @@ struct __TrialStatusEventItem
 	TrialType		trial_type;	// left, right, tracjectroy right etc. 
 };
 
-struct __TrialStatusEvents
+struct __TrialStatusEvents  // IT IS ESPECIALLY FOR GRAPHS TO INDICATE THE TRIAL STATUS CHANGE TIMES
 {
 	TrialStatusEventItem	*buff;   
 	unsigned int 		buff_write_idx;
@@ -39,6 +39,6 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str);   /
 TrialStatusEvents* allocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events, unsigned int buffer_size, TimeStamp status_change_latency);
 TrialStatusEvents* deallocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events);
 void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status, TrialType trial_type);   // it can have multiple readers. so no read_idx defined.
-bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem **event_item);
+bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem *event_item);
 TrialStatusEventItem get_last_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events);
 #endif

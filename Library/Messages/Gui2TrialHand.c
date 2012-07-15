@@ -66,13 +66,17 @@ bool write_to_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer, TimeStam
 		return print_message(BUG_MSG ,"ExperimentHandlers", "Gui2TrialHand", "write_to_gui_2_trial_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem **msg_item)	// take care of static read_idx value //only request buffer handler uses
+bool get_next_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem *msg_item)	// take care of static read_idx value //only request buffer handler uses
 {
 	unsigned int *idx;
+	Gui2TrialHandMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->additional_data = buff_item->additional_data;	
 	if ((*idx + 1) == GUI_2_TRIAL_HAND_MSG_BUFFER_SIZE)
 		*idx = 0;
 	else

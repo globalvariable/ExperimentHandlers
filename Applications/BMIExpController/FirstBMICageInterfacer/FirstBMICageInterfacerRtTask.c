@@ -77,6 +77,11 @@ static void *rt_cage_interfacer(void *args)
 	prev_time = curr_time;	
 	curr_system_time = static_rt_tasks_data->current_system_time;
 
+	msgs_exp_envi_hand_2_exp_envi_interf->buff_read_idx = msgs_exp_envi_hand_2_exp_envi_interf->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_mov_obj_hand_2_mov_obj_interf->buff_read_idx = msgs_mov_obj_hand_2_mov_obj_interf->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_rs232_hand_2_rs232_dur_hand->buff_read_idx = msgs_rs232_hand_2_rs232_dur_hand->buff_write_idx;
+	msgs_rs232_dur_hand_2_rs232_hand->buff_read_idx = msgs_rs232_dur_hand_2_rs232_hand->buff_write_idx;
+
 	if (!write_to_rs232_hand_2_rs232_dur_hand_msg_buffer(msgs_rs232_hand_2_rs232_dur_hand, curr_system_time, RS232_HAND_2_RS232_DUR_HAND_MSG_ENABLE_TX_TIMER, 0, static_rs_232_data->comp_data[0].tx_period+curr_system_time))  {
 		print_message(ERROR_MSG ,"FirstBMICageInterfacer", "HandleRS232DurHand2RS232HandMsgs", "handle_rs232_dur_handler_to_rs232_handler_msgs", "! write_to_rs232_hand_2_rs232_dur_hand_msg_buffer().");exit(1); }	
 
@@ -106,16 +111,16 @@ static void *rt_cage_interfacer(void *args)
 
 static bool connect_to_exp_envi_hand(void )
 {
-	ExpEnviHand2ExpEnviInterfMsgItem *msg_item;
+	ExpEnviHand2ExpEnviInterfMsgItem msg_item;
 	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
 
 	while (1) 
 	{ 
 		while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
 		{
-			get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
+			get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item.msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
 			print_message(INFO_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_exp_envi_hand", str_exp_envi_hand_2_exp_envi_interf_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_ARE_YOU_ALIVE:
 					msgs_exp_envi_interf_2_exp_envi_hand = allocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(msgs_exp_envi_interf_2_exp_envi_hand);
@@ -137,16 +142,16 @@ static bool connect_to_exp_envi_hand(void )
 
 static bool connect_to_mov_obj_hand(void )
 {
-	MovObjHand2MovObjInterfMsgItem *msg_item;
+	MovObjHand2MovObjInterfMsgItem msg_item;
 	char str_mov_obj_hand_2_mov_obj_interf_msg[MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_STRING_LENGTH];
 
 	while (1) 
 	{ 
 		while (get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(msgs_mov_obj_hand_2_mov_obj_interf, &msg_item))
 		{
-			get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
+			get_mov_obj_hand_2_mov_obj_interf_msg_type_string(msg_item.msg_type, str_mov_obj_hand_2_mov_obj_interf_msg);
 			print_message(INFO_MSG ,"FirstBMICageInterfacer", "FirstBMICageInterfacerRtTask", "connect_to_mov_obj_hand", str_mov_obj_hand_2_mov_obj_interf_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE:
 					msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_client_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);

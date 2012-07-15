@@ -52,6 +52,6 @@ TrialHand2MovObjHandMsg* allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffe
 TrialHand2MovObjHandMsg* allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffer(TrialHand2MovObjHandMsg* msg_buffer);
 TrialHand2MovObjHandMsg* deallocate_shm_trial_hand_2_mov_obj_hand_msg_buffer(TrialHand2MovObjHandMsg* msg_buffer);
 bool write_to_trial_hand_2_mov_obj_hand_msg_buffer(TrialHand2MovObjHandMsg* msg_buffer, TimeStamp msg_time, TrialHand2MovObjHandMsgType msg_type, TrialHand2MovObjHandMsgAdditional additional_data);
-bool get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(TrialHand2MovObjHandMsg* msg_buffer, TrialHand2MovObjHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(TrialHand2MovObjHandMsg* msg_buffer, TrialHand2MovObjHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

@@ -50,6 +50,6 @@ SpikeGen2TrialHandMsg* allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(Spi
 SpikeGen2TrialHandMsg* allocate_shm_client_spike_gen_2_trial_hand_msg_buffer(SpikeGen2TrialHandMsg* msg_buffer);
 SpikeGen2TrialHandMsg* deallocate_shm_spike_gen_2_trial_hand_msg_buffer(SpikeGen2TrialHandMsg* msg_buffer);
 bool write_to_spike_gen_2_trial_hand_msg_buffer(SpikeGen2TrialHandMsg* msg_buffer, TimeStamp msg_time, SpikeGen2TrialHandMsgType msg_type,  SpikeGen2TrialHandMsgAdditional additional_data);
-bool get_next_spike_gen_2_trial_hand_msg_buffer_item(SpikeGen2TrialHandMsg* msg_buffer, SpikeGen2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_spike_gen_2_trial_hand_msg_buffer_item(SpikeGen2TrialHandMsg* msg_buffer, SpikeGen2TrialHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

@@ -24,7 +24,7 @@ static struct __ExpEnviRS232TX exp_envi_rs232_tx = { .command.all_command = 0 };
 
 bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *msgs_exp_envi_hand_2_exp_envi_interf, ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand, char *tx_buff)
 {
-	ExpEnviHand2ExpEnviInterfMsgItem *msg_item;
+	ExpEnviHand2ExpEnviInterfMsgItem msg_item;
 	char str_exp_envi_hand_2_exp_envi_interf_msg[EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_STRING_LENGTH];
 
 	exp_envi_rs232_tx.command.ResetTrial = 0;  /// commands should be saved through periods except ResetTrial
@@ -33,12 +33,12 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 
 	while (get_next_exp_envi_hand_2_exp_envi_interf_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_interf, &msg_item))
 	{
-		get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
+		get_exp_envi_hand_2_exp_envi_interf_msg_type_string(msg_item.msg_type, str_exp_envi_hand_2_exp_envi_interf_msg);
 		print_message(INFO_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH:
-				switch (msg_item->out_comp_num)
+				switch (msg_item.out_comp_num)
 				{
 					case LEFT_LED:
 						exp_envi_rs232_tx.command.LeftLED = 1;			
@@ -57,11 +57,11 @@ bool handle_exp_envi_hand_2_exp_envi_interf_msgs(ExpEnviHand2ExpEnviInterfMsg *m
 						 break;	
 					default:
 						print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", str_exp_envi_hand_2_exp_envi_interf_msg);	
-						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", "switch (msg_item->out_comp_num).");
+						return print_message(BUG_MSG ,"FirstBMICageManager", "HandleExpEnviHand2ExpEnviInterfMsgs", "handle_exp_envi_hand_2_exp_envi_interf_msgs", "switch (msg_item.out_comp_num).");
 				}
 				 break;			
 			case EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW:
-				switch (msg_item->out_comp_num)
+				switch (msg_item.out_comp_num)
 				{
 					case LEFT_LED:
 						exp_envi_rs232_tx.command.LeftLED = 0;			

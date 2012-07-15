@@ -8,15 +8,15 @@ static char tx_buff[TX_BUFF_LEN];
 
 bool handle_rs232_dur_hand_to_rs232_hand_msgs(RS232Data *rs_232_data, TimeStamp current_time, ExpEnviHand2ExpEnviInterfMsg *msgs_exp_envi_hand_2_exp_envi_interf, ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, RS232DurHand2RS232HandMsg *msgs_rs232_dur_hand_2_rs232_hand, RS232Hand2RS232DurHandMsg *msgs_rs232_hand_2_rs232_dur_hand)
 {
-	RS232DurHand2RS232HandMsgItem *msg_item;
+	RS232DurHand2RS232HandMsgItem msg_item;
 	char str_rs232_dur_msg[RS232_DUR_HAND_2_RS232_HAND_MSG_STRING_LENGTH];
 	unsigned int i;
 
 	while (get_next_rs232_dur_hand_2_rs232_hand_msg_buffer_item(msgs_rs232_dur_hand_2_rs232_hand, &msg_item))
 	{
-		get_rs232_dur_hand_2_rs232_hand_msg_type_string(msg_item->msg_type, str_rs232_dur_msg);
+		get_rs232_dur_hand_2_rs232_hand_msg_type_string(msg_item.msg_type, str_rs232_dur_msg);
 		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232DurHand2RS232HandMsgs", "handle_rs232_dur_handler_to_rs232_handler_msgs", str_rs232_dur_msg);
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case RS232_DUR_HAND_2_RS232_HAND_MSG_TX_TIMEOUT:	
 				for (i = 0; i < TX_BUFF_LEN; i++)  tx_buff[i] = 0;

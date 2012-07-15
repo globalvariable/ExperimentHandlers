@@ -60,7 +60,7 @@ MovObjHand2MovObjInterfMsg* allocate_shm_server_mov_obj_hand_2_mov_obj_interf_ms
 MovObjHand2MovObjInterfMsg* allocate_shm_client_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer);
 MovObjHand2MovObjInterfMsg* deallocate_shm_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer);
 bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMsg* msg_buffer, TimeStamp msg_time, MovObjHand2MovObjInterfMsgType msg_type, MovObjCompNum comp_num, MovObjDirectionType direction, MovObjSpeedType speed, MovObjLocationType location);
-bool get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(MovObjHand2MovObjInterfMsg* msg_buffer, MovObjHand2MovObjInterfMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(MovObjHand2MovObjInterfMsg* msg_buffer, MovObjHand2MovObjInterfMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 
 

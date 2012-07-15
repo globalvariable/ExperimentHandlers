@@ -52,6 +52,6 @@ ExpEnviInterf2ExpEnviHandMsg* allocate_shm_server_exp_envi_interf_2_exp_envi_han
 ExpEnviInterf2ExpEnviHandMsg* allocate_shm_client_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHandMsg* msg_buffer);
 ExpEnviInterf2ExpEnviHandMsg* deallocate_shm_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHandMsg* msg_buffer);
 bool write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviInterf2ExpEnviHandMsgType msg_type, ExpEnviInputCompNum inp_comp_num, ExpEnviInterf2ExpEnviHandMsgAdditional additional_data);
-bool get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, ExpEnviInterf2ExpEnviHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, ExpEnviInterf2ExpEnviHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

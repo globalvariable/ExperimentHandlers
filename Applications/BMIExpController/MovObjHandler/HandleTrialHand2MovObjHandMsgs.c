@@ -4,21 +4,21 @@
 
 bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType *mov_obj_trial_type_status, TimeStamp current_time, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand)
 {
-	TrialHand2MovObjHandMsgItem *msg_item;
+	TrialHand2MovObjHandMsgItem msg_item;
 	char str_trial_hand_msg[TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
 
 	while (get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(msgs_trial_hand_2_mov_obj_hand, &msg_item))
 	{
-		get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_trial_hand_msg);
+		get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_trial_hand_msg);
 		print_message(INFO_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL:	
 				switch (*mov_obj_status)
 				{
 					case MOV_OBJ_STATUS_OUT_OF_TRIAL:
-						*mov_obj_trial_type_status = msg_item->additional_data;
+						*mov_obj_trial_type_status = msg_item.additional_data;
 						switch (*mov_obj_trial_type_status)
 						{
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	

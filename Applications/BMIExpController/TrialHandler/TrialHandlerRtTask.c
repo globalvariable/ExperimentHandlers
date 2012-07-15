@@ -99,6 +99,13 @@ static void *rt_trial_handler(void *args)
         mlockall(MCL_CURRENT | MCL_FUTURE);
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
+	msgs_trial_dur_hand_2_trial_hand->buff_read_idx = msgs_trial_dur_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_exp_envi_hand_2_trial_hand->buff_read_idx = msgs_exp_envi_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_mov_obj_hand_2_trial_hand->buff_read_idx = msgs_mov_obj_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_neural_net_2_trial_hand->buff_read_idx = msgs_neural_net_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_spike_gen_2_trial_hand->buff_read_idx = msgs_spike_gen_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	static_msgs_gui_2_trial_hand->buff_read_idx = static_msgs_gui_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+
         while (rt_trial_handler_stay_alive) 
 	{
         	rt_task_wait_period();
@@ -128,7 +135,7 @@ static void *rt_trial_handler(void *args)
 
 static bool connect_to_exp_envi_hand(void)
 {
-	ExpEnviHand2TrialHandMsgItem *msg_item;
+	ExpEnviHand2TrialHandMsgItem msg_item;
 	char str_exp_envi_hand_2_trial_hand_msg[EXP_ENVI_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
 
 	msgs_trial_hand_2_exp_envi_hand = allocate_shm_client_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand);	
@@ -142,9 +149,9 @@ static bool connect_to_exp_envi_hand(void)
 	{
 		while (get_next_exp_envi_hand_2_trial_hand_msg_buffer_item(msgs_exp_envi_hand_2_trial_hand, &msg_item))
 		{
-			get_exp_envi_hand_2_trial_hand_msg_type_string(msg_item->msg_type, str_exp_envi_hand_2_trial_hand_msg);
+			get_exp_envi_hand_2_trial_hand_msg_type_string(msg_item.msg_type, str_exp_envi_hand_2_trial_hand_msg);
 			print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_exp_envi_hand", str_exp_envi_hand_2_trial_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_exp_envi_hand", "Connection to EXP_ENVI_HANDLER is successful!!!");	
@@ -162,7 +169,7 @@ static bool connect_to_exp_envi_hand(void)
 
 static bool connect_to_mov_obj_hand(void)
 {
-	MovObjHand2TrialHandMsgItem *msg_item;
+	MovObjHand2TrialHandMsgItem msg_item;
 	char str_mov_obj_hand_2_trial_hand_msg[MOV_OBJ_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
 
 	msgs_trial_hand_2_mov_obj_hand = allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand);	
@@ -176,9 +183,9 @@ static bool connect_to_mov_obj_hand(void)
 	{
 		while (get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(msgs_mov_obj_hand_2_trial_hand, &msg_item))
 		{
-			get_mov_obj_hand_2_trial_hand_msg_type_string(msg_item->msg_type, str_mov_obj_hand_2_trial_hand_msg);
+			get_mov_obj_hand_2_trial_hand_msg_type_string(msg_item.msg_type, str_mov_obj_hand_2_trial_hand_msg);
 			print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand", str_mov_obj_hand_2_trial_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand", "Connection to MOV_OBJ_HANDLER is successful!!!");
@@ -196,7 +203,7 @@ static bool connect_to_mov_obj_hand(void)
 
 static bool connect_to_neural_net(void)
 {
-	NeuralNet2TrialHandMsgItem *msg_item;
+	NeuralNet2TrialHandMsgItem msg_item;
 	char str_neural_net_2_trial_hand_msg[NEURAL_NET_2_TRIAL_HAND_MSG_STRING_LENGTH];
 
 	msgs_trial_hand_2_neural_net = allocate_shm_client_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net);
@@ -209,9 +216,9 @@ static bool connect_to_neural_net(void)
 	{ 
 		while (get_next_neural_net_2_trial_hand_msg_buffer_item(msgs_neural_net_2_trial_hand, &msg_item))
 		{
-			get_neural_net_2_trial_hand_msg_type_string(msg_item->msg_type, str_neural_net_2_trial_hand_msg);
+			get_neural_net_2_trial_hand_msg_type_string(msg_item.msg_type, str_neural_net_2_trial_hand_msg);
 			print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", str_neural_net_2_trial_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case NEURAL_NET_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");
@@ -229,7 +236,7 @@ static bool connect_to_neural_net(void)
 
 static bool connect_to_spike_gen(void)
 {
-	SpikeGen2TrialHandMsgItem *msg_item;
+	SpikeGen2TrialHandMsgItem msg_item;
 	char str_spike_gen_2_trial_hand_msg[SPIKE_GEN_2_TRIAL_HAND_MSG_STRING_LENGTH];
 
 	msgs_trial_hand_2_spike_gen = allocate_shm_client_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen);
@@ -242,9 +249,9 @@ static bool connect_to_spike_gen(void)
 	{ 
 		while (get_next_spike_gen_2_trial_hand_msg_buffer_item(msgs_spike_gen_2_trial_hand, &msg_item))
 		{
-			get_spike_gen_2_trial_hand_msg_type_string(msg_item->msg_type, str_spike_gen_2_trial_hand_msg);
+			get_spike_gen_2_trial_hand_msg_type_string(msg_item.msg_type, str_spike_gen_2_trial_hand_msg);
 			print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", str_spike_gen_2_trial_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case SPIKE_GEN_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", "Connection to SPIKE_GEN is successful!!!");	

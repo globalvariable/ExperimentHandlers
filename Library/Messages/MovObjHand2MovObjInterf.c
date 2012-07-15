@@ -98,13 +98,20 @@ bool write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(MovObjHand2MovObjInterfMs
 		return print_message(BUG_MSG ,"ExperimentHandlers", "MovObjHand2MovObjInterf", "write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(MovObjHand2MovObjInterfMsg* msg_buffer, MovObjHand2MovObjInterfMsgItem **msg_item)
+bool get_next_mov_obj_hand_2_mov_obj_interf_msg_buffer_item(MovObjHand2MovObjInterfMsg* msg_buffer, MovObjHand2MovObjInterfMsgItem *msg_item)
 {
 	unsigned int *idx;
+	MovObjHand2MovObjInterfMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->comp_num = buff_item->comp_num;
+	msg_item->direction = buff_item->direction;
+	msg_item->speed = buff_item->speed;
+	msg_item->location = buff_item->location;
 	if ((*idx + 1) == MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

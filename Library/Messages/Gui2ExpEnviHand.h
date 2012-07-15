@@ -39,5 +39,5 @@ Gui2ExpEnviHandMsg* allocate_gui_2_exp_envi_hand_msg_buffer(Gui2ExpEnviHandMsg* 
 Gui2ExpEnviHandMsg* deallocate_gui_2_exp_envi_hand_msg_buffer(Gui2ExpEnviHandMsg* msg_buffer);
 bool get_gui_2_exp_envi_hand_msg_type_string(Gui2ExpEnviHandMsgType msg_type, char *str);
 bool write_to_gui_2_exp_envi_hand_msg_buffer(Gui2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, Gui2ExpEnviHandMsgType msg_type, Gui2ExpEnviHandMsgAdditional additional_data);
-bool get_next_gui_2_exp_envi_hand_msg_buffer_item(Gui2ExpEnviHandMsg* msg_buffer, Gui2ExpEnviHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_gui_2_exp_envi_hand_msg_buffer_item(Gui2ExpEnviHandMsg* msg_buffer, Gui2ExpEnviHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 #endif

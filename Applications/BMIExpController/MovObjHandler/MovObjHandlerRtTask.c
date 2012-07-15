@@ -91,6 +91,12 @@ static void *rt_mov_obj_handler(void *args)
         mlockall(MCL_CURRENT | MCL_FUTURE);
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
+	msgs_trial_hand_2_mov_obj_hand->buff_read_idx = msgs_trial_hand_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_mov_obj_interf_2_mov_obj_hand->buff_read_idx = msgs_mov_obj_interf_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to
+	msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_read_idx = msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_read_idx = msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
+	static_msgs_gui_2_mov_obj_hand->buff_read_idx = static_msgs_gui_2_mov_obj_hand->buff_write_idx;
+
         while (rt_mov_obj_handler_stay_alive) 
 	{
         	rt_task_wait_period();
@@ -127,7 +133,7 @@ static void *rt_mov_obj_handler(void *args)
 
 static bool connect_to_mov_obj_interf(void )
 {
-	MovObjInterf2MovObjHandMsgItem *msg_item;
+	MovObjInterf2MovObjHandMsgItem msg_item;
 	char str_mov_obj_interf_2_mov_obj_hand_msg[MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 
 	msgs_mov_obj_hand_2_mov_obj_interf = allocate_shm_client_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf);
@@ -140,9 +146,9 @@ static bool connect_to_mov_obj_interf(void )
 	{ 
 		while (get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_interf_2_mov_obj_hand, &msg_item))
 		{
-			get_mov_obj_interf_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_mov_obj_interf_2_mov_obj_hand_msg);
+			get_mov_obj_interf_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_mov_obj_interf_2_mov_obj_hand_msg);
 			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Connection to MOV_OBJ_INTERFACER is successful!!!");	
@@ -158,16 +164,16 @@ static bool connect_to_mov_obj_interf(void )
 
 static bool connect_to_trial_hand(void )
 {
-	TrialHand2MovObjHandMsgItem *msg_item;
+	TrialHand2MovObjHandMsgItem msg_item;
 	char str_trial_hand_2_mov_obj_hand_msg[TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 
 	while (1) 
 	{ 
 		while (get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(msgs_trial_hand_2_mov_obj_hand, &msg_item))
 		{
-			get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_trial_hand_2_mov_obj_hand_msg);
+			get_trial_hand_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_trial_hand_2_mov_obj_hand_msg);
 			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", str_trial_hand_2_mov_obj_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE:
 					msgs_mov_obj_hand_2_trial_hand = allocate_shm_client_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand);
@@ -190,7 +196,7 @@ static bool connect_to_trial_hand(void )
 
 static bool connect_to_neural_net(void)
 {
-	NeuralNet2MovObjHandMsgItem *msg_item;
+	NeuralNet2MovObjHandMsgItem msg_item;
 	char str_neural_net_2_mov_obj_hand_msg[NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 
 	msgs_mov_obj_hand_2_neural_net = allocate_shm_client_mov_obj_hand_2_neural_net_msg_buffer(msgs_mov_obj_hand_2_neural_net);
@@ -203,9 +209,9 @@ static bool connect_to_neural_net(void)
 	{ 
 		while (get_next_neural_net_2_mov_obj_hand_msg_buffer_item(msgs_neural_net_2_mov_obj_hand, &msg_item))
 		{
-			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item->msg_type, str_neural_net_2_mov_obj_hand_msg);
+			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_neural_net_2_mov_obj_hand_msg);
 			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
-			switch (msg_item->msg_type)
+			switch (msg_item.msg_type)
 			{
 				case NEURAL_NET_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");	

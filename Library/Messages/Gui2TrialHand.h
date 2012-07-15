@@ -42,5 +42,5 @@ Gui2TrialHandMsg* allocate_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buf
 Gui2TrialHandMsg* deallocate_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer);
 bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *str);
 bool write_to_gui_2_trial_hand_msg_buffer(Gui2TrialHandMsg* msg_buffer, TimeStamp msg_time, Gui2TrialHandMsgType msg_type, Gui2TrialHandMsgAdditional additional_data);
-bool get_next_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_gui_2_trial_hand_msg_buffer_item(Gui2TrialHandMsg* msg_buffer, Gui2TrialHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 #endif

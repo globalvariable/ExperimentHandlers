@@ -99,13 +99,18 @@ bool write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer(ExpEnviInterf2ExpEnviHa
 		return print_message(BUG_MSG ,"ExperimentHandlers", "ExpEnviInterf2ExpEnviHand", "write_to_exp_envi_interf_2_exp_envi_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, ExpEnviInterf2ExpEnviHandMsgItem **msg_item)
+bool get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(ExpEnviInterf2ExpEnviHandMsg* msg_buffer, ExpEnviInterf2ExpEnviHandMsgItem *msg_item)
 {
+	ExpEnviInterf2ExpEnviHandMsgItem *buff_item;
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->inp_comp_num = buff_item->inp_comp_num;
+	msg_item->additional_data = buff_item->additional_data;
 	if ((*idx + 1) == EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

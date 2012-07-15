@@ -24,25 +24,25 @@ bool create_rs232_duration_handler_data(unsigned int arg_num_of_rs232_components
 
 bool handle_rs232_handler_to_rs232_dur_handler_msgs(RS232Data *rs_232_data, TimeStamp current_time, RS232DurHand2RS232HandMsg *msgs_rs232_dur_hand_2_rs232_hand, RS232Hand2RS232DurHandMsg *msgs_rs232_hand_2_rs232_dur_hand)
 {
-	RS232Hand2RS232DurHandMsgItem *msg_item;
+	RS232Hand2RS232DurHandMsgItem msg_item;
 	char str_rs232_msg[RS232_HAND_2_RS232_DUR_HAND_MSG_STRING_LENGTH];
 	char str_rs232_dur_status[RS232_DUR_STATUS_MAX_STRING_LENGTH];
 	unsigned int comp_num;
 	while (get_next_rs232_hand_2_rs232_dur_hand_msg_buffer_item(msgs_rs232_hand_2_rs232_dur_hand, &msg_item))
 	{
-		get_rs232_hand_2_rs232_dur_hand_msg_type_string(msg_item->msg_type, str_rs232_msg);
+		get_rs232_hand_2_rs232_dur_hand_msg_type_string(msg_item.msg_type, str_rs232_msg);
 		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232Hand2RS232DurHandMsgs", "handle_rs232_handler_to_rs232_dur_handler_msgs", str_rs232_msg);
-		switch (msg_item->msg_type)
+		switch (msg_item.msg_type)
 		{
 			case RS232_HAND_2_RS232_DUR_HAND_MSG_ENABLE_TX_TIMER:	
-				comp_num = msg_item->component_num;
+				comp_num = msg_item.component_num;
 				switch (tx_timer_status[comp_num])
 				{
 					case RS232_DUR_STATUS_TIMER_ON:
 						get_rs232_dur_status_type_string(tx_timer_status[comp_num], str_rs232_dur_status);   
 						return print_message(BUG_MSG ,"FirstBMICageInterfacer", "HandleRS232Hand2RS232DurHandMsgs", "handle_rs232_handler_to_rs232_dur_handler_msgs", str_rs232_dur_status);
 					case RS232_DUR_STATUS_TIMER_OFF:
-						tx_timer_end_time[comp_num] = msg_item->additional_data;
+						tx_timer_end_time[comp_num] = msg_item.additional_data;
 						tx_timer_status[comp_num] = RS232_DUR_STATUS_TIMER_ON;
 						break;			
 					default:
@@ -51,14 +51,14 @@ bool handle_rs232_handler_to_rs232_dur_handler_msgs(RS232Data *rs_232_data, Time
 				}
 				break;
 			case RS232_HAND_2_RS232_DUR_HAND_MSG_ENABLE_RX_TIMER:
-				comp_num = msg_item->component_num;
+				comp_num = msg_item.component_num;
 				switch (rx_timer_status[comp_num])
 				{
 					case RS232_DUR_STATUS_TIMER_ON:
 						get_rs232_dur_status_type_string(rx_timer_status[comp_num], str_rs232_dur_status);   
 						return print_message(BUG_MSG ,"FirstBMICageInterfacer", "HandleRS232Hand2RS232DurHandMsgs", "handle_rs232_handler_to_rs232_dur_handler_msgs", str_rs232_dur_status);
 					case RS232_DUR_STATUS_TIMER_OFF:
-						rx_timer_end_time[comp_num] = msg_item->additional_data;
+						rx_timer_end_time[comp_num] = msg_item.additional_data;
 						rx_timer_status[comp_num] = RS232_DUR_STATUS_TIMER_ON;
 						break;			
 					default:

@@ -70,13 +70,18 @@ bool write_to_rs232_hand_2_rs232_dur_hand_msg_buffer(RS232Hand2RS232DurHandMsg* 
 		return print_message(BUG_MSG ,"ExperimentHandlers", "RS232Hand2RS232DurHand", "write_to_rs232_hand_2_rs232_dur_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_rs232_hand_2_rs232_dur_hand_msg_buffer_item(RS232Hand2RS232DurHandMsg* msg_buffer, RS232Hand2RS232DurHandMsgItem **msg_item)	// take care of static read_idx value //only request buffer handler uses
+bool get_next_rs232_hand_2_rs232_dur_hand_msg_buffer_item(RS232Hand2RS232DurHandMsg* msg_buffer, RS232Hand2RS232DurHandMsgItem *msg_item)	// take care of static read_idx value //only request buffer handler uses
 {
 	unsigned int *idx;
+	RS232Hand2RS232DurHandMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->component_num = buff_item->component_num;
+	msg_item->additional_data = buff_item->additional_data;
 	if ((*idx + 1) == RS232_HAND_2_RS232_DUR_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

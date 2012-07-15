@@ -47,6 +47,6 @@ bool get_rs232_dur_hand_2_rs232_hand_msg_type_string(RS232DurHand2RS232HandMsgTy
 RS232DurHand2RS232HandMsg* allocate_rs232_dur_hand_2_rs232_hand_msg_buffer(RS232DurHand2RS232HandMsg* msg_buffer);
 RS232DurHand2RS232HandMsg* deallocate_rs232_dur_hand_2_rs232_hand_msg_buffer(RS232DurHand2RS232HandMsg* msg_buffer);
 bool write_to_rs232_dur_hand_2_rs232_hand_msg_buffer(RS232DurHand2RS232HandMsg* msg_buffer, TimeStamp msg_time, RS232DurHand2RS232HandMsgType msg_type, unsigned int component_num, RS232DurHand2RS232HandMsgAdditional additional_data);
-bool get_next_rs232_dur_hand_2_rs232_hand_msg_buffer_item(RS232DurHand2RS232HandMsg* msg_buffer, RS232DurHand2RS232HandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_rs232_dur_hand_2_rs232_hand_msg_buffer_item(RS232DurHand2RS232HandMsg* msg_buffer, RS232DurHand2RS232HandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

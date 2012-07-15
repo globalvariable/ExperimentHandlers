@@ -91,13 +91,17 @@ bool write_to_mov_obj_hand_2_neural_net_msg_buffer(MovObjHand2NeuralNetMsg* msg_
 		return print_message(BUG_MSG ,"ExperimentHandlers", "MovObjHand2NeuralNet", "write_to_mov_obj_hand_2_neural_net_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_mov_obj_hand_2_neural_net_msg_buffer_item(MovObjHand2NeuralNetMsg* msg_buffer, MovObjHand2NeuralNetMsgItem **msg_item)
+bool get_next_mov_obj_hand_2_neural_net_msg_buffer_item(MovObjHand2NeuralNetMsg* msg_buffer, MovObjHand2NeuralNetMsgItem *msg_item)
 {
 	unsigned int *idx;
+	MovObjHand2NeuralNetMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->additional_data = buff_item->additional_data;		
 	if ((*idx + 1) == MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

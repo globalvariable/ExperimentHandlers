@@ -39,5 +39,5 @@ Gui2MovObjHandMsg* allocate_gui_2_mov_obj_hand_msg_buffer(Gui2MovObjHandMsg* msg
 Gui2MovObjHandMsg* deallocate_gui_2_mov_obj_hand_msg_buffer(Gui2MovObjHandMsg* msg_buffer);
 bool get_gui_2_mov_obj_hand_msg_type_string(Gui2MovObjHandMsgType msg_type, char *str);
 bool write_to_gui_2_mov_obj_hand_msg_buffer(Gui2MovObjHandMsg* msg_buffer, TimeStamp msg_time, Gui2MovObjHandMsgType msg_type, Gui2MovObjHandMsgAdditional additional_data);
-bool get_next_gui_2_mov_obj_hand_msg_buffer_item(Gui2MovObjHandMsg* msg_buffer, Gui2MovObjHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_gui_2_mov_obj_hand_msg_buffer_item(Gui2MovObjHandMsg* msg_buffer, Gui2MovObjHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 #endif

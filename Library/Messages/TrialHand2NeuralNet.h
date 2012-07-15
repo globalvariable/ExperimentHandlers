@@ -14,8 +14,9 @@ typedef unsigned int TrialHand2NeuralNetMsgAdditional;
 #define TRIAL_HAND_2_NEURAL_NET_MSG_NULL								0
 #define TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
 #define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED				2
-#define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						3
-#define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					4
+#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START						3
+#define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						4
+#define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					5
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
@@ -53,6 +54,6 @@ TrialHand2NeuralNetMsg* allocate_shm_server_trial_hand_2_neural_net_msg_buffer(T
 TrialHand2NeuralNetMsg* allocate_shm_client_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer);
 TrialHand2NeuralNetMsg* deallocate_shm_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer);
 bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data_0, TrialHand2NeuralNetMsgAdditional additional_data_1);
-bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* msg_buffer, TrialHand2NeuralNetMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* msg_buffer, TrialHand2NeuralNetMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

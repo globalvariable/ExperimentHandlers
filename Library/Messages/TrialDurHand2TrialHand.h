@@ -45,6 +45,6 @@ bool get_trial_dur_hand_2_trial_hand_msg_type_string(TrialDurHand2TrialHandMsgTy
 TrialDurHand2TrialHandMsg* allocate_trial_dur_hand_2_trial_hand_msg_buffer(TrialDurHand2TrialHandMsg* msg_buffer);
 TrialDurHand2TrialHandMsg* deallocate_trial_dur_hand_2_trial_hand_msg_buffer(TrialDurHand2TrialHandMsg* msg_buffer);
 bool write_to_trial_dur_hand_2_trial_hand_msg_buffer(TrialDurHand2TrialHandMsg* msg_buffer, TimeStamp msg_time, TrialDurHand2TrialHandMsgType msg_type, TrialDurHand2TrialHandMsgAdditional additional_data);
-bool get_next_trial_dur_hand_2_trial_hand_msg_buffer_item(TrialDurHand2TrialHandMsg* msg_buffer, TrialDurHand2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_trial_dur_hand_2_trial_hand_msg_buffer_item(TrialDurHand2TrialHandMsg* msg_buffer, TrialDurHand2TrialHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

@@ -53,6 +53,6 @@ TrialHand2ExpEnviHandMsg* allocate_shm_server_trial_hand_2_exp_envi_hand_msg_buf
 TrialHand2ExpEnviHandMsg* allocate_shm_client_trial_hand_2_exp_envi_hand_msg_buffer(TrialHand2ExpEnviHandMsg* msg_buffer);
 TrialHand2ExpEnviHandMsg* deallocate_shm_trial_hand_2_exp_envi_hand_msg_buffer(TrialHand2ExpEnviHandMsg* msg_buffer);
 bool write_to_trial_hand_2_exp_envi_hand_msg_buffer(TrialHand2ExpEnviHandMsg* msg_buffer, TimeStamp msg_time, TrialHand2ExpEnviHandMsgType msg_type, TrialHand2ExpEnviHandMsgAdditional additional_data);
-bool get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(TrialHand2ExpEnviHandMsg* msg_buffer, TrialHand2ExpEnviHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(TrialHand2ExpEnviHandMsg* msg_buffer, TrialHand2ExpEnviHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

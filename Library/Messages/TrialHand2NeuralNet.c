@@ -13,6 +13,10 @@ bool get_trial_hand_2_neural_net_msg_type_string(TrialHand2NeuralNetMsgType msg_
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED");
 			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START");
+			return TRUE;
 		case TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN:
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN");
@@ -104,13 +108,18 @@ bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buf
 		return print_message(BUG_MSG ,"ExperimentHandlers", "TrialHand2NeuralNet", "write_to_trial_hand_2_neural_net_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* msg_buffer, TrialHand2NeuralNetMsgItem **msg_item)
+bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* msg_buffer, TrialHand2NeuralNetMsgItem *msg_item)
 {
 	unsigned int *idx;
+	TrialHand2NeuralNetMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->additional_data_0 = buff_item->additional_data_0;		
+	msg_item->additional_data_1 = buff_item->additional_data_1;		
 	if ((*idx + 1) == TRIAL_HAND_2_NEURAL_NET_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

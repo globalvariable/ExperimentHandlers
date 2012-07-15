@@ -102,13 +102,17 @@ bool write_to_mov_obj_hand_2_trial_hand_msg_buffer(MovObjHand2TrialHandMsg* msg_
 		return print_message(BUG_MSG ,"ExperimentHandlers", "MovObjHand2TrialHand", "write_to_mov_obj_hand_2_trial_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(MovObjHand2TrialHandMsg* msg_buffer, MovObjHand2TrialHandMsgItem **msg_item)
+bool get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(MovObjHand2TrialHandMsg* msg_buffer, MovObjHand2TrialHandMsgItem *msg_item)
 {
 	unsigned int *idx;
+	MovObjHand2TrialHandMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->additional_data = buff_item->additional_data;
 	if ((*idx + 1) == MOV_OBJ_HAND_2_TRIAL_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

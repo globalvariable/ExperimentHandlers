@@ -50,6 +50,6 @@ NeuralNet2TrialHandMsg* allocate_shm_server_neural_net_2_trial_hand_msg_buffer(N
 NeuralNet2TrialHandMsg* allocate_shm_client_neural_net_2_trial_hand_msg_buffer(NeuralNet2TrialHandMsg* msg_buffer);
 NeuralNet2TrialHandMsg* deallocate_shm_neural_net_2_trial_hand_msg_buffer(NeuralNet2TrialHandMsg* msg_buffer);
 bool write_to_neural_net_2_trial_hand_msg_buffer(NeuralNet2TrialHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2TrialHandMsgType msg_type,  NeuralNet2TrialHandMsgAdditional additional_data);
-bool get_next_neural_net_2_trial_hand_msg_buffer_item(NeuralNet2TrialHandMsg* msg_buffer, NeuralNet2TrialHandMsgItem **msg_item);	// take care of static read_idx value //only request buffer handler uses
+bool get_next_neural_net_2_trial_hand_msg_buffer_item(NeuralNet2TrialHandMsg* msg_buffer, NeuralNet2TrialHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

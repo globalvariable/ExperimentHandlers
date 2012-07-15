@@ -11,17 +11,17 @@ static unsigned int right_layer_spike_counter = 0;
 
 bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time, SpikeData *scheduled_spike_data)
 {
-	SpikeTimeStampItem *item;
+	SpikeTimeStampItem item;
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
 
 	while (get_next_spike_data_item(scheduled_spike_data, &item))
 	{
-		if (item->peak_time < previous_system_time)
-			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
-		if (item->peak_time >= current_time)	
+		if (item.peak_time < previous_system_time)
+			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item.peak_time < previous_system_time.");    	
+		if (item.peak_time >= current_time)	
 			break;    
 
-		switch (item->mwa_or_layer)
+		switch (item.mwa_or_layer)
 		{
 			case OUTPUT_LAYER_FOR_LEFT_MOVE:
 				switch (mov_obj_status)

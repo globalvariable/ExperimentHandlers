@@ -101,13 +101,20 @@ bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_
 		return print_message(BUG_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "write_to_neural_net_2_mov_obj_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }
-bool get_next_neural_net_2_mov_obj_hand_msg_buffer_item(NeuralNet2MovObjHandMsg* msg_buffer, NeuralNet2MovObjHandMsgItem **msg_item)
+bool get_next_neural_net_2_mov_obj_hand_msg_buffer_item(NeuralNet2MovObjHandMsg* msg_buffer, NeuralNet2MovObjHandMsgItem *msg_item)
 {
 	unsigned int *idx;
+	NeuralNet2MovObjHandMsgItem *buff_item;
 	idx = &(msg_buffer->buff_read_idx);
 	if (*idx == msg_buffer->buff_write_idx)
 		return FALSE;
-	*msg_item = &(msg_buffer->buff[*idx]);	
+	buff_item = &(msg_buffer->buff[*idx]);	
+	msg_item->msg_time = buff_item->msg_time;		
+	msg_item->msg_type = buff_item->msg_type;
+	msg_item->layer_num = buff_item->layer_num;	
+	msg_item->nrn_grp_num = buff_item->nrn_grp_num;	
+	msg_item->neuron_num = buff_item->neuron_num;	
+	msg_item->spike_time = buff_item->spike_time;	
 	if ((*idx + 1) == NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
