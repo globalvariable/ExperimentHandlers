@@ -67,7 +67,9 @@ TrialHand2ExpEnviHandMsg* allocate_shm_server_trial_hand_2_exp_envi_hand_msg_buf
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(TRIAL_HAND_2_EXP_ENVI_HAND_SHM_NAME), sizeof(TrialHand2ExpEnviHandMsg));
-	memset(msg_buffer, 0, sizeof(TrialHand2ExpEnviHandMsg));
+//	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
+	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
+	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
 	print_message(INFO_MSG ,"ExperimentHandlers", "TrialHand2ExpEnviHand", "allocate_shm_server_trial_hand_2_exp_envi_hand_msg_buffer", "Created shm_server_trial_hand_2_exp_envi_hand_msg_buffer.");
 	return msg_buffer;	
 }

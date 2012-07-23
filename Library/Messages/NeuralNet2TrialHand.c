@@ -51,7 +51,9 @@ NeuralNet2TrialHandMsg* allocate_shm_server_neural_net_2_trial_hand_msg_buffer(N
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(NEURAL_NET_2_TRIAL_HAND_SHM_NAME), sizeof(NeuralNet2TrialHandMsg));
-	memset(msg_buffer, 0, sizeof(NeuralNet2TrialHandMsg));
+//	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
+	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
+	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
 	print_message(INFO_MSG ,"ExperimentHandlers", "NeuralNet2TrialHand", "allocate_shm_server_neural_net_2_trial_hand_msg_buffer", "Created shm_server_neural_net_2_trial_hand_msg_buffer.");
 	return msg_buffer;	
 }

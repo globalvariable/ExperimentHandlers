@@ -51,7 +51,9 @@ SpikeGen2TrialHandMsg* allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(Spi
 		return msg_buffer;
 	}  
 	msg_buffer = rtai_malloc(nam2num(SPIKE_GEN_2_TRIAL_HAND_SHM_NAME), sizeof(SpikeGen2TrialHandMsg));
-	memset(msg_buffer, 0, sizeof(SpikeGen2TrialHandMsg));
+//	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
+	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
+	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
 	print_message(INFO_MSG ,"ExperimentHandlers", "SpikeGen2TrialHand", "allocate_shm_server_spike_gen_2_trial_hand_msg_buffer", "Created shm_server_spike_gen_2_trial_hand_msg_buffer.");
 	return msg_buffer;	
 }

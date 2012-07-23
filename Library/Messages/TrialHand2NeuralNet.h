@@ -17,6 +17,7 @@ typedef unsigned int TrialHand2NeuralNetMsgAdditional;
 #define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START						3
 #define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						4
 #define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					5
+#define TRIAL_HAND_2_NEURAL_NET_MSG_MOV_OBJ_REACHED_THRESHOLD		6
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
