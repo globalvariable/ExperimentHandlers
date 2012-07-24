@@ -43,6 +43,8 @@ typedef unsigned int MovObjDirectionType;
 #define	MOV_OBJ_DIRECTION_ROTATE_COUNTER_CLOCKWISE					102
 
 #define	MOV_OBJ_DIRECTION_STATIONARY									201
+#define	MOV_OBJ_DIRECTION_UNSPECIFIED									202
+
 
 bool get_mov_obj_direction_type_string(MovObjDirectionType direction_type, char *str);
 

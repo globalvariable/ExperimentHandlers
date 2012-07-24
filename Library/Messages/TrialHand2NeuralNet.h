@@ -6,7 +6,7 @@
 typedef struct __TrialHand2NeuralNetMsg TrialHand2NeuralNetMsg;
 typedef struct __TrialHand2NeuralNetMsgItem TrialHand2NeuralNetMsgItem;
 typedef unsigned int TrialHand2NeuralNetMsgType;
-typedef unsigned int TrialHand2NeuralNetMsgAdditional;
+typedef double TrialHand2NeuralNetMsgAdditional;
 
 
 #define TRIAL_HAND_2_NEURAL_NET_MSG_STRING_LENGTH						100
@@ -18,6 +18,8 @@ typedef unsigned int TrialHand2NeuralNetMsgAdditional;
 #define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						4
 #define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					5
 #define TRIAL_HAND_2_NEURAL_NET_MSG_MOV_OBJ_REACHED_THRESHOLD		6
+#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH	7
+#define TRIAL_HAND_2_NEURAL_NET_MSG_TRAJECTORY_SUCCESS_RATIO		8
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

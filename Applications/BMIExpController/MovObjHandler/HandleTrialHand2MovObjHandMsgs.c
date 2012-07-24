@@ -2,7 +2,7 @@
 
 
 
-bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType *mov_obj_trial_type_status, TimeStamp current_time, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand)
+bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType *mov_obj_trial_type_status, TimeStamp current_time, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand)
 {
 	TrialHand2MovObjHandMsgItem msg_item;
 	char str_trial_hand_msg[TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
@@ -18,16 +18,21 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 				switch (*mov_obj_status)
 				{
 					case MOV_OBJ_STATUS_OUT_OF_TRIAL:
+						mov_obj_data->main_stats.trajectory_success = 0;  // since currently there is one mov obj component
+						mov_obj_data->main_stats.num_of_actions = 0;
+						mov_obj_data->main_stats.trajectory_success_ratio = 0;
 						*mov_obj_trial_type_status = msg_item.additional_data;
 						switch (*mov_obj_trial_type_status)
 						{
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	
 								*mov_obj_status = MOV_OBJ_STATUS_STAYING_AT_START_POINT;
+								mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_LEFT;
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.stay_at_start_duration + current_time))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
 								break;
 							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:
 								*mov_obj_status = MOV_OBJ_STATUS_STAYING_AT_START_POINT;
+								mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_RIGHT;
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.stay_at_start_duration + current_time))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");
 								break;
@@ -86,14 +91,25 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 						switch (*mov_obj_trial_type_status)
 						{
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:  // right locations are below zero
-								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; // handle_mov_obj_handler_status handles robot to convenient target. 
+								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; 
+								mov_obj_data->main_stats.trajectory_success_ratio = mov_obj_data->main_stats.trajectory_success/mov_obj_data->main_stats.num_of_actions;
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO, mov_obj_data->main_stats.trajectory_success_ratio))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
+									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time, MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH, 0))  // resend it to trial handler to keep the messages from mov obj hand to neural net via trial handler.
+									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");
+									// cancel binning timer for sending commands to interfacer
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER, 0))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.motor_command_delivery_interval + current_time))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
 								break;
 							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:  // right locations are below zero
-								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; // handle_mov_obj_handler_status handles robot to convenient target. 
+								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; 
+								mov_obj_data->main_stats.trajectory_success_ratio = mov_obj_data->main_stats.trajectory_success/mov_obj_data->main_stats.num_of_actions;
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO, mov_obj_data->main_stats.trajectory_success_ratio))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
+									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");	
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time, MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH, 0))   // resend it to trial handler to keep the messages from mov obj hand to neural net via trial handler.
+									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");
 									// cancel binning timer for sending commands to interfacer
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER, 0))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
@@ -154,11 +170,13 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL:
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_START_POINT;
 						*mov_obj_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
+						mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_UNSPECIFIED;
 						// end trial message also goes exp envi which resets exp envi and mov obj
 						break;   // do nothing
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS:
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_START_POINT;
 						*mov_obj_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
+						mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_UNSPECIFIED;
 						// end trial message also goes exp envi which resets exp envi and mov obj
 						break;   // do nothing
 					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:

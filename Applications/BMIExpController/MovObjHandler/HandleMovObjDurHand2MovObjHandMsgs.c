@@ -27,7 +27,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data,
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:	// binning timeout
 						if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.motor_command_delivery_interval + current_time))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");
-						if (! handle_spike_data_buff_for_bin(scheduled_spike_data, current_time, msgs_mov_obj_hand_2_mov_obj_interf))
+						if (! handle_spike_data_buff_for_bin(mov_obj_data, scheduled_spike_data, current_time, msgs_mov_obj_hand_2_mov_obj_interf))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "handle_spike_data_buff_for_bin().");
 						break;
 					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:

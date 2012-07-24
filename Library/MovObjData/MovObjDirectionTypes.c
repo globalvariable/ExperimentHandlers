@@ -118,6 +118,16 @@ bool get_mov_obj_direction_type_string(MovObjDirectionType direction_type, char 
 			if (str != NULL)
 				strcpy(str, "MOV_OBJ_DIRECTION_ROTATE_COUNTER_CLOCKWISE");
 			return TRUE;
+
+		case MOV_OBJ_DIRECTION_STATIONARY:
+			if (str != NULL)
+				strcpy(str, "MOV_OBJ_DIRECTION_STATIONARY");
+			return TRUE;
+		case MOV_OBJ_DIRECTION_UNSPECIFIED:
+			if (str != NULL)
+				strcpy(str, "MOV_OBJ_DIRECTION_UNSPECIFIED");
+			return TRUE;
+
 ////////////////////////		
 		case MOV_OBJ_DIRECTION_NULL:
  			if (str != NULL)
