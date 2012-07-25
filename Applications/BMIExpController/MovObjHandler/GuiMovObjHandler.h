@@ -1,6 +1,8 @@
 #ifndef GUI_MOV_OBJ_HANDLER_H
 #define GUI_MOV_OBJ_HANDLER_H
 
+
+#include <stdlib.h>
 #include "../../../Library/Messages/Gui2MovObjHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/RtTasksData.h"

@@ -4,7 +4,10 @@ bool get_gui_2_mov_obj_hand_msg_type_string(Gui2MovObjHandMsgType msg_type, char
 {
 	switch (msg_type)
 	{
-
+		case GUI_2_MOV_OBJ_HAND_MSG_SET_THRESHOLD:
+			if (str != NULL)
+ 				strcpy(str, "GUI_2_MOV_OBJ_HAND_MSG_SET_THRESHOLD");
+			return TRUE;
 /////////////////////////		
 		case GUI_2_MOV_OBJ_HAND_MSG_NULL:
 			if (str != NULL)

@@ -6,13 +6,13 @@
 typedef struct __Gui2MovObjHandMsg Gui2MovObjHandMsg;
 typedef struct __Gui2MovObjHandMsgItem Gui2MovObjHandMsgItem;
 typedef unsigned int Gui2MovObjHandMsgType;
-typedef unsigned int Gui2MovObjHandMsgAdditional;
+typedef double Gui2MovObjHandMsgAdditional;
 
 
 #define GUI_2_MOV_OBJ_HAND_MSG_STRING_LENGTH		50
 
 #define GUI_2_MOV_OBJ_HAND_MSG_NULL					0
-
+#define GUI_2_MOV_OBJ_HAND_MSG_SET_THRESHOLD		1
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
