@@ -9,7 +9,7 @@
 typedef struct __MovObjHand2NeuralNetMsg MovObjHand2NeuralNetMsg;
 typedef struct __MovObjHand2NeuralNetMsgItem MovObjHand2NeuralNetMsgItem;
 typedef unsigned int MovObjHand2NeuralNetMsgType;
-typedef unsigned int MovObjHand2NeuralNetMsgAdditional;
+typedef double MovObjHand2NeuralNetMsgAdditional;
 #include "../../../BlueSpike/RtTasksData.h"
 typedef MovObjHand2NeuralNetMsg *MovObjHand2NeuralNetMsgPtr;
 typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS];
@@ -18,8 +18,7 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL								0
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
-
-
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION							2
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

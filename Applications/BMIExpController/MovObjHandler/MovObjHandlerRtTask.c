@@ -4,6 +4,7 @@ static RtTasksData *static_rt_tasks_data = NULL;
 
 static MovObjStatus mov_obj_status = MOV_OBJ_STATUS_NULL;   // Only mov_obj handler can change status. 
 static TrialType mov_obj_trial_type_status = TRIAL_TYPE_NULL;   // Only mov_obj handler can change trial type status. 
+static MovObjLocationType current_location = 0;   
 
 static int mov_obj_handler_rt_thread = 0;
 static bool rt_mov_obj_handler_stay_alive = 1;
@@ -116,7 +117,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
 		if (! handle_trial_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, &mov_obj_trial_type_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
-		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand))  {
+		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, &current_location))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }
@@ -126,7 +127,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_duration(curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
-		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, scheduled_spike_data))  {
+		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

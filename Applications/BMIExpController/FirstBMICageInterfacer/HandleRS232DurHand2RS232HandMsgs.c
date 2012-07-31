@@ -15,7 +15,7 @@ bool handle_rs232_dur_hand_to_rs232_hand_msgs(RS232Data *rs_232_data, TimeStamp 
 	while (get_next_rs232_dur_hand_2_rs232_hand_msg_buffer_item(msgs_rs232_dur_hand_2_rs232_hand, &msg_item))
 	{
 		get_rs232_dur_hand_2_rs232_hand_msg_type_string(msg_item.msg_type, str_rs232_dur_msg);
-		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232DurHand2RS232HandMsgs", "handle_rs232_dur_handler_to_rs232_handler_msgs", str_rs232_dur_msg);
+//		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232DurHand2RS232HandMsgs", "handle_rs232_dur_handler_to_rs232_handler_msgs", str_rs232_dur_msg);
 		switch (msg_item.msg_type)
 		{
 			case RS232_DUR_HAND_2_RS232_HAND_MSG_TX_TIMEOUT:	

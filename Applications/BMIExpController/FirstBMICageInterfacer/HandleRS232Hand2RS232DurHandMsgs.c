@@ -31,7 +31,7 @@ bool handle_rs232_handler_to_rs232_dur_handler_msgs(RS232Data *rs_232_data, Time
 	while (get_next_rs232_hand_2_rs232_dur_hand_msg_buffer_item(msgs_rs232_hand_2_rs232_dur_hand, &msg_item))
 	{
 		get_rs232_hand_2_rs232_dur_hand_msg_type_string(msg_item.msg_type, str_rs232_msg);
-		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232Hand2RS232DurHandMsgs", "handle_rs232_handler_to_rs232_dur_handler_msgs", str_rs232_msg);
+//		print_message(INFO_MSG ,"FirstBMICageInterfacer", "HandleRS232Hand2RS232DurHandMsgs", "handle_rs232_handler_to_rs232_dur_handler_msgs", str_rs232_msg);
 		switch (msg_item.msg_type)
 		{
 			case RS232_HAND_2_RS232_DUR_HAND_MSG_ENABLE_TX_TIMER:	

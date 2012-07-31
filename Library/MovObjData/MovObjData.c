@@ -44,7 +44,7 @@ bool get_component_type_idx_in_mov_obj_data(MovObjData *data, MovObjCompType com
 	}
 	return FALSE;	
 }
-bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_type, TimeStamp	stay_at_start_duration, TimeStamp stay_at_target_duration, double initial_threshold, double threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval, MovObjDirectionType target_direction)
+bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_type, TimeStamp	stay_at_start_duration, TimeStamp stay_at_target_duration, double initial_threshold, double threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval)
 {
 	unsigned int i;
 	bool comp_type_used;
@@ -71,7 +71,6 @@ bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_ty
 	data->comp_types[data->num_of_comps].comp_constraints.threshold_increment_amount = threshold_increment_amount;
 	data->comp_types[data->num_of_comps].comp_constraints.target_location = target_location;
 	data->comp_types[data->num_of_comps].comp_constraints.motor_command_delivery_interval = motor_command_delivery_interval;
-	data->comp_types[data->num_of_comps].comp_constraints.target_direction = target_direction;
 	data->num_of_comps++;
 	print_message(INFO_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", temp);	
 	return TRUE;
@@ -95,7 +94,7 @@ bool is_mov_obj_component_type_used(MovObjData* data, MovObjCompType comp_type, 
 	}
 	return TRUE;
 }
-bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_start_duration, TimeStamp stay_at_target_duration, MovObjLocationType initial_threshold, MovObjLocationType threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval, MovObjDirectionType target_direction)
+bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_start_duration, TimeStamp stay_at_target_duration, MovObjLocationType initial_threshold, MovObjLocationType threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval)
 {
 	if (stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY)
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "set_global_constraints_mov_obj_data", "stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");	
@@ -106,7 +105,6 @@ bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_sta
 	data->glo_constraints.threshold_increment_amount = threshold_increment_amount;	
 	data->glo_constraints.target_location = target_location;	
 	data->glo_constraints.motor_command_delivery_interval = motor_command_delivery_interval;	
-	data->glo_constraints.target_direction = target_direction;
 	return TRUE;
 }
 

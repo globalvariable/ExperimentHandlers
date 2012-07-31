@@ -26,13 +26,11 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 						{
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	
 								*mov_obj_status = MOV_OBJ_STATUS_STAYING_AT_START_POINT;
-								mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_LEFT;
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.stay_at_start_duration + current_time))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
 								break;
 							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:
 								*mov_obj_status = MOV_OBJ_STATUS_STAYING_AT_START_POINT;
-								mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_RIGHT;
 								if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.stay_at_start_duration + current_time))
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");
 								break;
@@ -170,13 +168,11 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL:
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_START_POINT;
 						*mov_obj_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
-						mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_UNSPECIFIED;
 						// end trial message also goes exp envi which resets exp envi and mov obj
 						break;   // do nothing
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS:
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_START_POINT;
 						*mov_obj_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
-						mov_obj_data->glo_constraints.target_direction = MOV_OBJ_DIRECTION_UNSPECIFIED;
 						// end trial message also goes exp envi which resets exp envi and mov obj
 						break;   // do nothing
 					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:

@@ -9,6 +9,10 @@ bool get_mov_obj_hand_2_neural_net_msg_type_string(MovObjHand2NeuralNetMsgType m
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE");
 			return TRUE;
+		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL:
 			if (str != NULL)

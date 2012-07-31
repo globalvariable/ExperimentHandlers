@@ -1,7 +1,7 @@
 #include "HandleMovObjDurHand2MovObjHandMsgs.h"
 
 
-bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType mov_obj_trial_type_status, TimeStamp current_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, SpikeData *scheduled_spike_data)
+bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType mov_obj_trial_type_status, TimeStamp current_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, SpikeData *scheduled_spike_data, MovObjLocationType current_location)
 {
 	MovObjDurHand2MovObjHandMsgItem msg_item;
 	char str_mov_obj_dur_msg[MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
@@ -23,11 +23,13 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data,
 						*mov_obj_status = MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL;
 						if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.motor_command_delivery_interval + current_time))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");	
+						if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION, 0))			
+							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");	
 						break;
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:	// binning timeout
 						if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER, mov_obj_data->glo_constraints.motor_command_delivery_interval + current_time))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");
-						if (! handle_spike_data_buff_for_bin(mov_obj_data, scheduled_spike_data, current_time, msgs_mov_obj_hand_2_mov_obj_interf))
+						if (! handle_spike_data_buff_for_bin(mov_obj_data, scheduled_spike_data, current_time, msgs_mov_obj_hand_2_mov_obj_interf, mov_obj_trial_type_status, current_location))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "handle_spike_data_buff_for_bin().");
 						break;
 					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:
