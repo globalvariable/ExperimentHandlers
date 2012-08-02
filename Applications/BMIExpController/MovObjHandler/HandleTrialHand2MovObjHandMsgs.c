@@ -91,7 +91,8 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:  // right locations are below zero
 								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; 
 								mov_obj_data->main_stats.trajectory_success_ratio = mov_obj_data->main_stats.trajectory_success/mov_obj_data->main_stats.num_of_actions;
-								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO, mov_obj_data->main_stats.trajectory_success_ratio))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO, 
+0.5*mov_obj_data->main_stats.trajectory_success_ratio-1.0))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");
 								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time, MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH, 0))  // resend it to trial handler to keep the messages from mov obj hand to neural net via trial handler.
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");
@@ -104,7 +105,7 @@ bool handle_trial_handler_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovOb
 							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:  // right locations are below zero
 								*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL; 
 								mov_obj_data->main_stats.trajectory_success_ratio = mov_obj_data->main_stats.trajectory_success/mov_obj_data->main_stats.num_of_actions;
-								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO, mov_obj_data->main_stats.trajectory_success_ratio))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO,            0.5*mov_obj_data->main_stats.trajectory_success_ratio-1.0))  // sending it before trial ends for being used to update synaptic weights.. send it before MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");	
 								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time, MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH, 0))   // resend it to trial handler to keep the messages from mov obj hand to neural net via trial handler.
 									return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");

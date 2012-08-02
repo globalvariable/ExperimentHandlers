@@ -114,10 +114,16 @@ bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *schedul
 		case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	// left locations are above zero
 			mov_obj_data->main_stats.trajectory_success += exp( -1.0 * (mov_obj_data->glo_constraints.current_threshold - current_location));  /// scaling factor = 1.0   r(t) = exp(-scale * (d thres - d curr))
 			mov_obj_data->main_stats.num_of_actions++;
+			printf("threshold = %f\n", mov_obj_data->glo_constraints.current_threshold) ;
+			printf("location = %f\n", current_location) ;
+			printf("traj_succ = %f\n", mov_obj_data->main_stats.trajectory_success) ;
 			break;
 		case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:	// left locations are above zero
-			mov_obj_data->main_stats.trajectory_success += exp(-1.0*(-(mov_obj_data->glo_constraints.current_threshold - current_location)));  /// scaling factor = 1.0
+			mov_obj_data->main_stats.trajectory_success += exp(-1.0*(-(-mov_obj_data->glo_constraints.current_threshold - current_location)));  /// scaling factor = 1.0
 			mov_obj_data->main_stats.num_of_actions++;
+			printf("threshold = %f\n", mov_obj_data->glo_constraints.current_threshold) ;
+			printf("location = %f\n", current_location) ;
+			printf("traj_succ = %f\n", mov_obj_data->main_stats.trajectory_success) ;
 			break;
 		default:
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg","default: mov_obj_trial_type_status."); 			
