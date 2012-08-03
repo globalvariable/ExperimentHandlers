@@ -117,8 +117,8 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
 		if (! handle_trial_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, &mov_obj_trial_type_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
-		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, &current_location))  {
-			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }
+		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, &current_location))  {  
+			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }   // should be handled before handle_spike_data_buff_for_bin which determined reward according to location.
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }
 		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data ))  {
