@@ -12,8 +12,8 @@ bool handle_neural_net_to_mov_obj_handler_msg(MovObjData *mov_obj_data, TimeStam
 	{
 		while (get_next_neural_net_2_mov_obj_hand_msg_buffer_item((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i], &msg_item))
 		{
-			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_neural_net_msg);
-			print_message(INFO_MSG ,"MovObjHandler", "HandleNeuralNet2MovObjHandMsgs", "handle_neural_net_to_mov_obj_handler_msg", str_neural_net_msg);
+//			get_neural_net_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_neural_net_msg);
+//			print_message(INFO_MSG ,"MovObjHandler", "HandleNeuralNet2MovObjHandMsgs", "handle_neural_net_to_mov_obj_handler_msg", str_neural_net_msg);
 			switch (msg_item.msg_type)
 			{
 				case NEURAL_NET_2_MOV_OBJ_HAND_MSG_SPIKE_OUTPUT:	

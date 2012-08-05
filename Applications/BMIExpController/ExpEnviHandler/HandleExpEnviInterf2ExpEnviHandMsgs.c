@@ -7,8 +7,8 @@ bool handle_exp_envi_interf_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, 
 	bool valid;
 	while (get_next_exp_envi_interf_2_exp_envi_hand_msg_buffer_item(msgs_exp_envi_interf_2_exp_envi_hand, &msg_item))
 	{
-		get_exp_envi_interf_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_exp_envi_interf_msg);
-		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", str_exp_envi_interf_msg);
+//		get_exp_envi_interf_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_exp_envi_interf_msg);
+//		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviInterf2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", str_exp_envi_interf_msg);
 		switch (msg_item.msg_type)
 		{
 			case EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_LOW_2_HIGH:	

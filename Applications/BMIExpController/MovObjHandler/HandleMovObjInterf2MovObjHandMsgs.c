@@ -3,7 +3,7 @@
 
 
 
-bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType mov_obj_trial_type_status, TimeStamp current_time, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, MovObjLocationType *current_location)
+bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovObjStatus *mov_obj_status, TrialType mov_obj_trial_type_status, TimeStamp current_time, MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, MovObjLocationType *current_location, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui)
 {
 	MovObjInterf2MovObjHandMsgItem msg_item;
 	char str_mov_obj_interf_msg[MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
@@ -21,6 +21,8 @@ bool handle_mov_obj_interf_to_mov_obj_handler_msg(MovObjData *mov_obj_data, MovO
 				printf("Location: %f\n", location);
 				if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION, location))			
 					return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_interf_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");	
+				if (! write_to_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui, current_time, MOV_OBJ_HAND_2_GUI_MSG_LOCATION, ONE_D_ACTUATOR, location, 0, 0))			
+					return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_interf_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_gui_msg_buffer()");	
 				switch (*mov_obj_status)
 				{
 					case MOV_OBJ_STATUS_OUT_OF_TRIAL:

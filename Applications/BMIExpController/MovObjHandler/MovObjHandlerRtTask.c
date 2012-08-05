@@ -14,6 +14,7 @@ static void *rt_mov_obj_handler(void *args);
 static MovObjData *static_mov_obj_data = NULL;
 
 static Gui2MovObjHandMsg *static_msgs_gui_2_mov_obj_hand = NULL;
+static MovObjHand2GuiMsg *static_msgs_mov_obj_hand_2_gui = NULL;
 
 static MovObjInterf2MovObjHandMsg *msgs_mov_obj_interf_2_mov_obj_hand = NULL;
 static MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf = NULL;
@@ -33,7 +34,7 @@ static bool connect_to_trial_hand(void);
 static bool connect_to_neural_net(void);
 static bool connect_to_mov_obj_interf(void );
 
-bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand)
+bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mov_obj_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui)
 {
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -42,6 +43,7 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, MovObjData *mo
 
 	static_mov_obj_data = mov_obj_data;
 	static_msgs_gui_2_mov_obj_hand = msgs_gui_2_mov_obj_hand;
+	static_msgs_mov_obj_hand_2_gui = msgs_mov_obj_hand_2_gui;
 
 	msgs_mov_obj_interf_2_mov_obj_hand = allocate_shm_server_mov_obj_interf_2_mov_obj_hand_msg_buffer(msgs_mov_obj_interf_2_mov_obj_hand);
 	msgs_trial_hand_2_mov_obj_hand = allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand);
@@ -99,7 +101,7 @@ static void *rt_mov_obj_handler(void *args)
 	msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_read_idx = msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_read_idx = msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	static_msgs_gui_2_mov_obj_hand->buff_read_idx = static_msgs_gui_2_mov_obj_hand->buff_write_idx;
-
+	static_msgs_mov_obj_hand_2_gui->buff_read_idx = static_msgs_mov_obj_hand_2_gui->buff_write_idx;
 	for (i = 0; i < (NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS); i++)
 	{
 		((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_read_idx = ((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
@@ -117,7 +119,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
 		if (! handle_trial_handler_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, &mov_obj_trial_type_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
-		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, &current_location))  {  
+		if (! handle_mov_obj_interf_to_mov_obj_handler_msg(static_mov_obj_data, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_interf_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_mov_obj_interf, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, &current_location, static_msgs_mov_obj_hand_2_gui))  {  
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_interf_to_mov_obj_handler_msg()."); break; }   // should be handled before handle_spike_data_buff_for_bin which determined reward according to location.
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_mov_obj_data, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }

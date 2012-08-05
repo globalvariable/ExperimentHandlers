@@ -5,7 +5,8 @@
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
-	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL;    
+	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL; 
+   	MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui = NULL; 
 	MovObjData *mov_obj_data = NULL;
 
    	rt_tasks_data = rtai_malloc(nam2num(RT_TASKS_DATA_SHM_NAME), 0);
@@ -19,11 +20,12 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! set_global_constraints_mov_obj_data().");
 
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
+	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);
 
-	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, mov_obj_data, msgs_gui_2_mov_obj_hand))
+	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, mov_obj_data, msgs_gui_2_mov_obj_hand,  msgs_mov_obj_hand_2_gui))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "create_mov_obj_handler_rt_thread().");
 	gtk_init(&argc, &argv);
-	create_gui_handler(rt_tasks_data, msgs_gui_2_mov_obj_hand);
+	create_gui_handler(rt_tasks_data, msgs_gui_2_mov_obj_hand, msgs_mov_obj_hand_2_gui);
 	gtk_main();
 	return 0;
 }	

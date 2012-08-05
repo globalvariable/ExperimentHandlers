@@ -8,8 +8,8 @@ bool handle_exp_envi_handler_to_exp_envi_dur_handler_msg(ExpEnviInputsMinDuratio
 	char str_exp_envi_inp_max_dur_status[EXP_ENVI_INPUTS_MAX_DUR_STATUS_MAX_STRING_LENGTH];
 	while (get_next_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer_item(msgs_exp_envi_hand_2_exp_envi_dur_hand, &msg_item))
 	{
-		get_exp_envi_hand_2_exp_envi_dur_hand_msg_type_string(msg_item.msg_type, str_exp_envi_hand_msg);
-		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_hand_msg);
+//		get_exp_envi_hand_2_exp_envi_dur_hand_msg_type_string(msg_item.msg_type, str_exp_envi_hand_msg);
+//		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_hand_msg);
 		switch (msg_item.msg_type)
 		{
 			case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER:	

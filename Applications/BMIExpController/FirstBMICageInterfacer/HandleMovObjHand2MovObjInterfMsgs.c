@@ -36,8 +36,8 @@ bool handle_mov_obj_hand_2_mov_obj_interf_msgs(MovObjHand2MovObjInterfMsg *msgs_
 				{
 					case ONE_D_ACTUATOR:
 						mov_obj_rs232_tx.command.Speed = msg_item.speed;
-						printf ("Speed: %f\n", msg_item.speed);
-						printf ("Speed int: %d\n", mov_obj_rs232_tx.command.Speed);
+//						printf ("Speed: %f\n", msg_item.speed);
+//						printf ("Speed int: %d\n", mov_obj_rs232_tx.command.Speed);
 						switch (msg_item.direction)
 						{
 							case MOV_OBJ_DIRECTION_LEFT:		// left direction is 0, right is 1
