@@ -30,7 +30,7 @@ static void *rt_servo_control(void *args)
 
 	if (! check_rt_task_specs_to_init(static_rt_tasks_data, 3, 0, 0,  10000000))  {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! check_rt_task_specs_to_init()."); exit(1); }	
-        if (! (handler = rt_task_init_schmod(nam2num("SERVOCON"), 10, 10000, 1000, SCHED_FIFO, 1 << ((3*MAX_NUM_OF_CPU_THREADS_PER_CPU)+0)))) {
+       if (! (handler = rt_task_init_schmod(nam2num("SERVOCON"), 10, 10000, 1000, SCHED_FIFO, 1 << ((3*MAX_NUM_OF_CPU_THREADS_PER_CPU)+0)))) {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "handler = rt_task_init_schmod()."); exit(1); }
 	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, 3, 0, 0, 10000000, 1000000, 1000000, "ServoControl"))  {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
@@ -52,19 +52,17 @@ static void *rt_servo_control(void *args)
 		prev_time = curr_time;
 		curr_system_time = static_rt_tasks_data->current_system_time;
 		// routines
-		tx_buffer[0] = 'P';
-		tx_buffer[1] = 2;
-		tx_buffer[2] = 3;
+		tx_buffer_pw_command[0] = 'P';
+		tx_buffer_pw_command[1] = 2;
+		tx_buffer_pw_command[2] = 3;
 
 		for (i = 3; i <  tx_pw_command_len; i+=2)
 		{
-			tx_buffer[i] = servos[(i-3)/2].pulse_command.byte[0]; 
-			tx_buffer[i+1] = servos[(i-3)/2].pulse_command.byte[1]; 
+			tx_buffer_pw_command[i] = servos[(i-3)/2].pulse_command.byte[0]; 
+			tx_buffer_pw_command[i+1] = servos[(i-3)/2].pulse_command.byte[1]; 
 		}
-
-		if (! write_to_rs232_com1(tx_buffer, tx_pw_command_len))
-			return (void*)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1().");
-
+		if (! write_to_rs232_com1_with_semaphore(tx_buffer_pw_command, tx_pw_command_len))
+			return (void*)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1_with_semaphore().");
 		evaluate_and_save_period_run_time(static_rt_tasks_data, 3,0,0, curr_time, rt_get_cpu_time_ns());	
 	
 		// routines	
@@ -74,23 +72,19 @@ static void *rt_servo_control(void *args)
 		prev_time = curr_time;
 		curr_system_time = static_rt_tasks_data->current_system_time;
 		// routines
-		if (! read_from_rs232_com1(rx_buffer, rx_position_len))
-			return (void*)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! read_from_rs232_com1().");
+		if (read_from_rs232_com1_mov_obj_with_semaphore(rx_buffer) < 0)
+			return (void*)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "read_from_rs232_com1_mov_obj_with_semaphore(rx_buffer) < 0.");
 
-		if ( (rx_buffer[0] != 0x00) || (rx_buffer[1] != 0x00) ) 
-			return (void*)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! Invalid message from MCU().");
-
-		for (i = 2; i <  rx_position_len; i+=2)
+		for (i = 0; i <  rx_position_len; i+=2)
 		{
-			servos[(i-2)/2].position.byte[0] = rx_buffer[i];
-			servos[(i-2)/2].position.byte[1] = rx_buffer[i+1];
+			servos[i/2].position.byte[0] = rx_buffer[i];
+			servos[i/2].position.byte[1] = rx_buffer[i+1];
 		}
 /*		for (i = 0; i < NUM_OF_SERVOS; i++)
 			printf("%u\t", servos[i].position.position);
 		printf("\n");
 */
-
-
+		printf("%u\t%u\t%u\n", servos[0].position.position, servos[1].position.position, servos[2].position.position);
 		evaluate_and_save_period_run_time(static_rt_tasks_data, 3,0,0, curr_time, rt_get_cpu_time_ns());		
 		// routines	
 

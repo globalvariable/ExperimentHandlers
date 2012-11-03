@@ -2,7 +2,7 @@
 #define SERVO_CONTROL_H
 
 #define MAX_NUM_OF_SERVOS 8
-#define NUM_OF_SERVOS	4
+#define NUM_OF_SERVOS	3
 
 #define BASE_SERVO			0
 #define SHOULDER_SERVO	1
@@ -14,9 +14,6 @@
 
 #define LOW_BYTE 0
 #define HIGH_BYTE 1
-
-#define MAX_NUM_OF_SERVOS 8
-#define NUM_OF_SERVOS 4
 
 #define RX_BUFF_SIZE 20
 #define TX_BUFF_SIZE 20
@@ -41,8 +38,9 @@ typedef struct
 
 ServoData servos[NUM_OF_SERVOS];
 
-char rx_buffer[RX_BUFF_SIZE];
-char tx_buffer[TX_BUFF_SIZE];
+char *rx_buffer;
+char *tx_buffer_adc_command;
+char *tx_buffer_pw_command;
 unsigned char tx_pw_command_len;
 unsigned char tx_adc_command_len;
 unsigned char rx_position_len;
