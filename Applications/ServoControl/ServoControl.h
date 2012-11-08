@@ -1,7 +1,6 @@
 #ifndef SERVO_CONTROL_H
 #define SERVO_CONTROL_H
 
-#define MAX_NUM_OF_SERVOS 8
 #define NUM_OF_SERVOS	3
 
 #define BASE_SERVO			0
@@ -12,38 +11,26 @@
 #define SHOULDER_SERVO_INIT_PULSE	15000
 #define ELBOW_SERVO_INIT_PULSE		15000
 
-#define LOW_BYTE 0
-#define HIGH_BYTE 1
+#define EXP_ENVI_STATUS_MSG_LEN			1
+#define EXP_ENVI_STATUS_MSG_START_IDX	1
+#define EXP_ENVI_CMD_MSG_LEN				1
+#define EXP_ENVI_CMD_MSG_START_IDX		1
 
-#define RX_BUFF_SIZE 20
-#define TX_BUFF_SIZE 20
+#define ROBOT_POSITION_MSG_LEN		2*NUM_OF_SERVOS
+#define ROBOT_POSITION_MSG_START_IDX	EXP_ENVI_STATUS_MSG_START_IDX+EXP_ENVI_STATUS_MSG_LEN
 
-typedef union 
-{
-	unsigned char		byte[2];
-	unsigned short int	pulse_width;
-} ServoPulse;	// X PointOneMicrosec
+#define ROBOT_PW_CMD_MSG_LEN		2*NUM_OF_SERVOS
+#define ROBOT_PW_CMD_MSG_START_IDX	EXP_ENVI_CMD_MSG_START_IDX+EXP_ENVI_CMD_MSG_LEN
 
-typedef union 
-{
-	unsigned char		byte[2];
-	unsigned short int	position;
-} ServoPosition;	// X PointOneMicrosec
+#define RX_BUFF_SIZE				1 + EXP_ENVI_STATUS_MSG_LEN + (2*NUM_OF_SERVOS) + 2		// 0xFF + EXP_ENVI_STATUS (1 BYTE) + SERVO_0_POSITION_L_BYTE + SERVO_0_POSITION_H_BYTE + SERVO_1_POSITION_L_BYTE + SERVO_1_ POSITION_H_BYTE + SERVO_2_POSITION_L_BYTE + SERVO_2_ POSITION_H_BYTE + 0xFF + 0xFF
 
-typedef struct 
-{ 
-	ServoPulse		pulse_command;		// saves pulse width relative to neutral_pulse (positive or negative)
-	ServoPosition		position;
-} ServoData;
+#define PW_TX_BUFF_SIZE			1 + EXP_ENVI_CMD_MSG_LEN + (2*NUM_OF_SERVOS) + 2		// 'P' + EXP_ENVI_COMND (1 BYTE) + SERVO_0_PW_L_BYTE + SERVO_0_PW_H_BYTE + SERVO_1_PW_L_BYTE + SERVO_1_ PW_H_BYTE + SERVO_2_PW_L_BYTE + SERVO_2_ PW_H_BYTE + 0xFF + 0xFF	
 
-ServoData servos[NUM_OF_SERVOS];
+#define ADC_TX_BUFF_SIZE			1 + EXP_ENVI_CMD_MSG_LEN + 2		// 'A' + EXP_ENVI_COMND (1 BYTE) + 0xFF + 0xFF	
 
-char *rx_buffer;
-char *tx_buffer_adc_command;
-char *tx_buffer_pw_command;
-unsigned char tx_pw_command_len;
-unsigned char tx_adc_command_len;
-unsigned char rx_position_len;
+
+
+
 
 #include "Gui.h"
 #include "ServoControlRtTask.h"

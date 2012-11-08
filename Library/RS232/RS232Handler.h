@@ -13,21 +13,23 @@
 #include "../../../BlueSpike/ShmNames.h"
 
 
-bool init_rs232_com1(unsigned int baud_rate, bool with_semaphore);
-bool bind_to_rs232_com1_semaphore(void);
-bool init_exp_envi_mov_obj_rs232_com1_shm(void) ;
-bool bind_to_exp_envi_mov_obj_rs232_com1_shm(void);
-bool write_to_rs232_com1_with_semaphore(char *msg, int msg_size);
-int read_from_rs232_com1_exp_envi_with_semaphore(char *user_exp_envi_buffer);
-int read_from_rs232_com1_mov_obj_with_semaphore(char *user_mov_obj_buffer);
-bool enable_rs232_com2(unsigned int baud_rate, bool with_semaphore);
+bool init_rs232_com1(unsigned int baud_rate);
+bool init_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem);
+bool bind_to_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem);
+bool init_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem);
+bool bind_to_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem) ;
+bool init_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff, unsigned int buff_size);
+bool bind_to_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff);
+bool init_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff, unsigned int buff_size);
+bool bind_to_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff);
+bool write_to_exp_envi_rx_buff_shm(unsigned char *msg, unsigned char *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem) ;
+bool read_exp_envi_rx_buff_shm(unsigned char *msg, unsigned char *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem);
+bool write_to_exp_envi_tx_buff_shm(unsigned char *msg, unsigned char *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem);
+bool read_exp_envi_tx_buff_shm(unsigned char *msg, unsigned char *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem);
+bool read_from_rs232_com1(unsigned char *msg, unsigned int msg_size);
+bool write_to_rs232_com1(unsigned char *msg, unsigned int msg_size);
 void disable_rs232_com1(void);
-void disable_rs232_com2(void);
-bool read_from_rs232_com1(char *msg, int msg_size);
-bool read_from_rs232_com2(char *msg, int msg_size);
-bool write_to_rs232_com1(char *msg, int msg_size);
-bool write_to_rs232_com2(char *msg, int msg_size);
-
+void clear_rx_buffer(unsigned char *rx_buffer, unsigned int buff_size) ;
 
 
 

@@ -1,5 +1,7 @@
 #include "Gui.h"
 
+static ServoData *static_servos = NULL;
+
 static GtkWidget *entry_base_pulse_width;
 static GtkWidget *entry_shoulder_pulse_width;
 static GtkWidget *entry_elbow_pulse_width;
@@ -7,9 +9,11 @@ static GtkWidget *btn_submit_pulse_width;
 
 static void submit_pulse_width_button_func(void);
 
-void create_gui(void)
+void create_gui(ServoData *servos)
 {
 	GtkWidget *window, *vbox, *hbox, *lbl;
+
+	static_servos = servos;
 
  	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -90,9 +94,9 @@ static void submit_pulse_width_button_func(void)
 	if (elbow_pw <= 5000)
 		return (void)print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "submit_pulse_width_button_func", "elbow_pw <= 5000.");
 	
-	servos[BASE_SERVO].pulse_command.pulse_width = 65536 - base_pw;
-	servos[SHOULDER_SERVO].pulse_command.pulse_width = 65536 - shoulder_pw;
-	servos[ELBOW_SERVO].pulse_command.pulse_width = 65536 - elbow_pw;
+	static_servos[BASE_SERVO].pulse_command.pulse_width = 65536 - base_pw;
+	static_servos[SHOULDER_SERVO].pulse_command.pulse_width = 65536 - shoulder_pw;
+	static_servos[ELBOW_SERVO].pulse_command.pulse_width = 65536 - elbow_pw;
 
 	return;
 }
