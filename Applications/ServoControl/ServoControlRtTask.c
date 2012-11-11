@@ -61,7 +61,7 @@ static void *rt_servo_control(void *args)
 	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, 3, 0, 0, 10000000, 1000000, 1000000, "ServoControl"))  {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
-        period = nano2count(12000000);
+        period = nano2count(12500000);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
 
 
@@ -113,6 +113,8 @@ static void *rt_servo_control(void *args)
 		if (! read_exp_envi_tx_buff_shm(exp_envi_tx_buffer, static_exp_envi_tx_buff, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem)) {
 			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! read_exp_envi_tx_buff_shm()."); exit(1); }
 		
+		printf("%u\n", exp_envi_tx_buffer[0]);
+
 		for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 			pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer[i];
 
