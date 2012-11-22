@@ -10,13 +10,13 @@ LXRT_LDFLAGS = $(shell rtai-config --lxrt-ldflags)
 MATH_FLAGS = -lm
 GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 
-all: ServoControl
+all: ArmControl
 
-ServoControl: ServoControl.c ServoControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ServoControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ### ServoControl
+ArmControl: ArmControl.c ArmControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ArmControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ### ArmControl
 
-ServoControlRtTask.o: ServoControlRtTask.c 
-	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ServoControlRtTask
+ArmControlRtTask.o: ArmControlRtTask.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ArmControlRtTask
 
 Gui.o: Gui.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### Gui
@@ -30,11 +30,14 @@ Gui.o: Gui.c
 ../../Library/Servo/Servo.o: ../../Library/Servo/Servo.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Servo/Servo
 
+../../Library/Robot/ThreeDofRobot.o: ../../Library/Robot/ThreeDofRobot.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Robot/ThreeDofRobot
+
 ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o: ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.c	
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o
 
 clean:
-	rm -f ServoControl *.o ../../../BlueSpike/Library/Misc/*.o ../../Library/RS232/RS232*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Servo/*.o
+	rm -f ArmControl *.o ../../../BlueSpike/Library/Misc/*.o ../../Library/RS232/RS232*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Servo/*.o ../../Library/Robot/*.o
 
 .PHONY: clean
 

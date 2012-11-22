@@ -1,6 +1,6 @@
-#include "ServoControlRtTask.h"
+#include "ArmControlRtTask.h"
 
-static ServoData *static_servos = NULL;
+static ThreeDofRobot *static_robot_arm = NULL;
 
 static RtTasksData *static_rt_tasks_data = NULL;
 static SEM *static_exp_envi_rx_buff_sem = NULL;
@@ -14,9 +14,9 @@ static bool rt_servo_control_stay_alive = 1;
 static void *rt_servo_control(void *args);
 
 
-bool create_servo_control_rt_thread(RtTasksData *rt_tasks_data, SEM* exp_envi_rx_buff_sem, SEM *exp_envi_tx_buff_sem, unsigned char *exp_envi_rx_buff, unsigned char *exp_envi_tx_buff, ServoData *servos)
+bool create_servo_control_rt_thread(RtTasksData *rt_tasks_data, SEM* exp_envi_rx_buff_sem, SEM *exp_envi_tx_buff_sem, unsigned char *exp_envi_rx_buff, unsigned char *exp_envi_tx_buff, ThreeDofRobot *robot_arm)
 {
-	static_servos = servos;
+	static_robot_arm = robot_arm;
 
 	static_rt_tasks_data = rt_tasks_data;
 	static_exp_envi_rx_buff_sem = exp_envi_rx_buff_sem;
@@ -93,10 +93,12 @@ static void *rt_servo_control(void *args)
 		if (! write_to_exp_envi_rx_buff_shm(&(rx_buffer[EXP_ENVI_STATUS_MSG_START_IDX]), static_exp_envi_rx_buff, EXP_ENVI_STATUS_MSG_LEN, static_exp_envi_rx_buff_sem)) {
 			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_exp_envi_rx_buff_shm()."); exit(1); }
 		for (i = 0; i <  ROBOT_POSITION_MSG_LEN; i+=2)
-			write_servo_position_val(static_servos, (unsigned int) (i/2), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
-	
-/*		for (i = 0; i < NUM_OF_SERVOS; i++)
-			printf("%u\t", static_servos[i].position.position);
+			write_servo_position_val(static_robot_arm->servos, (unsigned int) (i/2), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
+
+		calculate_forward_kinematics(static_robot_arm);
+		
+/*		for (i = 0; i < 3; i++)
+			printf("%u\t", static_robot_arm->servos[i].position.position);
 		printf("\n");
 */
 //		printf("%u\t%u\t%u\n", servos[0].position.position, servos[1].position.position, servos[2].position.position);
@@ -113,14 +115,14 @@ static void *rt_servo_control(void *args)
 		if (! read_exp_envi_tx_buff_shm(exp_envi_tx_buffer, static_exp_envi_tx_buff, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem)) {
 			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! read_exp_envi_tx_buff_shm()."); exit(1); }
 		
-		printf("%u\n", exp_envi_tx_buffer[0]);
+//		printf("%u\n", exp_envi_tx_buffer[0]);
 
 		for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 			pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer[i];
 
 		for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
 		{
-			get_servo_pw_val(static_servos, (unsigned int) (i/2), &cmd_low_byte, &cmd_high_byte);
+			get_servo_pw_val(static_robot_arm->servos, (unsigned int) (i/2), &cmd_low_byte, &cmd_high_byte);
 			pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i] = cmd_low_byte;
  			pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i +1] = cmd_high_byte;
 		}

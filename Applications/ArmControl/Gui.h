@@ -5,12 +5,12 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "ServoControl.h"
+#include "ArmControl.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../Library/Servo/Servo.h"
+#include "../../Library/Robot/ThreeDofRobot.h"
 
 // Functions
-void create_gui(ServoData *servos);
+void create_gui(ThreeDofRobot *robot_arm);
 
 
 #endif
