@@ -5,7 +5,7 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "ArmControl.h"
+#include "ArmConfig.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../Library/Robot/ThreeDofRobot.h"
 

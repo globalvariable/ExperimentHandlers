@@ -1,12 +1,12 @@
-#ifndef SERVO_CONTROL_RT_TASK_H
-#define SERVO_CONTROL_RT_TASK_H
+#ifndef ARM_CONFIG_RT_TASK_H
+#define ARM_CONFIG_RT_TASK_H
 
 
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
-#include "ArmControl.h"
+#include "ArmConfig.h"
 #include "../../../BlueSpike/RtTasksData.h"
 #include "../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "../../Library/RS232/RS232Handler.h"

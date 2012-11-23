@@ -1,5 +1,5 @@
-#ifndef SERVO_CONTROL_H
-#define SERVO_CONTROL_H
+#ifndef ARM_CONFIG_H
+#define ARM_CONFIGL_H
 
 #define EXP_ENVI_STATUS_MSG_LEN			1
 #define EXP_ENVI_STATUS_MSG_START_IDX	1
@@ -23,7 +23,7 @@
 
 
 #include "Gui.h"
-#include "ArmControlRtTask.h"
+#include "ArmConfigRtTask.h"
 
 
 

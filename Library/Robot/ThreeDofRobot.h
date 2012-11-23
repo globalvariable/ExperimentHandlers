@@ -26,9 +26,10 @@ typedef struct
 	double		elbow_lateral;
 	double		length_humerus;
 	double		length_ulna;
+	double		height_ulna;
 } ThreeDofRobot;	// X PointOneMicrosec
 
-void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna);
+void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 
 #endif

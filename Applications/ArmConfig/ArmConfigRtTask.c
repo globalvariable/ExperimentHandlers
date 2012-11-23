@@ -1,4 +1,4 @@
-#include "ArmControlRtTask.h"
+#include "ArmConfigRtTask.h"
 
 static ThreeDofRobot *static_robot_arm = NULL;
 

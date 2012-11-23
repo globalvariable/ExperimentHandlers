@@ -10,13 +10,13 @@ LXRT_LDFLAGS = $(shell rtai-config --lxrt-ldflags)
 MATH_FLAGS = -lm
 GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 
-all: ArmControl
+all: ArmConfig
 
-ArmControl: ArmControl.c ArmControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ArmControlRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ### ArmControl
+ArmConfig: ArmConfig.c ArmConfigRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ArmConfigRtTask.o Gui.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ### ArmConfig
 
-ArmControlRtTask.o: ArmControlRtTask.c 
-	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ArmControlRtTask
+ArmConfigRtTask.o: ArmConfigRtTask.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ArmConfigRtTask
 
 Gui.o: Gui.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### Gui
@@ -37,7 +37,7 @@ Gui.o: Gui.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o
 
 clean:
-	rm -f ArmControl *.o ../../../BlueSpike/Library/Misc/*.o ../../Library/RS232/RS232*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Servo/*.o ../../Library/Robot/*.o
+	rm -f ArmConfig *.o ../../../BlueSpike/Library/Misc/*.o ../../Library/RS232/RS232*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Servo/*.o ../../Library/Robot/*.o
 
 .PHONY: clean
 
