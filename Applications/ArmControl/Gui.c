@@ -34,6 +34,10 @@ static GtkWidget *btn_set_elbow_90_degree;
 static GtkWidget *lbl_elbow_degree_per_pos_quanta;
 static GtkWidget *lbl_elbow_angle;
 
+static GtkWidget *lbl_tip_height;
+static GtkWidget *lbl_tip_lateral;
+static GtkWidget *lbl_tip_depth;
+
 static gboolean timeout_callback(gpointer none);
 
 static void submit_pulse_width_button_func(void);
@@ -68,11 +72,11 @@ void create_gui(ThreeDofRobot 	*robot_arm)
   	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);       
 
-	table = gtk_table_new(2 ,6,TRUE);   // 2 rows 6 columns
+	table = gtk_table_new(2 ,2,TRUE);   // 2 rows 2 columns
 	gtk_box_pack_start(GTK_BOX(hbox),table, TRUE,TRUE,0);
 
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,1, 0, 6);  // column 0-1, row 0-6
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,1, 0, 1);  // column 0-1, row 0-6
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
@@ -227,6 +231,37 @@ void create_gui(ThreeDofRobot 	*robot_arm)
 	btn_submit_pulse_width = gtk_button_new_with_label("Submit Pulse Width");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_pulse_width, TRUE, TRUE, 0);
 
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,1, 1, 2);  // column 0-1, row 1-2
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	lbl = gtk_label_new("Height\t\t: ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
+	lbl_tip_height = gtk_label_new("0");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_tip_height, FALSE,FALSE,0);
+	gtk_widget_set_size_request(lbl_tip_height, 60, 30) ;	
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	lbl = gtk_label_new("Lateral\t\t: ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
+	lbl_tip_lateral = gtk_label_new("0");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_tip_lateral, FALSE,FALSE,0);
+	gtk_widget_set_size_request(lbl_tip_lateral, 60, 30) ;	
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	lbl = gtk_label_new("Depth\t\t: ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
+	lbl_tip_depth = gtk_label_new("0");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_tip_depth, FALSE,FALSE,0);
+	gtk_widget_set_size_request(lbl_tip_depth, 60, 30) ;	
+
+
 	gtk_widget_show_all(window);
 
   	g_signal_connect (G_OBJECT (window), "destroy", G_CALLBACK (gtk_main_quit), NULL);
@@ -249,7 +284,7 @@ void create_gui(ThreeDofRobot 	*robot_arm)
 
 static gboolean timeout_callback(gpointer none)
 {
-	char temp[10];
+	char temp[50];
 
 	sprintf (temp, "%.2f°", static_robot_arm->servos[BASE_SERVO].angle_radian * (180.0 / M_PI));
  	gtk_label_set_text(GTK_LABEL(lbl_base_angle), temp);
@@ -257,6 +292,13 @@ static gboolean timeout_callback(gpointer none)
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_angle), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[ELBOW_SERVO].angle_radian * (180.0 / M_PI));
  	gtk_label_set_text(GTK_LABEL(lbl_elbow_angle), temp);
+
+	sprintf (temp, "%.2f", static_robot_arm->tip_height);
+ 	gtk_label_set_text(GTK_LABEL(lbl_tip_height), temp);
+	sprintf (temp, "%.2f", static_robot_arm->tip_lateral);
+ 	gtk_label_set_text(GTK_LABEL(lbl_tip_lateral), temp);
+	sprintf (temp, "%.2f", static_robot_arm->tip_depth);
+ 	gtk_label_set_text(GTK_LABEL(lbl_tip_depth), temp);
 
 	return TRUE;
 } 
@@ -319,7 +361,7 @@ static void decrement_base_pulse_width_button_func(void)
 }
 static void set_base_0_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[BASE_SERVO].position_0_degree = static_robot_arm->servos[BASE_SERVO].position.position;
 	if (static_robot_arm->servos[BASE_SERVO].position_90_degree == 0)
 		static_robot_arm->servos[BASE_SERVO].position_90_degree = static_robot_arm->servos[BASE_SERVO].position_0_degree;
@@ -333,7 +375,7 @@ static void set_base_0_degree_button_func(void)
 }
 static void set_base_90_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[BASE_SERVO].position_90_degree = static_robot_arm->servos[BASE_SERVO].position.position;
 	if (static_robot_arm->servos[BASE_SERVO].position_0_degree == 0)
 		static_robot_arm->servos[BASE_SERVO].position_0_degree = static_robot_arm->servos[BASE_SERVO].position_90_degree;
@@ -374,7 +416,7 @@ static void decrement_shoulder_pulse_width_button_func(void)
 }
 static void set_shoulder_0_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[SHOULDER_SERVO].position_0_degree = static_robot_arm->servos[SHOULDER_SERVO].position.position;
 	if (static_robot_arm->servos[SHOULDER_SERVO].position_90_degree == 0)
 		static_robot_arm->servos[SHOULDER_SERVO].position_90_degree = static_robot_arm->servos[SHOULDER_SERVO].position_0_degree;
@@ -387,7 +429,7 @@ static void set_shoulder_0_degree_button_func(void)
 }
 static void set_shoulder_90_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[SHOULDER_SERVO].position_90_degree = static_robot_arm->servos[SHOULDER_SERVO].position.position;
 	if (static_robot_arm->servos[SHOULDER_SERVO].position_0_degree == 0)
 		static_robot_arm->servos[SHOULDER_SERVO].position_0_degree = static_robot_arm->servos[SHOULDER_SERVO].position_90_degree;
@@ -428,7 +470,7 @@ static void decrement_elbow_pulse_width_button_func(void)
 }
 static void set_elbow_0_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[ELBOW_SERVO].position_0_degree = static_robot_arm->servos[ELBOW_SERVO].position.position;
 	if (static_robot_arm->servos[ELBOW_SERVO].position_90_degree == 0)
 		static_robot_arm->servos[ELBOW_SERVO].position_90_degree = static_robot_arm->servos[ELBOW_SERVO].position_0_degree;
@@ -441,7 +483,7 @@ static void set_elbow_0_degree_button_func(void)
 }
 static void set_elbow_90_degree_button_func(void)
 {
-	char temp[20];
+	char temp[50];
 	static_robot_arm->servos[ELBOW_SERVO].position_90_degree = static_robot_arm->servos[ELBOW_SERVO].position.position;
 	if (static_robot_arm->servos[ELBOW_SERVO].position_0_degree == 0)
 		static_robot_arm->servos[ELBOW_SERVO].position_0_degree = static_robot_arm->servos[ELBOW_SERVO].position_90_degree;
