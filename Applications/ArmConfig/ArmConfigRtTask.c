@@ -93,14 +93,14 @@ static void *rt_servo_control(void *args)
 		if (! write_to_exp_envi_rx_buff_shm(&(rx_buffer[EXP_ENVI_STATUS_MSG_START_IDX]), static_exp_envi_rx_buff, EXP_ENVI_STATUS_MSG_LEN, static_exp_envi_rx_buff_sem)) {
 			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_exp_envi_rx_buff_shm()."); exit(1); }
 		for (i = 0; i <  ROBOT_POSITION_MSG_LEN; i+=2)
-			write_servo_position_val(static_robot_arm->servos, (unsigned int) (i/2), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
+			write_servo_position_val(&(static_robot_arm->servos[(unsigned int) (i/2)]), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
 
 		calculate_forward_kinematics(static_robot_arm);
 		
-/*		for (i = 0; i < 3; i++)
+		for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 			printf("%u\t", static_robot_arm->servos[i].position.position);
 		printf("\n");
-*/
+
 //		printf("%u\t%u\t%u\n", servos[0].position.position, servos[1].position.position, servos[2].position.position);
 
 		// routines	
@@ -120,15 +120,17 @@ static void *rt_servo_control(void *args)
 		for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 			pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer[i];
 
-		for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
+		if ( check_three_dof_robot_out_of_security_limits(static_robot_arm))
 		{
-			get_servo_pw_val(static_robot_arm->servos, (unsigned int) (i/2), &cmd_low_byte, &cmd_high_byte);
-			pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i] = cmd_low_byte;
- 			pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i +1] = cmd_high_byte;
+			for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
+			{
+				get_servo_pw_val(&(static_robot_arm->servos[(unsigned int) (i/2)]), &cmd_low_byte, &cmd_high_byte);
+				pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i] = cmd_low_byte;
+ 				pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i +1] = cmd_high_byte;
+			}
+			if (! write_to_rs232_com1(pw_tx_buffer, PW_TX_BUFF_SIZE)) {
+				print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1()."); exit(1); }	
 		}
-
-		if (! write_to_rs232_com1(pw_tx_buffer, PW_TX_BUFF_SIZE)) {
-			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1()."); exit(1); }	
 
 		evaluate_and_save_period_run_time(static_rt_tasks_data, 3,0,0, curr_time, rt_get_cpu_time_ns());		
 		// routines	
