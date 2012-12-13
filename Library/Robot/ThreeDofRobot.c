@@ -1,11 +1,29 @@
 #include "ThreeDofRobot.h"
 
+void init_three_dof_robot_arm(ThreeDofRobot *robot_arm)
+{
+	unsigned int i;
+	pthread_mutex_init(&(robot_arm->mutex), NULL);	
+	pthread_mutex_lock(&(robot_arm->mutex));
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+		init_servo_data(&(robot_arm->servos[i]));
+	pthread_mutex_unlock(&(robot_arm->mutex));
+}
 
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna)
 {
 	robot_arm->length_humerus = length_humerus;
 	robot_arm->length_ulna = length_ulna;
 	robot_arm->height_ulna = height_ulna;
+}
+
+void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm)
+{
+	unsigned int i;
+	pthread_mutex_lock(&(robot_arm->mutex));
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+		evaluate_servo_pw_command(&(robot_arm->servos[i]));
+	pthread_mutex_unlock(&(robot_arm->mutex));
 }
 
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
@@ -32,7 +50,7 @@ void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 	tip_position->lateral = R*cos(theta); 
 }
 
-void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max)
+void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit)
 {
 	robot_arm->security_limits.depth_min = depth_min;
 	robot_arm->security_limits.depth_max = depth_max;
@@ -40,17 +58,25 @@ void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, doub
 	robot_arm->security_limits.lateral_max = lateral_max;
 	robot_arm->security_limits.height_min = height_min;
 	robot_arm->security_limits.height_max = height_max;
+	robot_arm->security_limits.j_angle_min = joint_angle_lower_limit;
+	robot_arm->security_limits.j_angle_max = joint_angle_upper_limit;
 }
 
 bool check_three_dof_robot_out_of_security_limits(ThreeDofRobot *robot_arm)
 {
 	ThreeDofRobotPosition *tip_position =&(robot_arm->tip_position);
 	ThreeDofRobotLimit	*security_limits = &(robot_arm->security_limits);
+	unsigned int i;
 	if ((security_limits->depth_min > tip_position->depth) || (security_limits->depth_max < tip_position->depth))
 		return false;
 	if ((security_limits->lateral_min > tip_position->lateral) || (security_limits->lateral_max < tip_position->lateral))
 		return false;
 	if ((security_limits->height_min > tip_position->height) || (security_limits->height_max < tip_position->height))
 		return false;
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+	{
+		if ((security_limits->j_angle_min > robot_arm->servos[i].current_angle) || (security_limits->j_angle_max < robot_arm->servos[i].current_angle))
+			return false;
+	}
 	return true;
 }

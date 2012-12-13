@@ -122,14 +122,19 @@ static void *rt_servo_control(void *args)
 
 		if ( check_three_dof_robot_out_of_security_limits(static_robot_arm))
 		{
+			evaluate_three_dof_robot_arm_pw_command(static_robot_arm);
 			for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
 			{
-				get_servo_pw_val(&(static_robot_arm->servos[(unsigned int) (i/2)]), &cmd_low_byte, &cmd_high_byte);
+				get_servo_pw_val_bytes(&(static_robot_arm->servos[(unsigned int) (i/2)]), &cmd_low_byte, &cmd_high_byte);
 				pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i] = cmd_low_byte;
  				pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i +1] = cmd_high_byte;
 			}
 			if (! write_to_rs232_com1(pw_tx_buffer, PW_TX_BUFF_SIZE)) {
 				print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1()."); exit(1); }	
+		}
+		else
+		{
+			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! check_three_dof_robot_out_of_security_limits()."); exit(1);
 		}
 
 		evaluate_and_save_period_run_time(static_rt_tasks_data, 3,0,0, curr_time, rt_get_cpu_time_ns());		
