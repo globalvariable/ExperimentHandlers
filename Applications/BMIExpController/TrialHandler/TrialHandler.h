@@ -4,6 +4,7 @@
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
+#include "../../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 #include "Gui.h"
 
 

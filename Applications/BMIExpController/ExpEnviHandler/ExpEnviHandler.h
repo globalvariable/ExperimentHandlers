@@ -3,6 +3,7 @@
 
 
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
+#include "../../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 #include "Gui.h"
 #include "ExpEnviHandlerRtTask.h"
 #include "../../../Library/ExpEnviData/ExpEnviData.h"

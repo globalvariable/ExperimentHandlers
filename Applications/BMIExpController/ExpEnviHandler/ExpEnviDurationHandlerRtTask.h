@@ -9,7 +9,7 @@
 #include "../../../Library/Messages/ExpEnviDurHand2ExpEnviHand.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviDurHand.h"
 #include "../../../Library/Status/ExpEnviDurStatus.h"
-#include "../../../../BlueSpike/RtTasksData.h"
+#include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "HandleExpEnviHand2ExpEnviDurHandMsgs.h"
 #include "HandleExpEnviHandDur.h"

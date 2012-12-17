@@ -106,7 +106,7 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 }
 
 
-bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *scheduled_spike_data, TimeStamp current_time, MovObjHand2MovObjInterfMsg *msgs_mov_obj_hand_2_mov_obj_interf, TrialType mov_obj_trial_type_status, MovObjLocationType current_location)
+bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *scheduled_spike_data, TimeStamp current_time, TrialType mov_obj_trial_type_status, MovObjLocationType current_location)
 {
 	// Determine reward according to current location
 	switch (mov_obj_trial_type_status)
@@ -133,6 +133,8 @@ bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *schedul
 	{
 		left_layer_spike_counter = 0;
 		right_layer_spike_counter = 0;
+
+/*
 		if (! write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf, current_time, MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION,  0, MOV_OBJ_DIRECTION_LEFT, NEURONS_MOTOR_OUTPUT_MOTOR_SPEED, MOV_OBJ_LOCATION_NULL))
 			return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg","! write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer()."); 
 	}
@@ -149,6 +151,9 @@ bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *schedul
 		right_layer_spike_counter = 0;
 		if (! write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf, current_time, MOV_OBJ_HAND_2_MOV_OBJ_INTERF_SET_DIRECTION_SPEED_LOCATION,  0, MOV_OBJ_DIRECTION_STATIONARY, MOV_OBJ_SPEED_NULL, MOV_OBJ_LOCATION_NULL))
 			return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg","! write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer()."); 
+*/
+
+
 	}
 	return TRUE;
 }

@@ -7,11 +7,12 @@
 #include "../../../Library/Messages/MovObjHand2Gui.h"
 #include "../../../Library/Graphs/LocationGraph.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/RtTasksData.h"
+#include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
+#include "../../../Library/Robot/ThreeDofRobot.h"
+#include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
 
 
-
-bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui);
+bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, ThreeDofRobot *robot_arm, Ellipsoid *ellipsoid_threshold);
 
 
 #endif

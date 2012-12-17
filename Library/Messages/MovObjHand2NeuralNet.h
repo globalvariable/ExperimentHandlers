@@ -1,7 +1,7 @@
 #ifndef MOV_OBJ_HAND_2_NEURAL_NET_H
 #define MOV_OBJ_HAND_2_NEURAL_NET_H
 
-#define NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS IZ_PS_NETWORK_SIM_NUM_OF_DEDICATED_CPUS*MAX_NUM_OF_CPU_THREADS_PER_CPU
+
 
 #define MIN_MOV_OBJ_HAND_2_NEURAL_NET_EVENT_SCHEDULING_DELAY MOV_OBJ_HANDLER_PERIOD + IZ_PS_NETWORK_SIM_PERIOD + 1000000 // 1 MS jitter buffer
 //  MESSAGES FROM MOV OBJ HANDLER TO NEURAL NET
@@ -10,7 +10,8 @@ typedef struct __MovObjHand2NeuralNetMsg MovObjHand2NeuralNetMsg;
 typedef struct __MovObjHand2NeuralNetMsgItem MovObjHand2NeuralNetMsgItem;
 typedef unsigned int MovObjHand2NeuralNetMsgType;
 typedef double MovObjHand2NeuralNetMsgAdditional;
-#include "../../../BlueSpike/RtTasksData.h"
+#include "../../../BlueSpike/System/RtTasksData/RtTasksData.h"
+#include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 typedef MovObjHand2NeuralNetMsg *MovObjHand2NeuralNetMsgPtr;
 typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS];
 
@@ -26,8 +27,7 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "MessageBuffersConfig.h"
-#include "MessageBuffersSharedMem.h"
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 
 struct __MovObjHand2NeuralNetMsgItem

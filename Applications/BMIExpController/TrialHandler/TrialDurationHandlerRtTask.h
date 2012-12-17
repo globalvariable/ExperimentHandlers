@@ -9,7 +9,7 @@
 #include "../../../Library/Messages/TrialDurHand2TrialHand.h"
 #include "../../../Library/Messages/TrialHand2TrialDurHand.h"
 #include "../../../Library/Status/TrialDurStatus.h"
-#include "../../../../BlueSpike/RtTasksData.h"
+#include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "HandleTrialHand2TrialDurHandMsgs.h"
 #include "HandleTrialHandDur.h"

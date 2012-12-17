@@ -10,16 +10,22 @@ static GtkWidget *entry_threshold;
 static bool display_paused = FALSE;
 static LocationGraph *location_graph = NULL;
 
+static ThreeDofRobot *static_robot_arm = NULL;
+static Ellipsoid *static_ellipsoid_threshold = NULL;
+
+
 static void submit_threshold_button_func(void);
 
 static gboolean timeout_callback(gpointer graph);
 
-bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui)
+bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, ThreeDofRobot *robot_arm, Ellipsoid *ellipsoid_threshold)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
 	static_rt_tasks_data = rt_tasks_data;
 
+	static_robot_arm = robot_arm;
+	static_ellipsoid_threshold = ellipsoid_threshold;
 	static_msgs_gui_2_mov_obj_hand = msgs_gui_2_mov_obj_hand;
 	static_msgs_mov_obj_hand_2_gui = msgs_mov_obj_hand_2_gui;
 

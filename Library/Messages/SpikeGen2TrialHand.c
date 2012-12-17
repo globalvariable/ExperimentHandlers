@@ -50,7 +50,7 @@ SpikeGen2TrialHandMsg* allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(Spi
 		msg_buffer = allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(SPIKE_GEN_2_TRIAL_HAND_SHM_NAME), sizeof(SpikeGen2TrialHandMsg));
+	msg_buffer = rtai_malloc(SHM_NUM_SPIKE_GEN_2_TRIAL_HAND, sizeof(SpikeGen2TrialHandMsg));
 //	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
 	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
@@ -65,7 +65,7 @@ SpikeGen2TrialHandMsg* allocate_shm_client_spike_gen_2_trial_hand_msg_buffer(Spi
 		msg_buffer = allocate_shm_client_spike_gen_2_trial_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(SPIKE_GEN_2_TRIAL_HAND_SHM_NAME), 0);
+	msg_buffer = rtai_malloc(SHM_NUM_SPIKE_GEN_2_TRIAL_HAND, 0);
 	print_message(INFO_MSG ,"ExperimentHandlers", "SpikeGen2TrialHand", "allocate_shm_client_spike_gen_2_trial_hand_msg_buffer", "Created shm_client_spike_gen_2_trial_hand_msg_buffer.");
 	return msg_buffer;
 }
@@ -73,7 +73,7 @@ SpikeGen2TrialHandMsg* deallocate_shm_spike_gen_2_trial_hand_msg_buffer(SpikeGen
 {
 	if (msg_buffer == NULL)
 		return (SpikeGen2TrialHandMsg*)print_message(BUG_MSG ,"ExperimentHandlers", "SpikeGen2TrialHand", "deallocate_shm_spike_gen_2_trial_hand_msg_buffer", "msg_buffer == NULL.");    
-	rtai_free(nam2num(SPIKE_GEN_2_TRIAL_HAND_SHM_NAME), msg_buffer);	
+	rtai_free(SHM_NUM_SPIKE_GEN_2_TRIAL_HAND, msg_buffer);	
 	return NULL;
 }
 bool write_to_spike_gen_2_trial_hand_msg_buffer(SpikeGen2TrialHandMsg* msg_buffer, TimeStamp msg_time, SpikeGen2TrialHandMsgType msg_type,  SpikeGen2TrialHandMsgAdditional additional_data)

@@ -21,7 +21,7 @@ typedef unsigned int ExpEnviDurHand2ExpEnviHandMsgAdditional;
 #include <gtk/gtk.h>
 #include <string.h>
 #include "MessageBuffersConfig.h"
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../ExpEnviData/ExpEnviComponentTypes.h"
 

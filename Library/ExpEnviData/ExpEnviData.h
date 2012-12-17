@@ -9,7 +9,7 @@ typedef struct __ExpEnviData ExpEnviData;
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "ExpEnviComponentTypes.h"
 #include "../Status/ExpEnviComponentStatus.h"

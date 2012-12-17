@@ -11,7 +11,7 @@ typedef unsigned int TrialType;
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../BlueSpike/Library/Misc/Randn.h"
 

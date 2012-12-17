@@ -5,7 +5,7 @@
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../Library/Messages/MovObjDurHand2MovObjHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/TimeStamp.h"
+#include "../../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 
 
 bool handle_mov_obj_handler_duration(TimeStamp current_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand);

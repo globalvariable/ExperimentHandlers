@@ -5,10 +5,11 @@ typedef struct __MovObjConstraints MovObjConstraints;
 typedef struct __MovObjCompTypeData MovObjCompTypeData;
 typedef struct __MovObjData MovObjData;
 typedef struct __MovObjStats MovObjStats;
+
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "MovObjComponentTypes.h"
 #include "MovObjLocationType.h"

@@ -8,9 +8,9 @@
 #include "../../../Library/Status/MovObjStatus.h"
 #include "../../../Library/MovObjData/MovObjData.h"
 #include "../../../Library/Messages/NeuralNet2MovObjHand.h"
-#include "../../../Library/Messages/MovObjHand2MovObjInterf.h"
+#include "../../../Library/Robot/ThreeDofRobot.h"
 
-bool handle_neural_net_to_mov_obj_handler_msg(MovObjData *mov_obj_data, TimeStamp current_time, NeuralNet2MovObjHandMsgMultiThread *msgs_neural_net_2_mov_obj_hand_multi_thread, SpikeData *scheduled_spike_data);
+bool handle_neural_net_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, TimeStamp current_time, NeuralNet2MovObjHandMsgMultiThread *msgs_neural_net_2_mov_obj_hand_multi_thread, SpikeData *scheduled_spike_data);
 
 
 

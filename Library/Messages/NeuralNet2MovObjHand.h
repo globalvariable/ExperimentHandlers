@@ -8,7 +8,8 @@
 typedef struct __NeuralNet2MovObjHandMsg NeuralNet2MovObjHandMsg;
 typedef struct __NeuralNet2MovObjHandMsgItem NeuralNet2MovObjHandMsgItem;
 typedef unsigned int NeuralNet2MovObjHandMsgType;
-#include "../../../BlueSpike/RtTasksData.h"
+#include "../../../BlueSpike/System/RtTasksData/RtTasksData.h"
+#include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 typedef NeuralNet2MovObjHandMsg *NeuralNet2MovObjHandMsgPtr;
 typedef NeuralNet2MovObjHandMsgPtr NeuralNet2MovObjHandMsgMultiThread[NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS];
 
@@ -26,8 +27,7 @@ typedef NeuralNet2MovObjHandMsgPtr NeuralNet2MovObjHandMsgMultiThread[NUM_OF_NEU
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "MessageBuffersConfig.h"
-#include "MessageBuffersSharedMem.h"
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "../MovObjData/MovObjComponentTypes.h"
 #include "../MovObjData/MovObjDirectionTypes.h"

@@ -22,7 +22,7 @@
 #include "../../../Library/Messages/TrialHand2SpikeGen.h"
 #include "../../../Library/Messages/SpikeGen2TrialHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/RtTasksData.h"
+#include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "HandleGui2TrialHandMsgs.h"
 #include "HandleTrialDurHand2TrialHandMsgs.h"

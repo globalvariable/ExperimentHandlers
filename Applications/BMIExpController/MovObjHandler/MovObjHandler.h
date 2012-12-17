@@ -2,6 +2,9 @@
 #define MOV_OBJ_HANDLER_H
 
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
+#include "../../../Library/Robot/ThreeDofRobot.h"
+#include "../../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
+#include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
 #include "Gui.h"
 #include "MovObjHandlerRtTask.h"
 

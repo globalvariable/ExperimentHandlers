@@ -54,7 +54,7 @@ NeuralNet2MovObjHandMsg* allocate_shm_server_neural_net_2_mov_obj_hand_msg_buffe
 		msg_buffer = allocate_shm_server_neural_net_2_mov_obj_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME), sizeof(NeuralNet2MovObjHandMsg));
+	msg_buffer = rtai_malloc(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND, sizeof(NeuralNet2MovObjHandMsg));
 //	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
 	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
@@ -69,7 +69,7 @@ NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_msg_buffe
 		msg_buffer = allocate_shm_client_neural_net_2_mov_obj_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME), 0);
+	msg_buffer = rtai_malloc(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND, 0);
 	print_message(INFO_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "allocate_shm_client_neural_net_2_mov_obj_hand_msg_buffer", "Created shm_client_neural_net_2_mov_obj_hand_msg_buffer.");
 	return msg_buffer;
 }
@@ -77,7 +77,7 @@ NeuralNet2MovObjHandMsg* deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer(Neu
 {
 	if (msg_buffer == NULL)
 		return (NeuralNet2MovObjHandMsg*)print_message(BUG_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer", "msg_buffer == NULL.");    
-	rtai_free(nam2num(NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME), msg_buffer);	
+	rtai_free(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND, msg_buffer);	
 	return NULL;
 }
 bool write_to_neural_net_2_mov_obj_hand_msg_buffer(NeuralNet2MovObjHandMsg* msg_buffer, TimeStamp msg_time, NeuralNet2MovObjHandMsgType msg_type, unsigned int layer_num, unsigned int nrn_grp_num, unsigned int neuron_num, TimeStamp spike_time)
@@ -123,8 +123,6 @@ bool get_next_neural_net_2_mov_obj_hand_msg_buffer_item(NeuralNet2MovObjHandMsg*
 
 NeuralNet2MovObjHandMsgMultiThread* allocate_shm_server_neural_net_2_mov_obj_hand_multi_thread_msg_buffer(NeuralNet2MovObjHandMsgMultiThread* msg_buffers)
 {
-	char shared_mem_name[10];
-	char shared_mem_num_name[4];	
 	unsigned int i;
 
 	if (msg_buffers != NULL)
@@ -136,15 +134,11 @@ NeuralNet2MovObjHandMsgMultiThread* allocate_shm_server_neural_net_2_mov_obj_han
 	msg_buffers = g_new0(NeuralNet2MovObjHandMsgMultiThread, 1);  
 	for (i = 0; i < (NUM_OF_NEURAL_NET_2_MOV_OBJ_HAND_MSG_BUFFERS); i++)
 	{
-		strcpy(shared_mem_name, NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME);
-		sprintf(shared_mem_num_name, "%u", i);
-		strcat(shared_mem_name, shared_mem_num_name);
 		if (msg_buffers[i] != NULL)
 		{
-			(*msg_buffers)[i] = deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer((*msg_buffers)[i]);
-			(*msg_buffers)[i] = allocate_shm_server_neural_net_2_mov_obj_hand_msg_buffer((*msg_buffers)[i]);
+			rtai_free(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+i, (*msg_buffers)[i]);	
 		}  
-		(*msg_buffers)[i] = rtai_malloc(nam2num(shared_mem_name), sizeof(NeuralNet2MovObjHandMsg));
+		(*msg_buffers)[i] = rtai_malloc(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+i, sizeof(NeuralNet2MovObjHandMsg));
 		//	memset((*msg_buffers)[i], 0, sizeof(NeuralNet2MovObjHandMsg));
 		(*msg_buffers)[i]->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 		(*msg_buffers)[i]->buff_read_idx = 0;  // instead of memset, clear buffer pointers.		
@@ -155,18 +149,11 @@ NeuralNet2MovObjHandMsgMultiThread* allocate_shm_server_neural_net_2_mov_obj_han
 
 NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer_item(NeuralNet2MovObjHandMsgMultiThread* msg_buffers, unsigned int msg_buffer_num)
 {
-	char shared_mem_name[10];
-	char shared_mem_num_name[4];	
-	strcpy(shared_mem_name, NEURAL_NET_2_MOV_OBJ_HAND_SHM_NAME);
-	sprintf(shared_mem_num_name, "%u", msg_buffer_num);
-	strcat(shared_mem_name, shared_mem_num_name);
 	if ((*msg_buffers)[msg_buffer_num] != NULL)
 	{
-		(*msg_buffers)[msg_buffer_num] = deallocate_shm_neural_net_2_mov_obj_hand_msg_buffer((*msg_buffers)[msg_buffer_num]);
-		(*msg_buffers)[msg_buffer_num] = allocate_shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer_item(msg_buffers, msg_buffer_num);
-		return (*msg_buffers)[msg_buffer_num] ;
+		(*msg_buffers)[msg_buffer_num] = rtai_free(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+msg_buffer_num, (*msg_buffers)[msg_buffer_num]);	
 	}  
-	(*msg_buffers)[msg_buffer_num]  = rtai_malloc(nam2num(shared_mem_name), 0);
+	(*msg_buffers)[msg_buffer_num]  = rtai_malloc(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+msg_buffer_num, 0);
 	print_message(INFO_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "allocate_shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer", "Created shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer_item.");
 	return (*msg_buffers)[msg_buffer_num] ;
 }

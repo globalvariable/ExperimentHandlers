@@ -76,7 +76,7 @@ void write_servo_position_val(ServoData *servo_data, unsigned char low_byte, uns
 	pthread_mutex_unlock(&(servo_data->mutex));	
 }
 
-void get_servo_position_val(ServoData *servo_data, unsigned short int *servo_position)
+void get_servo_position_val(ServoData *servo_data, ServoPosition *servo_position)
 {
 	pthread_mutex_lock(&(servo_data->mutex));
 	*servo_position = servo_data->position.position;
@@ -90,22 +90,22 @@ void write_servo_pw_adc_ranges(ServoData *servo_data, ServoPulse zero_degree_pul
 	servo_data->range.pulse_width_90_degree = ninety_degree_pulse;
 	servo_data->range.position_0_degree = zero_degree_adc_val;
 	servo_data->range.position_90_degree = ninety_degree_adc_val;
-	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree.position - servo_data->range.position_0_degree.position);
+	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
 	pthread_mutex_unlock(&(servo_data->mutex));	
 }
 
 void write_servo_0_degree_adc_val(ServoData *servo_data, ServoPosition zero_degree_adc_val)
 {
-	if (zero_degree_adc_val.position > servo_data->range.position_90_degree.position)
-		servo_data->range.position_90_degree.position = zero_degree_adc_val.position;
-	servo_data->range.position_0_degree.position = zero_degree_adc_val.position;
-	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree.position - servo_data->range.position_0_degree.position);
+	if (zero_degree_adc_val > servo_data->range.position_90_degree)
+		servo_data->range.position_90_degree = zero_degree_adc_val;
+	servo_data->range.position_0_degree = zero_degree_adc_val;
+	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
 }
 
 void write_servo_90_degree_adc_val(ServoData *servo_data, ServoPosition ninety_degree_adc_val)
 {
-	if (ninety_degree_adc_val.position < servo_data->range.position_0_degree.position)
-		servo_data->range.position_0_degree.position = ninety_degree_adc_val.position;
-	servo_data->range.position_90_degree.position = ninety_degree_adc_val.position;
-	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree.position - servo_data->range.position_0_degree.position);
+	if (ninety_degree_adc_val < servo_data->range.position_0_degree)
+		servo_data->range.position_0_degree = ninety_degree_adc_val;
+	servo_data->range.position_90_degree = ninety_degree_adc_val;
+	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
 }

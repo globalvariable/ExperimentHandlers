@@ -32,16 +32,16 @@ bool init_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem)
 {
 	if (*exp_envi_rx_buff_sem != NULL)
         	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_semaphore", "exp_envi_rx_buff_sem != NULL.");
-	*exp_envi_rx_buff_sem = rt_get_adr(NAME_EXP_ENVI_RX_BUFF_SEMAPHORE);
+	*exp_envi_rx_buff_sem = rt_get_adr(SEM_NUM_EXP_ENVI_RX_BUFFER);
 	if (*exp_envi_rx_buff_sem == NULL)  // semaphore had not been created before.
 	{
-		*exp_envi_rx_buff_sem = rt_typed_sem_init(NAME_EXP_ENVI_RX_BUFF_SEMAPHORE, 1, BIN_SEM | FIFO_Q );
+		*exp_envi_rx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_RX_BUFFER, 1, BIN_SEM | FIFO_Q );
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_semaphore", "Initialized exp_envi_rx_buff semaphore.");  
 	}
 	else // a semaphore created before, delete and init it again.
 	{
 		rt_sem_delete(*exp_envi_rx_buff_sem);
-		*exp_envi_rx_buff_sem = rt_typed_sem_init(NAME_EXP_ENVI_RX_BUFF_SEMAPHORE, 1, BIN_SEM | FIFO_Q );
+		*exp_envi_rx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_RX_BUFFER, 1, BIN_SEM | FIFO_Q );
 			print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_semaphore", "Re-initialized exp_envi_rx_buff semaphore.");  
 	}
 	return TRUE;
@@ -49,7 +49,7 @@ bool init_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem)
 
 bool bind_to_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem) // init_exp_envi_rx_buffer_semaphore is used by mov obj handler process Other processes(programs) using COM1 via semaphore are binded to the (static value)semaphore created by mov obj handler. 
 {
-	*exp_envi_rx_buff_sem = rt_get_adr(NAME_EXP_ENVI_RX_BUFF_SEMAPHORE);
+	*exp_envi_rx_buff_sem = rt_get_adr(SEM_NUM_EXP_ENVI_RX_BUFFER);
 	if (*exp_envi_rx_buff_sem  == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_semaphore", "No exp_envi_rx_buff semaphore created. Create it with mov obj handler.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_semaphore", "Binded to exp_envi_rx_buffer_semaphore.");  
@@ -60,16 +60,16 @@ bool init_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem)
 {
 	if (*exp_envi_tx_buff_sem != NULL)
         	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_semaphore", "exp_envi_tx_buff_sem != NULL.");
-	*exp_envi_tx_buff_sem = rt_get_adr(NAME_EXP_ENVI_TX_BUFF_SEMAPHORE);
+	*exp_envi_tx_buff_sem = rt_get_adr(SEM_NUM_EXP_ENVI_TX_BUFFER);
 	if (*exp_envi_tx_buff_sem == NULL)  // semaphore had not been created before.
 	{
-		*exp_envi_tx_buff_sem = rt_typed_sem_init(NAME_EXP_ENVI_TX_BUFF_SEMAPHORE, 1, BIN_SEM | FIFO_Q );
+		*exp_envi_tx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_TX_BUFFER, 1, BIN_SEM | FIFO_Q );
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_semaphore", "Initialized exp_envi_tx_buff semaphore.");  
 	}
 	else // a semaphore created before, delete and init it again.
 	{
 		rt_sem_delete(*exp_envi_tx_buff_sem);
-		*exp_envi_tx_buff_sem = rt_typed_sem_init(NAME_EXP_ENVI_TX_BUFF_SEMAPHORE, 1, BIN_SEM | FIFO_Q );
+		*exp_envi_tx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_TX_BUFFER, 1, BIN_SEM | FIFO_Q );
 			print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_semaphore", "Re-initialized exp_envi_tx_buff semaphore.");  
 	}
 	return TRUE;
@@ -77,7 +77,7 @@ bool init_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem)
 
 bool bind_to_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem) // init_exp_envi_tx_buffer_semaphore is used by mov obj handler process Other processes(programs) using COM1 via semaphore are binded to the (static value)semaphore created by mov obj handler. 
 {
-	*exp_envi_tx_buff_sem = rt_get_adr(NAME_EXP_ENVI_TX_BUFF_SEMAPHORE);
+	*exp_envi_tx_buff_sem = rt_get_adr(SEM_NUM_EXP_ENVI_TX_BUFFER);
 	if (*exp_envi_tx_buff_sem  == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_semaphore", "No exp_envi_tx_buff semaphore created. Create it with mov obj handler.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_semaphore", "Binded to exp_envi_tx_buffer_semaphore.");  
@@ -88,17 +88,17 @@ bool init_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff, unsigned int 
 {
 	if (*exp_envi_rx_buff != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "exp_envi_rx_buff was allocated before.");
-	*exp_envi_rx_buff = rt_get_adr(NAME_EXP_ENVI_RX_BUFFER);
+	*exp_envi_rx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
 	if (*exp_envi_rx_buff == NULL)
 	{
-		*exp_envi_rx_buff = rtai_malloc(NAME_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
+		*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
 		memset(*exp_envi_rx_buff, 0, buff_size*sizeof(unsigned char));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "Initialized exp_envi_rx_buff shm object.");  
 	}
 	else
 	{
-		rtai_free(NAME_EXP_ENVI_RX_BUFFER, *exp_envi_rx_buff);
-		*exp_envi_rx_buff = rtai_malloc(NAME_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
+		rtai_free(SHM_NUM_EXP_ENVI_RX_BUFFER, *exp_envi_rx_buff);
+		*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
 		memset(*exp_envi_rx_buff, 0, buff_size*sizeof(unsigned char));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "Re-initialized exp_envi_rx_buff shm object..");  		
 	}
@@ -109,10 +109,10 @@ bool bind_to_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff) // init_ex
 {
 	if (*exp_envi_rx_buff != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "This program binded to shared memory previously.");
-	*exp_envi_rx_buff = rt_get_adr(NAME_EXP_ENVI_RX_BUFFER);
+	*exp_envi_rx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
 	if (*exp_envi_rx_buff == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "No exp_envi_rx_buff shared memory created. Initialize it with Mov Obj Handler.");
-	*exp_envi_rx_buff = rtai_malloc(NAME_EXP_ENVI_RX_BUFFER, 0);
+	*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, 0);
 	if (*exp_envi_rx_buff == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "Couldn't bind to exp_envi_rx_buffer_shm shared memory.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "Binded to exp_envi_rx_buffer_shm shared memory.");  
@@ -123,17 +123,17 @@ bool init_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff, unsigned int 
 {
 	if (*exp_envi_tx_buff != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "exp_envi_tx_buff was allocated before.");
-	*exp_envi_tx_buff = rt_get_adr(NAME_EXP_ENVI_TX_BUFFER);
+	*exp_envi_tx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
 	if (*exp_envi_tx_buff == NULL)
 	{
-		*exp_envi_tx_buff = rtai_malloc(NAME_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
+		*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
 		memset(*exp_envi_tx_buff, 0, buff_size*sizeof(unsigned char));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "Initialized exp_envi_tx_buff shm object.");  
 	}
 	else
 	{
-		rtai_free(NAME_EXP_ENVI_TX_BUFFER, exp_envi_tx_buff);
-		*exp_envi_tx_buff = rtai_malloc(NAME_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
+		rtai_free(SHM_NUM_EXP_ENVI_TX_BUFFER, exp_envi_tx_buff);
+		*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
 		memset(*exp_envi_tx_buff, 0, buff_size*sizeof(unsigned char));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "Re-initialized exp_envi_tx_buff shm object..");  		
 	}
@@ -144,10 +144,10 @@ bool bind_to_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff) // init_ex
 {
 	if (*exp_envi_tx_buff != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "This program binded to shared memory previously.");
-	*exp_envi_tx_buff = rt_get_adr(NAME_EXP_ENVI_TX_BUFFER);
+	*exp_envi_tx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
 	if (*exp_envi_tx_buff == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "No exp_envi_tx_buff shared memory created. Initialize it with Mov Obj Handler.");
-	*exp_envi_tx_buff = rtai_malloc(NAME_EXP_ENVI_TX_BUFFER, 0);
+	*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, 0);
 	if (*exp_envi_tx_buff == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "Couldn't bind to exp_envi_tx_buffer_shm shared memory.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "Binded to exp_envi_tx_buffer_shm shared memory.");  

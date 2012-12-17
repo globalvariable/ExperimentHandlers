@@ -1,6 +1,6 @@
 #include "HandleExpEnviInterf2ExpEnviHandMsgs.h"
 
-bool handle_exp_envi_interf_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, TimeStamp current_time, ExpEnviInterf2ExpEnviHandMsg *msgs_exp_envi_interf_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
+bool handle_exp_envi_interf_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, TimeStamp current_time, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
 {
 	ExpEnviInterf2ExpEnviHandMsgItem msg_item;
 	char str_exp_envi_interf_msg[EXP_ENVI_INTERF_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];

@@ -9,8 +9,7 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../BlueSpike/SemaNames.h"
-#include "../../../BlueSpike/ShmNames.h"
+#include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 
 
 bool init_rs232_com1(unsigned int baud_rate);

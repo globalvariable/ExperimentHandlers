@@ -26,8 +26,8 @@ typedef double MovObjHand2TrialHandMsgAdditional;
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "MessageBuffersConfig.h"
-#include "MessageBuffersSharedMem.h"
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 
 struct __MovObjHand2TrialHandMsgItem

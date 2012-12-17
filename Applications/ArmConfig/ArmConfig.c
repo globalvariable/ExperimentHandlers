@@ -13,7 +13,7 @@ int main( int argc, char *argv[])
 	ServoPosition position_0_degree, position_90_degree;
 	ServoPulse pulse_width_0_degree, pulse_width_90_degree;
 
-   	rt_tasks_data = rtai_malloc(nam2num(RT_TASKS_DATA_SHM_NAME), 0);
+   	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "rt_tasks_data == NULL.");
 	robot_arm = g_new0(ThreeDofRobot, 1);

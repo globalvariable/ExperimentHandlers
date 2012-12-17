@@ -4,7 +4,7 @@
 typedef struct __TrialData TrialData;
 typedef struct __TrialsHistory TrialsHistory;
 
-#include "../../../BlueSpike/TimeStamp.h"
+#include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "TrialTypes.h"
 
 struct __TrialData

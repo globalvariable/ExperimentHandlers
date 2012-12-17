@@ -62,7 +62,7 @@ TrialHand2MovObjHandMsg* allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffe
 		msg_buffer = allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(TRIAL_HAND_2_MOV_OBJ_HAND_SHM_NAME), sizeof(TrialHand2MovObjHandMsg));
+	msg_buffer = rtai_malloc(SHM_NUM_TRIAL_HAND_2_MOV_OBJ_HAND, sizeof(TrialHand2MovObjHandMsg));
 //	memset(msg_buffer, 0, sizeof(MovObjHand2NeuralNetMsg));
 	msg_buffer->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 	msg_buffer->buff_read_idx = 0;  // instead of memset, clear buffer pointers.
@@ -77,7 +77,7 @@ TrialHand2MovObjHandMsg* allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffe
 		msg_buffer = allocate_shm_server_trial_hand_2_mov_obj_hand_msg_buffer(msg_buffer);
 		return msg_buffer;
 	}  
-	msg_buffer = rtai_malloc(nam2num(TRIAL_HAND_2_MOV_OBJ_HAND_SHM_NAME), 0);
+	msg_buffer = rtai_malloc(SHM_NUM_TRIAL_HAND_2_MOV_OBJ_HAND, 0);
 	if (msg_buffer == NULL)
 		print_message(ERROR_MSG ,"ExperimentHandlers", "TrialHand2MovObjHand", "allocate_shm_client_trial_hand_2_mov_obj_hand_msg_buffer", "Could not create shm_client_trial_hand_2_mov_obj_hand_msg_buffer.");		
 	else
@@ -88,7 +88,7 @@ TrialHand2MovObjHandMsg* deallocate_shm_trial_hand_2_mov_obj_hand_msg_buffer(Tri
 {
 	if (msg_buffer == NULL)
 		return (TrialHand2MovObjHandMsg*)print_message(BUG_MSG ,"ExperimentHandlers", "TrialHand2MovObjHand", "deallocate_shm_trial_hand_2_mov_obj_hand_msg_buffer", "msg_buffer == NULL.");    
-	rtai_free(nam2num(TRIAL_HAND_2_MOV_OBJ_HAND_SHM_NAME), msg_buffer);	
+	rtai_free(SHM_NUM_TRIAL_HAND_2_MOV_OBJ_HAND, msg_buffer);	
 	return NULL;
 }
 bool write_to_trial_hand_2_mov_obj_hand_msg_buffer(TrialHand2MovObjHandMsg* msg_buffer, TimeStamp msg_time, TrialHand2MovObjHandMsgType msg_type, TrialHand2MovObjHandMsgAdditional additional_data)

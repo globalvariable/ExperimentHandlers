@@ -351,10 +351,10 @@ static void set_base_0_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[BASE_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[BASE_SERVO]), &servo_position);
 	write_servo_0_degree_adc_val(&(static_robot_arm->servos[BASE_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[BASE_SERVO].range.position_0_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[BASE_SERVO].range.position_0_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_base_0_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[BASE_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_base_degree_per_pos_quanta), temp);
@@ -364,10 +364,10 @@ static void set_base_90_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[BASE_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[BASE_SERVO]), &(servo_position));
 	write_servo_90_degree_adc_val(&(static_robot_arm->servos[BASE_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[BASE_SERVO].range.position_90_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[BASE_SERVO].range.position_90_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_base_90_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[BASE_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_base_degree_per_pos_quanta), temp);
@@ -405,10 +405,10 @@ static void set_shoulder_0_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[SHOULDER_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[SHOULDER_SERVO]), &servo_position);
 	write_servo_0_degree_adc_val(&(static_robot_arm->servos[SHOULDER_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_0_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_0_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_0_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[SHOULDER_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_degree_per_pos_quanta), temp);
@@ -418,10 +418,10 @@ static void set_shoulder_90_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[SHOULDER_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[SHOULDER_SERVO]), &servo_position);
 	write_servo_90_degree_adc_val(&(static_robot_arm->servos[SHOULDER_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_90_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_90_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_90_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[SHOULDER_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_degree_per_pos_quanta), temp);
@@ -459,10 +459,10 @@ static void set_elbow_0_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[ELBOW_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[ELBOW_SERVO]), &servo_position);
 	write_servo_0_degree_adc_val(&(static_robot_arm->servos[ELBOW_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[ELBOW_SERVO].range.position_0_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[ELBOW_SERVO].range.position_0_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_elbow_0_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[ELBOW_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_elbow_degree_per_pos_quanta), temp);
@@ -472,10 +472,10 @@ static void set_elbow_90_degree_button_func(void)
 	char temp[50];
 	ServoPosition servo_position;
 
-	get_servo_position_val(&(static_robot_arm->servos[ELBOW_SERVO]), &(servo_position.position));
+	get_servo_position_val(&(static_robot_arm->servos[ELBOW_SERVO]), &servo_position);
 	write_servo_90_degree_adc_val(&(static_robot_arm->servos[ELBOW_SERVO]), servo_position);
 
-	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_90_degree.position); 
+	sprintf (temp, "%u", static_robot_arm->servos[SHOULDER_SERVO].range.position_90_degree); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_90_degree_quanta), temp);
 	sprintf (temp, "%.2f°", static_robot_arm->servos[SHOULDER_SERVO].range.radian_per_pos_quanta * (180.0 / M_PI) ); 
  	gtk_label_set_text(GTK_LABEL(lbl_shoulder_degree_per_pos_quanta), temp);

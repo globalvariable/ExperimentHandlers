@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <gtk/gtk.h>
 
 #define SERVO_CONTROLLER_CRYSTAL_FREQ	9216  // MHz
 
@@ -17,11 +18,13 @@ typedef union
 typedef unsigned short int ServoPulse;
 typedef short int ServoPulseChange;   /// roration direction is provided signed int
 
+typedef short int ServoPosition;   
+
 typedef union 
 {
 	unsigned char		byte[2];
-	unsigned short int	position;  // servo potentiometer output's adc quanta
-} ServoPosition;	// X PointOneMicrosec
+	ServoPosition			position;  // servo potentiometer output's adc quanta
+} ServoPositionUnion;	// X PointOneMicrosec
 
 typedef double ServoAngle;
 
@@ -41,7 +44,7 @@ typedef struct
 	ServoPulse			pulse_current;	// pulse width to transmit
 	ServoPulse			pulse_target;		// pulse width for the target position.
 	ServoPulseChange	pulse_change;	// inc/decrement pulse width to control speed to reach target.
-	ServoPosition			position;
+	ServoPositionUnion	position;
 	ServoRange			range;
 	ServoAngle			current_angle;
 } ServoData;
@@ -52,7 +55,7 @@ void submit_servo_target(ServoData *servo_data, ServoPulse target_pulse_width, d
 void submit_servo_direction_and_speed(ServoData *servo_data,  ServoPulseChange amount);
 void evaluate_servo_pw_command(ServoData *servo_data);
 void get_servo_pw_val_bytes(ServoData *servo_data, unsigned char *low_byte, unsigned char *high_byte);
-void get_servo_position_val(ServoData *servo_data, unsigned short int *servo_position);
+void get_servo_position_val(ServoData *servo_data, ServoPosition *servo_position);
 void write_servo_position_val(ServoData *servo_data, unsigned char low_byte, unsigned char high_byte);
 void write_servo_pw_adc_ranges(ServoData *servo_data, ServoPulse zero_degree_pulse,ServoPulse ninety_degree_pulse, ServoPosition zero_degree_adc_val, ServoPosition ninety_degree_adc_val);
 void write_servo_0_degree_adc_val(ServoData *servo_data, ServoPosition zero_degree_adc_val);

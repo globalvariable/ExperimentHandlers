@@ -6,7 +6,7 @@
 #include "../../../Library/TrialsData/TrialData.h"
 #include "../../../Library/Messages/Gui2TrialHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../BlueSpike/RtTasksData.h"
+#include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "TrialHandlerRtTask.h"
 
 

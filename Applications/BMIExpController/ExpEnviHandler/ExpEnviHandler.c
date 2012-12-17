@@ -8,7 +8,7 @@ int main( int argc, char *argv[])
 	Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand = NULL;    
 	ExpEnviData *exp_envi_data = NULL;
 
-   	rt_tasks_data = rtai_malloc(nam2num(RT_TASKS_DATA_SHM_NAME), 0);
+   	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "rt_tasks_data == NULL.");
 	exp_envi_data = allocate_exp_envi_data(exp_envi_data);

@@ -10,7 +10,7 @@ int main( int argc, char *argv[])
 	TrialsHistory *trials_history = NULL; 
 	TrialStatsData *trial_stats_data = NULL;
 
-   	rt_tasks_data = rtai_malloc(nam2num(RT_TASKS_DATA_SHM_NAME), 0);
+   	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 	trial_types_data = allocate_trial_types_data(trial_types_data);

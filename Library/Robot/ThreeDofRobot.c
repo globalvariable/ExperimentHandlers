@@ -12,9 +12,31 @@ void init_three_dof_robot_arm(ThreeDofRobot *robot_arm)
 
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna)
 {
-	robot_arm->length_humerus = length_humerus;
-	robot_arm->length_ulna = length_ulna;
-	robot_arm->height_ulna = height_ulna;
+	robot_arm->size.length_humerus = length_humerus;
+	robot_arm->size.length_ulna = length_ulna;
+	robot_arm->size.height_ulna = height_ulna;
+}
+
+void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size)
+{
+	robot_arm->trajectory_history.buffer = g_new0(ThreeDofRobotPosition, buff_size);
+	robot_arm->trajectory_history.buffer_size = buff_size;
+	robot_arm->trajectory_history.write_idx = 0;
+}
+
+bool write_to_3_dof_arm_trajectory_history(ThreeDofRobot *robot_arm,  double height, double depth, double lateral)
+{
+	ThreeDofRobotPosition *item = &(robot_arm->trajectory_history.buffer[robot_arm->trajectory_history.write_idx]);
+	item->height = height;
+	item->depth = depth;
+	item->lateral = lateral;
+	if ((robot_arm->trajectory_history.write_idx+1) == robot_arm->trajectory_history.read_idx)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "write_to_3_dof_arm_trajectory_history", "BUFFER FULL!!!");
+	if ((robot_arm->trajectory_history.write_idx+1) == robot_arm->trajectory_history.buffer_size)
+		robot_arm->trajectory_history.write_idx = 0;
+	else
+		robot_arm->trajectory_history.write_idx++;	
+	return TRUE;	
 }
 
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm)
@@ -30,21 +52,25 @@ void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 {
 	ServoData *servo;
 	ThreeDofRobotPosition *tip_position;
+	ThreeDofRobotSize *size;
 	double R;
 	double beta_minus_alpha;
 	double alpha;
 	double theta;
+	pthread_mutex_lock(&(robot_arm->mutex));
 	servo = &(robot_arm->servos[BASE_SERVO]);
-	servo->current_angle = (servo->position.position - servo->range.position_0_degree.position) * servo->range.radian_per_pos_quanta;
+	servo->current_angle = (servo->position.position - servo->range.position_0_degree) * servo->range.radian_per_pos_quanta;
 	servo = &(robot_arm->servos[SHOULDER_SERVO]);
-	servo->current_angle = (servo->position.position - servo->range.position_0_degree.position) * servo->range.radian_per_pos_quanta;
+	servo->current_angle = (servo->position.position - servo->range.position_0_degree) * servo->range.radian_per_pos_quanta;
 	servo = &(robot_arm->servos[ELBOW_SERVO]);
-	servo->current_angle = (servo->position.position - servo->range.position_0_degree.position) * servo->range.radian_per_pos_quanta;
+	servo->current_angle = (servo->position.position - servo->range.position_0_degree) * servo->range.radian_per_pos_quanta;
+	pthread_mutex_unlock(&(robot_arm->mutex));
 	tip_position = &(robot_arm->tip_position);
 	alpha = robot_arm->servos[SHOULDER_SERVO].current_angle;
 	beta_minus_alpha = robot_arm->servos[ELBOW_SERVO].current_angle - alpha;
-	R = robot_arm->length_humerus*cos(alpha) + robot_arm->length_ulna*cos(beta_minus_alpha) + robot_arm->height_ulna*sin(beta_minus_alpha);
-	tip_position->height = robot_arm->length_humerus*sin(alpha) - robot_arm->length_ulna*sin(beta_minus_alpha) + robot_arm->height_ulna*cos(beta_minus_alpha);
+	size = &(robot_arm->size);
+	R = size->length_humerus*cos(alpha) + size->length_ulna*cos(beta_minus_alpha) + size->height_ulna*sin(beta_minus_alpha);
+	tip_position->height = size->length_humerus*sin(alpha) - size->length_ulna*sin(beta_minus_alpha) + size->height_ulna*cos(beta_minus_alpha);
 	theta = robot_arm->servos[BASE_SERVO].current_angle;
 	tip_position->depth = R*sin(theta);
 	tip_position->lateral = R*cos(theta); 
