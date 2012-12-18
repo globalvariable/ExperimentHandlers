@@ -3,20 +3,6 @@
 
 //  MESSAGES FROM TRIAL HANDLER TO MOV OBJ HANDLER
 
-typedef struct __TrialHand2MovObjHandMsg TrialHand2MovObjHandMsg;
-typedef struct __TrialHand2MovObjHandMsgItem TrialHand2MovObjHandMsgItem;
-typedef unsigned int TrialHand2MovObjHandMsgType;
-typedef unsigned int TrialHand2MovObjHandMsgAdditional;
-
-
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
-
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_NULL							0
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE				1
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL					2		// send trial type as additional
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT				3		
-#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL					4
-
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <string.h>
@@ -26,6 +12,31 @@ typedef unsigned int TrialHand2MovObjHandMsgAdditional;
 #include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+#include "../Servo/Servo.h"
+
+typedef struct __TrialHand2MovObjHandMsg TrialHand2MovObjHandMsg;
+typedef struct __TrialHand2MovObjHandMsgItem TrialHand2MovObjHandMsgItem;
+typedef unsigned int TrialHand2MovObjHandMsgType;
+
+typedef struct 
+{ 
+	ServoPulse	start_position_pulse[3];
+	ServoPulse	target_position_pulse[3];
+} ThreeDofRobotServoAdditional;
+
+typedef union 
+{
+	ThreeDofRobotServoAdditional	three_dof_robot_additional;
+}
+TrialHand2MovObjHandMsgAdditional;
+
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
+
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_NULL							0
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE				1
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL					2		// send trial type as additional
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT				3		
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL					4
 
 struct __TrialHand2MovObjHandMsgItem
 {

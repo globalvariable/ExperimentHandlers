@@ -9,6 +9,7 @@
 #define ELBOW_SERVO		2
 
 #include "../Servo/Servo.h"
+#include "../Coordinate/Cartesian.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 
 typedef struct 
@@ -23,12 +24,7 @@ typedef struct
 	double j_angle_max;
 } ThreeDofRobotLimit;
 
-typedef struct 
-{
-	double	height;
-	double	depth;
-	double	lateral;
-} ThreeDofRobotPosition;
+typedef CartesianCoordinates ThreeDofRobotPosition; 
 
 typedef struct 
 {

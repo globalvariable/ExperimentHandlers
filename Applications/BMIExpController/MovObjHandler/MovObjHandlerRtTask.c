@@ -3,7 +3,6 @@
 static RtTasksData *static_rt_tasks_data = NULL;
 
 static MovObjStatus mov_obj_status = MOV_OBJ_STATUS_NULL;   // Only mov_obj handler can change status. 
-static TrialType mov_obj_trial_type_status = TRIAL_TYPE_NULL;   // Only mov_obj handler can change trial type status. 
 static MovObjLocationType current_location = 0;   
 
 static int mov_obj_handler_rt_thread = 0;
@@ -12,7 +11,12 @@ static bool rt_mov_obj_handler_stay_alive = 1;
 static void *rt_mov_obj_handler(void *args);
 
 static ThreeDofRobot *static_robot_arm = NULL;
-static Ellipsoid *static_ellipsoid_threshold = NULL;
+static MovObjHandParadigmRobotReach *static_mov_obj_paradigm = NULL;
+
+static SEM *exp_envi_rx_buff_sem = NULL;
+static SEM *exp_envi_tx_buff_sem = NULL;
+static unsigned char *exp_envi_rx_buff = NULL;
+static unsigned char *exp_envi_tx_buff = NULL;
 
 static Gui2MovObjHandMsg *static_msgs_gui_2_mov_obj_hand = NULL;
 static MovObjHand2GuiMsg *static_msgs_mov_obj_hand_2_gui = NULL;
@@ -41,15 +45,15 @@ static bool connect_to_mov_obj_interf(void );
 */
 
 
-bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, Ellipsoid *ellipsoid_threshold)
+bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm)
 {
 	static_rt_tasks_data = rt_tasks_data;
 
 	mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
-	mov_obj_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
 
 	static_robot_arm = robot_arm;
-	static_ellipsoid_threshold = ellipsoid_threshold;
+	static_mov_obj_paradigm = mov_obj_paradigm;
+
 	static_msgs_gui_2_mov_obj_hand = msgs_gui_2_mov_obj_hand;
 	static_msgs_mov_obj_hand_2_gui = msgs_mov_obj_hand_2_gui;
 
@@ -61,12 +65,21 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot 
 	msgs_neural_net_2_mov_obj_hand_multi_thread = allocate_shm_server_neural_net_2_mov_obj_hand_multi_thread_msg_buffer(msgs_neural_net_2_mov_obj_hand_multi_thread);
 	msgs_mov_obj_hand_2_neural_net_multi_thread = g_new0(MovObjHand2NeuralNetMsgMultiThread, 1); 
 
+	init_mov_obj_duration_handler();
+
+	if (! init_rs232_com1(115200))
+ 		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandler", "main", "! init_rs232_com1().");	
+	if (! init_exp_envi_rx_buffer_semaphore(&exp_envi_rx_buff_sem))
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandler", "main", "! init_exp_envi_rx_buffer_semaphore().");	
+	if (! init_exp_envi_tx_buffer_semaphore(&exp_envi_tx_buff_sem))
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandler", "main", "! init_exp_envi_tx_buffer_semaphore().");	
+	if (! init_exp_envi_tx_buffer_shm(&exp_envi_tx_buff, EXP_ENVI_CMD_MSG_LEN) )
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandler", "main", "! init_exp_envi_tx_buffer_shm().");	
+	if (! init_exp_envi_rx_buffer_shm(&exp_envi_rx_buff, EXP_ENVI_STATUS_MSG_LEN) )
+		return print_message(ERROR_MSG ,"BMIExpController", "MovObjHandler", "main", "! init_exp_envi_rx_buffer_shm().");	
+
 	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_neural_net().");	
-
-/*	if (! connect_to_mov_obj_interf())
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_mov_obj_interf().");	
-*/
 
 	if (! connect_to_trial_hand())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_trial_hand().");	
@@ -111,11 +124,6 @@ static void *rt_mov_obj_handler(void *args)
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
 	msgs_trial_hand_2_mov_obj_hand->buff_read_idx = msgs_trial_hand_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
-
-/*
-	msgs_mov_obj_interf_2_mov_obj_hand->buff_read_idx = msgs_mov_obj_interf_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to
-*/
-
 	msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_read_idx = msgs_mov_obj_dur_hand_2_mov_obj_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_read_idx = msgs_mov_obj_hand_2_mov_obj_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	static_msgs_gui_2_mov_obj_hand->buff_read_idx = static_msgs_gui_2_mov_obj_hand->buff_write_idx;
@@ -135,7 +143,7 @@ static void *rt_mov_obj_handler(void *args)
 		// routines
 		if (! handle_gui_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, static_msgs_gui_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
-		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, &mov_obj_trial_type_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))  {
+		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, static_mov_obj_paradigm))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
 
 /*
@@ -151,7 +159,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_duration(curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
-		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, mov_obj_trial_type_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location))  {
+		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		
@@ -162,39 +170,6 @@ static void *rt_mov_obj_handler(void *args)
 
         return 0; 
 }
-
-/*
-static bool connect_to_mov_obj_interf(void )
-{
-	MovObjInterf2MovObjHandMsgItem msg_item;
-	char str_mov_obj_interf_2_mov_obj_hand_msg[MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
-
-	msgs_mov_obj_hand_2_mov_obj_interf = allocate_shm_client_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf);
-	if (msgs_mov_obj_hand_2_mov_obj_interf == NULL)
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "msgs_mov_obj_hand_2_mov_obj_interf == NULL.");
-	if (!write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer(msgs_mov_obj_hand_2_mov_obj_interf, static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_MOV_OBJ_INTERF_MSG_ARE_YOU_ALIVE, MOV_OBJ_COMPONENT_NUM_NULL, MOV_OBJ_DIRECTION_NULL, MOV_OBJ_SPEED_NULL, MOV_OBJ_LOCATION_NULL))
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "write_to_mov_obj_hand_2_mov_obj_interf_msg_buffer().");
-
-	while (1) 
-	{ 
-		while (get_next_mov_obj_interf_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_interf_2_mov_obj_hand, &msg_item))
-		{
-			get_mov_obj_interf_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_mov_obj_interf_2_mov_obj_hand_msg);
-			print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
-			switch (msg_item.msg_type)
-			{
-				case MOV_OBJ_INTERF_2_MOV_OBJ_HAND_MSG_I_AM_ALIVE:
-					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Connection to MOV_OBJ_INTERFACER is successful!!!");	
-					return TRUE;			
-				default:
-					return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", str_mov_obj_interf_2_mov_obj_hand_msg);	
-			}
-		}
-		sleep(1); 
-	}
-	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_mov_obj_interf", "Wrong hit in the code.");
-}
-*/
 
 static bool connect_to_trial_hand(void )
 {

@@ -4,13 +4,13 @@ bool get_mov_obj_hand_2_mov_obj_dur_hand_msg_type_string(MovObjHand2MovObjDurHan
 {
 	switch (msg_type)
 	{
-		case MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER:
+		case MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE:
 			if (str != NULL)
- 				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER");
+ 				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE");
 			return TRUE;
-		case MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER:
+		case MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_SCHEDULE:
 			if (str != NULL)
- 				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER");
+ 				strcpy(str, "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_SCHEDULE");
 			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_NULL:

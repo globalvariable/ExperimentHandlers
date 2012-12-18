@@ -14,11 +14,9 @@ typedef unsigned int MovObjStatus;   // !!!ONLY!!! mov_obj_duration handler can 
 #define	MOV_OBJ_STATUS_OUT_OF_TRIAL								1
 #define	MOV_OBJ_STATUS_STAYING_AT_START_POINT						2
 #define	MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL						3
-#define	MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL			4
-#define	MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS	5
-#define	MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL				6
-#define	MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS			7
-#define	MOV_OBJ_STATUS_RESETTING_TO_START_POINT					8
+#define	MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT					4
+#define	MOV_OBJ_STATUS_REACHED_TARGET_POINT						5
+#define	MOV_OBJ_STATUS_RESETTING_TO_START_POINT					6
 
 
 bool get_mov_obj_status_type_string(MovObjStatus mov_obj_status_type, char *str);   // pass NULL if you only want checking (to be faster) 

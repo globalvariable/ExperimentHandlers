@@ -13,14 +13,25 @@
 typedef struct __MovObjHand2MovObjDurHandMsg MovObjHand2MovObjDurHandMsg;
 typedef struct __MovObjHand2MovObjDurHandMsgItem MovObjHand2MovObjDurHandMsgItem;
 typedef unsigned int MovObjHand2MovObjDurHandMsgType;
-typedef TimeStamp MovObjHand2MovObjDurHandMsgAdditional;
+
+typedef struct 
+{ 
+	unsigned int	item_idx;
+	TimeStamp	schedule;
+} ScheduleAdditionalData;
+
+typedef union 
+{
+	ScheduleAdditionalData	schedule;
+}
+MovObjHand2MovObjDurHandMsgAdditional;
 
 
 #define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_STRING_LENGTH					100
 
 #define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_NULL							0
-#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_START_TIMER					1
-#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_TIMER				2
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE					1
+#define MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_CANCEL_SCHEDULE				2
 
 
 struct __MovObjHand2MovObjDurHandMsgItem

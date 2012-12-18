@@ -17,21 +17,13 @@ bool get_mov_obj_status_type_string(MovObjStatus mov_obj_status_type, char *str)
 			if (str != NULL)
 				strcpy(str, "MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL");
 			return TRUE;
-		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:
+		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
 			if (str != NULL)
-				strcpy(str, "MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL");
+				strcpy(str, "MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT");
 			return TRUE;
-		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS:
+		case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 			if (str != NULL)
-				strcpy(str, "MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS");
-			return TRUE;
-		case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL:
-			if (str != NULL)
-				strcpy(str, "MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL");
-			return TRUE;
-		case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS:
-			if (str != NULL)
-				strcpy(str, "MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS");
+				strcpy(str, "MOV_OBJ_STATUS_REACHED_TARGET_POINT");
 			return TRUE;
 		case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
 			if (str != NULL)

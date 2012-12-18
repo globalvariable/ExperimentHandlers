@@ -27,20 +27,20 @@ int main( int argc, char *argv[])
 
 	pulse_width_0_degree = 879;
 	pulse_width_90_degree = 1430;
-	position_0_degree.position = 358;
-	position_90_degree.position = 615;
+	position_0_degree = 358;
+	position_90_degree = 615;
 	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
 
 	pulse_width_0_degree = 956;
 	pulse_width_90_degree = 1431;
-	position_0_degree.position = 415;
-	position_90_degree.position = 654;
+	position_0_degree = 415;
+	position_90_degree = 654;
 	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
 
 	pulse_width_0_degree = 904;
 	pulse_width_90_degree = 1391;
-	position_0_degree.position = 428;
-	position_90_degree.position = 666;
+	position_0_degree = 428;
+	position_90_degree = 666;
 	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
 
 	if (! init_rs232_com1(115200))

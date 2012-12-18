@@ -41,16 +41,10 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
 						(left_layer_spike_counter)++;
 						break;
-					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:
+					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
 						left_layer_spike_counter = 0;
 						break; 
-					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS:
-						left_layer_spike_counter = 0;
-						break; 
-					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL:
-						left_layer_spike_counter = 0;
-						break; 
-					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS:
+					case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 						left_layer_spike_counter = 0;
 						break; 
 					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
@@ -73,16 +67,10 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
 						(right_layer_spike_counter)++;
 						break;
-					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_FAIL:
+					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
 						right_layer_spike_counter = 0;
 						break; 
-					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT_W_SUCCESS:
-						right_layer_spike_counter = 0;
-						break; 
-					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_FAIL:
-						right_layer_spike_counter = 0;
-						break; 
-					case MOV_OBJ_STATUS_REACHED_TARGET_POINT_W_SUCCESS:
+					case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 						right_layer_spike_counter = 0;
 						break; 
 					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
@@ -106,10 +94,10 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 }
 
 
-bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *scheduled_spike_data, TimeStamp current_time, TrialType mov_obj_trial_type_status, MovObjLocationType current_location)
+bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *scheduled_spike_data, TimeStamp current_time, MovObjLocationType current_location)
 {
 	// Determine reward according to current location
-	switch (mov_obj_trial_type_status)
+/*	switch (mov_obj_trial_type_status)
 	{
 		case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	// left locations are above zero
 			mov_obj_data->main_stats.trajectory_success += exp( -1.0 * (mov_obj_data->glo_constraints.current_threshold - current_location));  /// scaling factor = 1.0   r(t) = exp(-scale * (d thres - d curr))
@@ -128,7 +116,7 @@ bool handle_spike_data_buff_for_bin(MovObjData *mov_obj_data, SpikeData *schedul
 		default:
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjInterf2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg","default: mov_obj_trial_type_status."); 			
 	}
-	// Determine the next action
+*/	// Determine the next action
 	if ((left_layer_spike_counter) > (right_layer_spike_counter))
 	{
 		left_layer_spike_counter = 0;

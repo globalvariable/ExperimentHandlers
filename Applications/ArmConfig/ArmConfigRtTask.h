@@ -7,7 +7,7 @@
 #include <rtai_shm.h>
 #include <rtai_nam2num.h>
 #include "ArmConfig.h"
-#include "../../../BlueSpike/RtTasksData.h"
+#include "../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "../../Library/RS232/RS232Handler.h"
 #include "../../Library/Robot/ThreeDofRobot.h"
