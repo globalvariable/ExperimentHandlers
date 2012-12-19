@@ -20,6 +20,7 @@
 #include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
 #include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
+#include "../../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.h"
 #include "../../../Library/RS232/RS232Handler.h"
 #include "HandleGui2MovObjHandMsgs.h"
 #include "HandleMovObjDurHand2MovObjHandMsgs.h"
@@ -27,9 +28,8 @@
 #include "HandleTrialHand2MovObjHandMsgs.h"
 #include "HandleNeuralNet2MovObjHandMsgs.h"
 #include "HandleSpikeDataBuff.h"
-#include "MovObjHandlerRS232Buffer.h"
 
-bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm);
+bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm, MessageLogBuffer *message_log);
 bool kill_mov_obj_handler_rt_thread(void);
 
 

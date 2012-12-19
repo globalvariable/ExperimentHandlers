@@ -2,7 +2,6 @@
 #define HANDLE_SPIKE_DATA_BUFF_H
 
 
-#include "MovObjHandlerConfig.h"
 #include "../../../Library/Status/MovObjStatus.h"
 #include "../../../Library/MovObjData/MovObjData.h"
 #include "../../../../IzNeuronSimulators/Library/SpikeData/SpikeData.h"

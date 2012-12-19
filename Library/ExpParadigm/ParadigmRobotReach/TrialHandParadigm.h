@@ -5,15 +5,27 @@
 #include "../Coordinate/Cartesian.h"
 
 
+typedef struct 
+{
+	unsigned int				num_of_positions;
+	CartesianCoordinates		*cart_coordinates;
+	ThreeDofRobotServoPulse	*robot_pulse_widths;
+} RobotReachStart;
 
 typedef struct 
 {
-	unsigned int			num_of_reach_positions;
-	unsigned int			num_of_start_positions;
-	CartesianCoordinates	*target_positions;
-	CartesianCoordinates	*start_positions;
-	TimeStamp			max_trial_length;			
-	TimeStamp			trial_refractory;	
+	unsigned int				num_of_positions;
+	CartesianCoordinates		*cart_coordinates;
+	ThreeDofRobotServoPulse	*robot_pulse_widths;
+	unsigned int				*target_led_comp_idx;   //  ExpEnviOutputCompTypeData index in ExpEnviData  // TrialHandler sends this index when a trial starts
+} RobotReachTarget;
+
+typedef struct 
+{
+	RobotReachStart			start_info;
+	RobotReachTarget			target_info;
+	TimeStamp				max_trial_length;			
+	TimeStamp				trial_refractory;	
 } TrialHandParadigmRobotReach;
 
 

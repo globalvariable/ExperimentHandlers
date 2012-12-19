@@ -1,9 +1,0 @@
-#ifndef MOV_OBJ_HANDLER_CONFIG_H
-
-
-#define NEURONS_MOTOR_OUTPUT_MOTOR_SPEED 4.0
-#define MOV_OBJ_RESETING_SPEED 3.0
-
-
-
-#endif

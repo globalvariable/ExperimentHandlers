@@ -42,7 +42,7 @@ bool init_exp_envi_rx_buffer_semaphore(SEM **exp_envi_rx_buff_sem)
 	{
 		rt_sem_delete(*exp_envi_rx_buff_sem);
 		*exp_envi_rx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_RX_BUFFER, 1, BIN_SEM | FIFO_Q );
-			print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_semaphore", "Re-initialized exp_envi_rx_buff semaphore.");  
+		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_semaphore", "Re-initialized exp_envi_rx_buff semaphore.");  
 	}
 	return TRUE;
 }
@@ -70,7 +70,7 @@ bool init_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem)
 	{
 		rt_sem_delete(*exp_envi_tx_buff_sem);
 		*exp_envi_tx_buff_sem = rt_typed_sem_init(SEM_NUM_EXP_ENVI_TX_BUFFER, 1, BIN_SEM | FIFO_Q );
-			print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_semaphore", "Re-initialized exp_envi_tx_buff semaphore.");  
+		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_semaphore", "Re-initialized exp_envi_tx_buff semaphore.");  
 	}
 	return TRUE;
 }

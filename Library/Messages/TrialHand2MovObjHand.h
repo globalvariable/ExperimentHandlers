@@ -12,21 +12,15 @@
 #include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
-#include "../Servo/Servo.h"
+#include "../Robot/ThreeDofRobot.h"
 
 typedef struct __TrialHand2MovObjHandMsg TrialHand2MovObjHandMsg;
 typedef struct __TrialHand2MovObjHandMsgItem TrialHand2MovObjHandMsgItem;
 typedef unsigned int TrialHand2MovObjHandMsgType;
 
-typedef struct 
-{ 
-	ServoPulse	start_position_pulse[3];
-	ServoPulse	target_position_pulse[3];
-} ThreeDofRobotServoAdditional;
-
 typedef union 
 {
-	ThreeDofRobotServoAdditional	three_dof_robot_additional;
+	ThreeDofRobotServoPulse	move_to_target_position_pulse;
 }
 TrialHand2MovObjHandMsgAdditional;
 

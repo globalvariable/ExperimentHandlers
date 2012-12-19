@@ -49,6 +49,12 @@ bool handle_mov_obj_handler_to_mov_obj_dur_handler_msg(TimeStamp current_time, M
 						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH].schedule = msg_item.additional_data.schedule.schedule;
 						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH].active = TRUE;
 						break;	
+					case MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION:
+						if (mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION].active)
+							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjHand2MovObjDurHandMsgs", "handle_mov_obj_handler_to_mov_obj_dur_handler_msg", "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE &MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION");
+						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION].schedule = msg_item.additional_data.schedule.schedule;
+						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION].active = TRUE;
+						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION:
 						if (mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION].active)
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjHand2MovObjDurHandMsgs", "handle_mov_obj_handler_to_mov_obj_dur_handler_msg", "MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE & MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION");
@@ -67,6 +73,9 @@ bool handle_mov_obj_handler_to_mov_obj_dur_handler_msg(TimeStamp current_time, M
 						break;
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
 						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH].active = FALSE;
+						break;	
+					case MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION:
+						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION].active = FALSE;
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION:
 						mov_obj_schedule->items[MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION].active = FALSE;

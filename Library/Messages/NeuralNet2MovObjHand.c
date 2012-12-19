@@ -151,7 +151,7 @@ NeuralNet2MovObjHandMsg* allocate_shm_client_neural_net_2_mov_obj_hand_multi_thr
 {
 	if ((*msg_buffers)[msg_buffer_num] != NULL)
 	{
-		(*msg_buffers)[msg_buffer_num] = rtai_free(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+msg_buffer_num, (*msg_buffers)[msg_buffer_num]);	
+		rtai_free(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+msg_buffer_num, (*msg_buffers)[msg_buffer_num]);	
 	}  
 	(*msg_buffers)[msg_buffer_num]  = rtai_malloc(SHM_NUM_NEURAL_NET_2_MOV_OBJ_HAND+msg_buffer_num, 0);
 	print_message(INFO_MSG ,"ExperimentHandlers", "NeuralNet2MovObjHand", "allocate_shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer", "Created shm_client_neural_net_2_mov_obj_hand_multi_thread_msg_buffer_item.");

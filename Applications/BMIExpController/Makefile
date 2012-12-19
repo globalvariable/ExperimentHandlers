@@ -11,7 +11,7 @@ MATH_FLAGS = -lm
 GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 
 #all: TrialHandler/TrialHandler ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler 
-all: MovObjHandler/MovObjHandler 
+all: ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler 
 ############## TRIAL_HANDLER ############## 
 
 #TrialHandler/TrialHandler: TrialHandler/TrialHandler.c TrialHandler/Gui.o TrialHandler/GuiTrialHandler.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2TrialHand.o ../../Library/TrialsData/TrialTypes.o  ../../Library/Combos/TrialTypesCombo.o TrialHandler/TrialHandlerRtTask.o TrialHandler/TrialDurationHandlerRtTask.o ../../Library/TrialsData/TrialStats.o ../../Library/TrialsData/TrialData.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o TrialHandler/HandleGui2TrialHandMsgs.o ../../Library/Status/TrialStatus.o ../../Library/Messages/TrialDurHand2TrialHand.o ../../Library/Messages/TrialHand2TrialDurHand.o TrialHandler/HandleTrialDurHand2TrialHandMsgs.o TrialHandler/HandleTrialHand2TrialDurHandMsgs.o TrialHandler/HandleExpEnviHand2TrialHandMsgs.o TrialHandler/HandleMovObjHand2TrialHandMsgs.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Status/TrialDurStatus.o ../../../BlueSpike/Library/Misc/Randn.o TrialHandler/HandleTrialHandDur.o ../../Library/Messages/TrialHand2NeuralNet.o ../../Library/Messages/NeuralNet2TrialHand.o ../../Library/Messages/TrialHand2SpikeGen.o ../../Library/Messages/SpikeGen2TrialHand.o 
@@ -103,70 +103,73 @@ all: MovObjHandler/MovObjHandler
 
 ############## EXP_ENVI_HANDLER ############## 
 
-#ExpEnviHandler/ExpEnviHandler: ExpEnviHandler/ExpEnviHandler.c ExpEnviHandler/Gui.o ../../Library/Messages/Gui2ExpEnviHand.o ../../../BlueSpike/Library/Misc/Misc.o ExpEnviHandler/ExpEnviHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ExpEnviHandler/GuiExpEnviHandler.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o ExpEnviHandler/ExpEnviDurationHandlerRtTask.o ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/ExpEnviData/ExpEnviComponentTypes.o ../../Library/ExpEnviData/ExpEnviData.o ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviHandDur.o ../../Library/Status/ExpEnviStatus.o ../../Library/Status/ExpEnviDurStatus.o ../../Library/ExpEnviData/ExpEnviEvaluate.o ../../Library/Status/ExpEnviComponentStatus.o 
-#	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ExpEnviHandler/Gui.o ../../Library/Messages/Gui2ExpEnviHand.o ../../../BlueSpike/Library/Misc/Misc.o ExpEnviHandler/ExpEnviHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ExpEnviHandler/GuiExpEnviHandler.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o ExpEnviHandler/ExpEnviDurationHandlerRtTask.o ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/ExpEnviData/ExpEnviComponentTypes.o ../../Library/ExpEnviData/ExpEnviData.o ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviHandDur.o ../../Library/Status/ExpEnviStatus.o ../../Library/Status/ExpEnviDurStatus.o ../../Library/ExpEnviData/ExpEnviEvaluate.o ../../Library/Status/ExpEnviComponentStatus.o ### ExpEnviHandler
+ExpEnviHandler/ExpEnviHandler: ExpEnviHandler/ExpEnviHandler.c ExpEnviHandler/Gui.o ../../Library/Messages/Gui2ExpEnviHand.o ../../../BlueSpike/Library/Misc/Misc.o ExpEnviHandler/ExpEnviHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ExpEnviHandler/GuiExpEnviHandler.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o ExpEnviHandler/ExpEnviDurationHandlerRtTask.o ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/ExpEnviData/ExpEnviComponentTypes.o ../../Library/ExpEnviData/ExpEnviData.o ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviHandDur.o ../../Library/Status/ExpEnviStatus.o ../../Library/Status/ExpEnviDurStatus.o ../../Library/ExpEnviData/ExpEnviEvaluate.o ../../Library/Status/ExpEnviComponentStatus.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ExpEnviHandler/Gui.o ../../Library/Messages/Gui2ExpEnviHand.o ../../../BlueSpike/Library/Misc/Misc.o ExpEnviHandler/ExpEnviHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o ExpEnviHandler/GuiExpEnviHandler.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o ExpEnviHandler/ExpEnviDurationHandlerRtTask.o ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/ExpEnviData/ExpEnviComponentTypes.o ../../Library/ExpEnviData/ExpEnviData.o ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o ExpEnviHandler/HandleExpEnviHandDur.o ../../Library/Status/ExpEnviStatus.o ../../Library/Status/ExpEnviDurStatus.o ../../Library/ExpEnviData/ExpEnviEvaluate.o ../../Library/Status/ExpEnviComponentStatus.o ### ExpEnviHandler
 
-#ExpEnviHandler/Gui.o: ExpEnviHandler/Gui.c 
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/Gui
+ExpEnviHandler/Gui.o: ExpEnviHandler/Gui.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/Gui
 
-#ExpEnviHandler/GuiExpEnviHandler.o: ExpEnviHandler/GuiExpEnviHandler.c 
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/GuiExpEnviHandler
+ExpEnviHandler/GuiExpEnviHandler.o: ExpEnviHandler/GuiExpEnviHandler.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/GuiExpEnviHandler
 
-#ExpEnviHandler/ExpEnviHandlerRtTask.o: ExpEnviHandler/ExpEnviHandlerRtTask.c 
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/ExpEnviHandlerRtTask
+ExpEnviHandler/ExpEnviHandlerRtTask.o: ExpEnviHandler/ExpEnviHandlerRtTask.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/ExpEnviHandlerRtTask
 
-#ExpEnviHandler/ExpEnviDurationHandlerRtTask.o: ExpEnviHandler/ExpEnviDurationHandlerRtTask.c 
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/ExpEnviDurationHandlerRtTask
+ExpEnviHandler/ExpEnviDurationHandlerRtTask.o: ExpEnviHandler/ExpEnviDurationHandlerRtTask.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/ExpEnviDurationHandlerRtTask
 
-#ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o: ExpEnviHandler/HandleGui2ExpEnviHandMsgs.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleGui2ExpEnviHandMsgs
+ExpEnviHandler/HandleGui2ExpEnviHandMsgs.o: ExpEnviHandler/HandleGui2ExpEnviHandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleGui2ExpEnviHandMsgs
 
-#ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o: ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs
+ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.o: ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviDurHand2ExpEnviHandMsgs
 
-#ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o: ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs
+ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.o: ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleTrialHand2ExpEnviHandMsgs
 
-#ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o: ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.c 
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs
+ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.o: ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviHand2ExpEnviDurHandMsgs
 
-#ExpEnviHandler/HandleExpEnviHandDur.o: ExpEnviHandler/HandleExpEnviHandDur.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviHandDur
+ExpEnviHandler/HandleExpEnviHandDur.o: ExpEnviHandler/HandleExpEnviHandDur.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ExpEnviHandler/HandleExpEnviHandDur
 
-#../../Library/Messages/Gui2ExpEnviHand.o: ../../Library/Messages/Gui2ExpEnviHand.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2ExpEnviHand
+../../Library/Messages/Gui2ExpEnviHand.o: ../../Library/Messages/Gui2ExpEnviHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2ExpEnviHand
 
-#../../Library/Messages/TrialHand2ExpEnviHand.o: ../../Library/Messages/TrialHand2ExpEnviHand.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/TrialHand2ExpEnviHand
+../../Library/Messages/TrialHand2ExpEnviHand.o: ../../Library/Messages/TrialHand2ExpEnviHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/TrialHand2ExpEnviHand
 
-#../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o: ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviDurHand2ExpEnviHand
+../../Library/Messages/ExpEnviDurHand2ExpEnviHand.o: ../../Library/Messages/ExpEnviDurHand2ExpEnviHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviDurHand2ExpEnviHand
 
-#../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o: ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviHand2ExpEnviDurHand
+../../Library/Messages/ExpEnviHand2ExpEnviDurHand.o: ../../Library/Messages/ExpEnviHand2ExpEnviDurHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviHand2ExpEnviDurHand
 
-#../../Library/ExpEnviData/ExpEnviComponentTypes.o: ../../Library/ExpEnviData/ExpEnviComponentTypes.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviComponentTypes
+../../Library/ExpEnviData/ExpEnviComponentTypes.o: ../../Library/ExpEnviData/ExpEnviComponentTypes.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviComponentTypes
 
-#../../Library/ExpEnviData/ExpEnviData.o: ../../Library/ExpEnviData/ExpEnviData.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviData
+../../Library/ExpEnviData/ExpEnviData.o: ../../Library/ExpEnviData/ExpEnviData.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviData
 
-#../../Library/ExpEnviData/ExpEnviEvaluate.o: ../../Library/ExpEnviData/ExpEnviEvaluate.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviEvaluate
+../../Library/ExpEnviData/ExpEnviEvaluate.o: ../../Library/ExpEnviData/ExpEnviEvaluate.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/ExpEnviData/ExpEnviEvaluate
 
-#../../Library/Status/ExpEnviStatus.o: ../../Library/Status/ExpEnviStatus.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviStatus
+../../Library/Status/ExpEnviStatus.o: ../../Library/Status/ExpEnviStatus.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviStatus
 
-#../../Library/Status/ExpEnviDurStatus.o: ../../Library/Status/ExpEnviDurStatus.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviDurStatus
+../../Library/Status/ExpEnviDurStatus.o: ../../Library/Status/ExpEnviDurStatus.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviDurStatus
 
-#../../Library/Status/ExpEnviComponentStatus.o: ../../Library/Status/ExpEnviComponentStatus.c
-#	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviComponentStatus
+../../Library/Status/ExpEnviComponentStatus.o: ../../Library/Status/ExpEnviComponentStatus.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/ExpEnviComponentStatus
+
+../../Library/Messages/ExpEnviHand2TrialHand.o: ../../Library/Messages/ExpEnviHand2TrialHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/ExpEnviHand2TrialHand
 
 ############## MOV_OBJ_HANDLER ############## 
 
-MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ../../Library/Graphs/LocationGraph.o ../../Library/Messages/MovObjHand2Gui.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.o
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ../../Library/Graphs/LocationGraph.o ../../Library/Messages/MovObjHand2Gui.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.o ### MovObjHandler
+MovObjHandler/MovObjHandler: MovObjHandler/MovObjHandler.c MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ../../Library/Graphs/LocationGraph.o ../../Library/Messages/MovObjHand2Gui.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.o MovObjHandler/HandleRS232Buffers.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< MovObjHandler/Gui.o ../../Library/Messages/Gui2MovObjHand.o ../../../BlueSpike/Library/Misc/Misc.o MovObjHandler/MovObjHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o MovObjHandler/GuiMovObjHandler.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/MovObjDurHand2MovObjHand.o ../../Library/Messages/MovObjHand2MovObjDurHand.o MovObjHandler/HandleMovObjHand2MovObjDurHandMsgs.o ../../Library/Messages/MovObjHand2TrialHand.o MovObjHandler/HandleMovObjDurHand2MovObjHandMsgs.o MovObjHandler/HandleTrialHand2MovObjHandMsgs.o MovObjHandler/HandleGui2MovObjHandMsgs.o ../../Library/MovObjData/MovObjComponentTypes.o ../../Library/MovObjData/MovObjData.o ../../Library/Status/MovObjStatus.o ../../Library/Status/MovObjDurStatus.o ../../Library/Messages/MovObjHand2NeuralNet.o ../../Library/Messages/NeuralNet2MovObjHand.o MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../Library/MovObjData/NeuralNet2MovObjHandSched.o MovObjHandler/HandleSpikeDataBuff.o ../../Library/Graphs/LocationGraph.o ../../Library/Messages/MovObjHand2Gui.o ../../Library/Servo/Servo.o ../../Library/Robot/ThreeDofRobot.o ../../Library/RS232/RS232Handler.o ../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.o MovObjHandler/HandleRS232Buffers.o ### MovObjHandler
 
 MovObjHandler/Gui.o: MovObjHandler/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/Gui
@@ -194,6 +197,9 @@ MovObjHandler/HandleNeuralNet2MovObjHandMsgs.o: MovObjHandler/HandleNeuralNet2Mo
 
 MovObjHandler/HandleSpikeDataBuff.o: MovObjHandler/HandleSpikeDataBuff.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleSpikeDataBuff.o
+
+MovObjHandler/HandleRS232Buffers.o: MovObjHandler/HandleRS232Buffers.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/HandleRS232Buffers
 
 ../../Library/Messages/Gui2MovObjHand.o: ../../Library/Messages/Gui2MovObjHand.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/Gui2MovObjHand

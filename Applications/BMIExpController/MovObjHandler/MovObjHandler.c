@@ -1,11 +1,14 @@
 #include "MovObjHandler.h"
 
-static ThreeDofRobot 	*robot_arm = NULL;
-static MovObjHandParadigmRobotReach *mov_obj_paradigm = NULL;
+static pthread_t logging_thread;
+void *logging_thread_function( void *message_log );
 
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
+	ThreeDofRobot 	*robot_arm = NULL;
+	MovObjHandParadigmRobotReach *mov_obj_paradigm = NULL;
+	MessageLogBuffer *message_log = NULL;
 	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL; 
    	MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui = NULL; 
 
@@ -30,14 +33,11 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm = g_new0(MovObjHandParadigmRobotReach, 1);
 	mov_obj_paradigm->stay_at_start_duration = 200000000;
 	mov_obj_paradigm->stay_at_target_duration = 100000000;
-	mov_obj_paradigm->send_command_wait_period = 25000000;
-	mov_obj_paradigm->receive_position_wait_period = 4000000;
-	mov_obj_paradigm->start_position_pulse[0] = 1430;
-	mov_obj_paradigm->start_position_pulse[1] = 1600;
-	mov_obj_paradigm->start_position_pulse[2] = 1600;
-	mov_obj_paradigm->target_position_pulse[0] = 1430;
-	mov_obj_paradigm->target_position_pulse[1] = 1600;
-	mov_obj_paradigm->target_position_pulse[2] = 1600;
+	mov_obj_paradigm->send_pw_command_wait_period = 25000000;
+	mov_obj_paradigm->receive_position_wait_period = 5000000;
+	mov_obj_paradigm->move_to_target_position_pulse.pulse[0] = 1430;
+	mov_obj_paradigm->move_to_target_position_pulse.pulse[1] = 1600;
+	mov_obj_paradigm->move_to_target_position_pulse.pulse[2] = 1600;
 
 	mov_obj_paradigm->target_threshold.r_x = 5;
 	mov_obj_paradigm->target_threshold.r_y = 2;
@@ -46,10 +46,24 @@ int main( int argc, char *argv[])
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);
 
-	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, robot_arm, msgs_gui_2_mov_obj_hand,  msgs_mov_obj_hand_2_gui, mov_obj_paradigm))
+	message_log = allocate_message_log_buffer(message_log, 200);
+    	pthread_create( &logging_thread, NULL, logging_thread_function, (void*)message_log);
+
+	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, robot_arm, msgs_gui_2_mov_obj_hand,  msgs_mov_obj_hand_2_gui, mov_obj_paradigm, message_log))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "create_mov_obj_handler_rt_thread().");
 	gtk_init(&argc, &argv);
 	create_gui_handler(rt_tasks_data, msgs_gui_2_mov_obj_hand, msgs_mov_obj_hand_2_gui, robot_arm, mov_obj_paradigm);
 	gtk_main();
 	return 0;
 }	
+
+void *logging_thread_function( void *message_log )
+{
+	while (1)
+	{
+		if (!print_message_log_buffer(message_log, 50))
+			return (void*)print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "logging_thread_function", "! print_message_log_buffer().");
+		sleep(1);
+	}
+	return NULL;	
+}

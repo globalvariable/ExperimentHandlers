@@ -12,6 +12,6 @@
 #include "../../Library/RS232/RS232Handler.h"
 #include "../../Library/Robot/ThreeDofRobot.h"
 
-bool create_servo_control_rt_thread(RtTasksData *rt_tasks_data, SEM* exp_envi_rx_buff_sem, SEM *exp_envi_tx_buff_sem, unsigned char *exp_envi_rx_buff, unsigned char *exp_envi_tx_buff, ThreeDofRobot *robot_arm);
+bool create_servo_control_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm);
 
 #endif

@@ -2,10 +2,7 @@
 
 static ThreeDofRobot 	*robot_arm = NULL;
 
-static SEM *exp_envi_rx_buff_sem = NULL;
-static SEM *exp_envi_tx_buff_sem = NULL;
-static unsigned char *exp_envi_rx_buff = NULL;
-static unsigned char *exp_envi_tx_buff = NULL;
+
 
 int main( int argc, char *argv[])
 {
@@ -45,16 +42,8 @@ int main( int argc, char *argv[])
 
 	if (! init_rs232_com1(115200))
  		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_rs232_com1().");	
-	if (! init_exp_envi_rx_buffer_semaphore(&exp_envi_rx_buff_sem))
-		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_rx_buffer_semaphore().");	
-	if (! init_exp_envi_tx_buffer_semaphore(&exp_envi_tx_buff_sem))
-		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_tx_buffer_semaphore().");	
-	if (! init_exp_envi_tx_buffer_shm(&exp_envi_tx_buff, EXP_ENVI_CMD_MSG_LEN) )
-		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_tx_buffer_shm().");	
-	if (! init_exp_envi_rx_buffer_shm(&exp_envi_rx_buff, EXP_ENVI_STATUS_MSG_LEN) )
-		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_rx_buffer_shm().");	
 
-	if(! create_servo_control_rt_thread(rt_tasks_data, exp_envi_rx_buff_sem, exp_envi_tx_buff_sem, exp_envi_rx_buff, exp_envi_tx_buff, robot_arm))
+	if(! create_servo_control_rt_thread(rt_tasks_data, robot_arm))
 		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "create_servo_control_rt_thread().");
 
 	gtk_init(&argc, &argv);

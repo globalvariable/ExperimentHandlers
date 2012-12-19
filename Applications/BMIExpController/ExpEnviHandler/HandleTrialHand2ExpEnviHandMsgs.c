@@ -2,7 +2,7 @@
 
 
 
-bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TrialType *exp_envi_trial_type_status, TimeStamp current_time, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
+bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TimeStamp current_time, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand)
 {
 	TrialHand2ExpEnviHandMsgItem msg_item;
 	char str_trial_hand_msg[TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];
@@ -18,7 +18,7 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 				switch (*exp_envi_status)
 				{
 					case EXP_ENVI_STATUS_OUT_OF_TRIAL:
-						*exp_envi_trial_type_status = msg_item.additional_data;
+/*						*exp_envi_trial_type_status = msg_item.additional_data;
 						switch (*exp_envi_trial_type_status)
 						{
 							case TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET:	
@@ -31,12 +31,12 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 									if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, i, 0))
 										return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 								}
-/*
+
 								if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH, LEFT_LED, 0))
 									return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
 								if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH, LEVER_SOLENOID, 0))
 									return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
-*/
+
 								break;
 							case TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET:
 								*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_AVAILABLE;	
@@ -48,17 +48,17 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 									if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER, i, 0))
 										return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 								}
-/*								if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH, RIGHT_LED, 0))
+								if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH, RIGHT_LED, 0))
 									return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
 								if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_LOW_2_HIGH, LEVER_SOLENOID, 0))
 									return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
-*/								break;
+								break;
 							default:
 								print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 								get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
 						}
-						break;
+*/						break;
 					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
@@ -78,7 +78,8 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
 					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
 						*exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
-						*exp_envi_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
+//						*exp_envi_trial_type_status = TRIAL_TYPE_UNSPECIFIED;
+
 /*						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW, LEFT_LED, 0))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer()");
 						if (! write_to_exp_envi_hand_2_exp_envi_interf_msg_buffer(msgs_exp_envi_hand_2_exp_envi_interf, current_time, EXP_ENVI_HAND_2_EXP_ENVI_INTERF_MSG_HIGH_2_LOW, RIGHT_LED, 0))

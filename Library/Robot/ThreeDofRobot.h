@@ -52,6 +52,12 @@ typedef struct
 	ThreeDofRobotTrajectory	trajectory_history; // for example in one trial
 } ThreeDofRobot;	
 
+typedef struct 
+{
+	ServoPulse		pulse[THREE_DOF_ROBOT_NUM_OF_SERVOS];	// pulse width to transmit
+} ThreeDofRobotServoPulse;
+	
+
 void init_three_dof_robot_arm(ThreeDofRobot *robot_arm);
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna);
 void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size);
