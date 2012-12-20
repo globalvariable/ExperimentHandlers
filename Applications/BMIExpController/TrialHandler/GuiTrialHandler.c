@@ -2,16 +2,12 @@
 
 static RtTasksData *static_rt_tasks_data = NULL;
 
-static TrialTypesData *static_trial_types_data = NULL;	
-static TrialStatsData *static_trial_stats_data = NULL; 
-static TrialsHistory *static_trials_history = NULL;   
 static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;    
 
 static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
 static GtkWidget *btn_disable_trials;
 static GtkWidget *btn_quit_trials;
-static TrialTypesCombo *combo_trial_type_stats;
 
 
 //Stats
@@ -25,19 +21,14 @@ static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
 static void quit_trials_button_func (void);
-static void combo_trial_type_stats_func (void);
 
 
 
-bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
+bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
 	static_rt_tasks_data = rt_tasks_data;
-
-	static_trial_types_data = trial_types_data;
-	static_trial_stats_data = trial_stats;
-	static_trials_history = trials_history;
 
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;
 
@@ -114,12 +105,6 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Trial
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	combo_trial_type_stats = allocate_trial_types_combo();
-        gtk_box_pack_start(GTK_BOX(hbox),combo_trial_type_stats->combo, TRUE,TRUE,0);
-	if(! update_trial_types_combo(trial_types_data, combo_trial_type_stats))
-		return print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "create_trial_handler_gui", "! update_trial_types_combo().");
-	gtk_widget_set_size_request(combo_trial_type_stats->combo, 250, 30) ;	
-
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 	lbl = gtk_label_new("Num of Trials: ");
@@ -153,7 +138,6 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Trial
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_disable_trials), "clicked", G_CALLBACK(disable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_quit_trials), "clicked", G_CALLBACK(quit_trials_button_func), NULL);
-	g_signal_connect(G_OBJECT(combo_trial_type_stats->combo), "changed", G_CALLBACK(combo_trial_type_stats_func), NULL);
 
 	return TRUE;
 }
@@ -188,8 +172,4 @@ static void quit_trials_button_func (void)
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 }
 
-static void combo_trial_type_stats_func (void)
-{
 
-	return;
-}

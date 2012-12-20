@@ -2,8 +2,8 @@
 #define TRIAL_HAND_PARADIGM_H
 
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
-#include "../Coordinate/Cartesian.h"
-
+#include "../../Coordinate/Cartesian.h"
+#include "../../Robot/ThreeDofRobot.h"
 
 typedef struct 
 {
@@ -24,10 +24,12 @@ typedef struct
 {
 	RobotReachStart			start_info;
 	RobotReachTarget			target_info;
+	unsigned int				current_trial_start_position_idx;
+	unsigned int				current_trial_target_position_idx;
 	TimeStamp				max_trial_length;			
 	TimeStamp				trial_refractory;	
 } TrialHandParadigmRobotReach;
 
-
+TrialHandParadigmRobotReach *allocate_trial_hand_paradigm(unsigned int num_of_start_positions, unsigned int num_of_target_positions);
 
 #endif

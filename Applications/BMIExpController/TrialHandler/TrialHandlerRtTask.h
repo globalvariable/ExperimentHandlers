@@ -7,9 +7,6 @@
 #include <rtai_nam2num.h>
 #include "TrialDurationHandlerRtTask.h"
 #include "../../../Library/Status/TrialStatus.h"
-#include "../../../Library/TrialsData/TrialTypes.h"
-#include "../../../Library/TrialsData/TrialStats.h"
-#include "../../../Library/TrialsData/TrialData.h"
 #include "../../../Library/Messages/Gui2TrialHand.h"
 #include "../../../Library/Messages/TrialDurHand2TrialHand.h"
 #include "../../../Library/Messages/TrialHand2TrialDurHand.h"
@@ -29,7 +26,7 @@
 #include "HandleExpEnviHand2TrialHandMsgs.h"
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, TrialTypesData *trial_types_data, TrialStatsData *trial_stats, TrialsHistory *trials_history, Gui2TrialHandMsg *msgs_gui_2_trial_hand);
+bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *paradigm);
 bool kill_trial_handler_rt_thread(void);
 
 

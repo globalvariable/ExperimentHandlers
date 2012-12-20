@@ -21,6 +21,7 @@ typedef unsigned int TrialHand2MovObjHandMsgType;
 typedef union 
 {
 	ThreeDofRobotServoPulse	move_to_target_position_pulse;
+	bool	dummy;
 }
 TrialHand2MovObjHandMsgAdditional;
 

@@ -48,10 +48,10 @@ bool handle_exp_envi_handler_to_exp_envi_dur_handler_msg(ExpEnviInputsMinDuratio
 						}
 						 break;	
 					case RIGHT_LEVER:
-						switch (exp_envi_inputs_min_dur_status[LEFT_LEVER])
+						switch (exp_envi_inputs_min_dur_status[RIGHT_LEVER])
 						{
 							case EXP_ENVI_INPUTS_MIN_DUR_STATUS_TIMER_ON:
-								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "LEFT_LEVER");
+								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "RIGHT_LEVER");
 								get_exp_envi_input_min_dur_status_type_string(exp_envi_inputs_min_dur_status[RIGHT_LEVER], str_exp_envi_inp_min_dur_status);   
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_inp_min_dur_status);
 							case EXP_ENVI_INPUTS_MIN_DUR_STATUS_TIMER_OFF:

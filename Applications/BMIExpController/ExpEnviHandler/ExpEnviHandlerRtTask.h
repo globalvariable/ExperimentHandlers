@@ -19,6 +19,7 @@
 #include "HandleGui2ExpEnviHandMsgs.h"
 #include "HandleExpEnviDurHand2ExpEnviHandMsgs.h"
 #include "HandleTrialHand2ExpEnviHandMsgs.h"
+#include "HandleRS232Buffers.h"
 
 
 bool create_exp_envi_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviData *exp_envi_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand);
