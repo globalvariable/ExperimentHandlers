@@ -48,13 +48,15 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 	msgs_neural_net_2_trial_hand = allocate_shm_server_neural_net_2_trial_hand_msg_buffer(msgs_neural_net_2_trial_hand);
 	msgs_spike_gen_2_trial_hand = allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(msgs_spike_gen_2_trial_hand);
 
-	if (!connect_to_neural_net())
+/*	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_neural_net().");	
 	if (!connect_to_spike_gen())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_spike_gen().");	
-	if (! connect_to_exp_envi_hand())
+*/
+	if (! connect_to_mov_obj_hand())		// connect to mov obj hand before exp envi so that mov obj hand initializes semaphore and shm shared with exp envi hand.
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_exp_envi_hand().");	
-	if (! connect_to_mov_obj_hand())
+	sleep(1);
+	if (! connect_to_exp_envi_hand())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_exp_envi_hand().");	
 
 	msgs_trial_dur_hand_2_trial_hand = allocate_trial_dur_hand_2_trial_hand_msg_buffer(msgs_trial_dur_hand_2_trial_hand);
@@ -166,7 +168,6 @@ static bool connect_to_exp_envi_hand(void)
 
 static bool connect_to_mov_obj_hand(void)
 {
-	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
 	MovObjHand2TrialHandMsgItem msg_item;
 	char str_mov_obj_hand_2_trial_hand_msg[MOV_OBJ_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
 
@@ -174,8 +175,8 @@ static bool connect_to_mov_obj_hand(void)
 	if (msgs_trial_hand_2_mov_obj_hand == NULL)
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand", "msgs_trial_hand_2_mov_obj_hand == NULL.");
 	sleep(1);	
-	trial_hand_2_mov_obj_hand_add.dummy = 0;
-	if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE, trial_hand_2_mov_obj_hand_add))
+
+	if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ARE_YOU_ALIVE, 0))
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_mov_obj_hand", "write_to_trial_hand_2_mov_obj_hand_msg_bufferr().");
 
 	while(1)

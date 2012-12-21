@@ -21,13 +21,14 @@
 static ThreeDofRobot *static_robot_arm = NULL;
 static SEM *static_exp_envi_rx_buff_sem = NULL;
 static SEM *static_exp_envi_tx_buff_sem = NULL;
-static unsigned char *static_exp_envi_rx_buff_shm = NULL;
-static unsigned char *static_exp_envi_tx_buff_shm = NULL;
+static ExpEnviRxShm *static_exp_envi_rx_buff_shm = NULL;
+static ExpEnviTxShm *static_exp_envi_tx_buff_shm = NULL;
 static unsigned char adc_tx_buffer[ADC_TX_BUFF_SIZE];
 static unsigned char pw_tx_buffer[PW_TX_BUFF_SIZE];
 
+static bool exp_envi_rx_switch = FALSE;
 
-bool init_rs232_buffers(ThreeDofRobot *robot_arm, SEM **exp_envi_rx_buff_sem, SEM **exp_envi_tx_buff_sem, unsigned char **exp_envi_rx_buff_shm, unsigned char **exp_envi_tx_buff_shm)
+bool init_rs232_buffers(ThreeDofRobot *robot_arm, SEM **exp_envi_rx_buff_sem, SEM **exp_envi_tx_buff_sem, ExpEnviRxShm **exp_envi_rx_buff_shm, ExpEnviTxShm **exp_envi_tx_buff_shm, TimeStamp current_time)
 {
 	static_robot_arm = robot_arm;
 
@@ -37,7 +38,7 @@ bool init_rs232_buffers(ThreeDofRobot *robot_arm, SEM **exp_envi_rx_buff_sem, SE
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "init_rs232_buffers", "! init_exp_envi_rx_buffer_semaphore().");	
 	if (! init_exp_envi_tx_buffer_semaphore(exp_envi_tx_buff_sem))
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "init_rs232_buffers", "! init_exp_envi_tx_buffer_semaphore().");	
-	if (! init_exp_envi_tx_buffer_shm(exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN) )
+	if (! init_exp_envi_tx_buffer_shm(exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, current_time) )
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "init_rs232_buffers", "! init_exp_envi_tx_buffer_shm().");	
 	if (! init_exp_envi_rx_buffer_shm(exp_envi_rx_buff_shm, EXP_ENVI_STATUS_MSG_LEN) )
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "init_rs232_buffers", "! init_exp_envi_rx_buffer_shm().");	
@@ -57,30 +58,58 @@ bool init_rs232_buffers(ThreeDofRobot *robot_arm, SEM **exp_envi_rx_buff_sem, SE
 	return TRUE;
 }
 
-bool handle_exp_envi_tx_shm_and_send_rs232_adc_command(void)
+bool handle_exp_envi_tx_shm_and_send_rs232_adc_command(TimeStamp current_time)
 {
 	unsigned int i;
-	unsigned char exp_envi_tx_buffer[EXP_ENVI_CMD_MSG_LEN];
-	if (! read_exp_envi_tx_buff_shm(exp_envi_tx_buffer, static_exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem))    //  Exp Envi Handler writes its command to static_exp_envi_tx_buff for delivery by this process
+	ExpEnviTxShm exp_envi_tx_buffer;
+	if (! read_exp_envi_tx_buff_shm(&exp_envi_tx_buffer, static_exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem))    //  Exp Envi Handler writes its command to static_exp_envi_tx_buff for delivery by this process
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "rs232_handle_exp_envi_tx_shm_and_send_adc_command", "! read_exp_envi_tx_buff_shm()."); 
+	if ((current_time - exp_envi_tx_buffer.last_write_time) < 10000000)
+	{
+		if (exp_envi_rx_switch)
+		{
+			exp_envi_rx_switch = 0;
+			exp_envi_tx_buffer.exp_envi_tx_buff[0] = exp_envi_tx_buffer.exp_envi_tx_buff[0] && 0b10111111;   // MCU check 7th bit swtiching to save outputs from burning (every ~ 50 ms)
+		}
+		else
+		{
+			exp_envi_rx_switch = 1;
+			exp_envi_tx_buffer.exp_envi_tx_buff[0] = exp_envi_tx_buffer.exp_envi_tx_buff[0] || 0b01000000;		
+		}
+	}
+//	printf ("%u\n", exp_envi_tx_buffer.exp_envi_tx_buff[0] );
 	for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
-		adc_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer[i];   // 'A' + EXP_ENVI_COMND (1 BYTE) + 0xFF + 0xFF	
+		adc_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer.exp_envi_tx_buff[i];   // 'A' + EXP_ENVI_COMND (1 BYTE) + 0xFF + 0xFF	
+
 	if (! write_to_rs232_com1(adc_tx_buffer, ADC_TX_BUFF_SIZE)) 
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "rs232_handle_exp_envi_tx_shm_and_send_adc_command", "! write_to_rs232_com1()."); 
 	return TRUE;
 }
 
-bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(void)
+bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time)
 {
 	unsigned int i;
-	unsigned char exp_envi_tx_buffer[EXP_ENVI_CMD_MSG_LEN];
+	ExpEnviTxShm exp_envi_tx_buffer;
 	unsigned char cmd_low_byte, cmd_high_byte;
 
-	if (! read_exp_envi_tx_buff_shm(exp_envi_tx_buffer, static_exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem)) 
+	if (! read_exp_envi_tx_buff_shm(&exp_envi_tx_buffer, static_exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem)) 
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_adc_command", "! read_exp_envi_tx_buff_shm()."); 
-		
+	if ((current_time - exp_envi_tx_buffer.last_write_time) < 10000000)
+	{
+		if (exp_envi_rx_switch)
+		{
+			exp_envi_rx_switch = 0;
+			exp_envi_tx_buffer.exp_envi_tx_buff[0] = exp_envi_tx_buffer.exp_envi_tx_buff[0] & 0b10111111;   // MCU check 7th bit swtiching to save outputs from burning (every ~ 50 ms)
+		}
+		else
+		{
+			exp_envi_rx_switch = 1;
+			exp_envi_tx_buffer.exp_envi_tx_buff[0] = exp_envi_tx_buffer.exp_envi_tx_buff[0] | 0b01000000;		
+		}
+	}
+
 	for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
-		pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer[i];
+		pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer.exp_envi_tx_buff[i];
 
 	if ( check_three_dof_robot_out_of_security_limits(static_robot_arm))
 	{

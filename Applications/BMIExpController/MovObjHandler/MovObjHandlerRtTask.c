@@ -59,10 +59,10 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot 
 /*
 	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_neural_net().");	
-
+*/
 	if (! connect_to_trial_hand())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_trial_hand().");	
-*/
+
 	msgs_mov_obj_dur_hand_2_mov_obj_hand = allocate_mov_obj_dur_hand_2_mov_obj_hand_msg_buffer(msgs_mov_obj_dur_hand_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_mov_obj_dur_hand = allocate_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand);
 
@@ -92,8 +92,8 @@ static void *rt_mov_obj_handler(void *args)
 
 	SEM *exp_envi_rx_buff_sem = NULL;
 	SEM *exp_envi_tx_buff_sem = NULL;
-	unsigned char *exp_envi_rx_buff_shm = NULL;
-	unsigned char *exp_envi_tx_buff_shm = NULL;
+	ExpEnviRxShm *exp_envi_rx_buff_shm = NULL;
+	ExpEnviTxShm *exp_envi_tx_buff_shm = NULL;
 
 	if (! check_rt_task_specs_to_init(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
@@ -103,7 +103,7 @@ static void *rt_mov_obj_handler(void *args)
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	// Initialization of semaphores should be done after initializing the rt task !!!!
-	if (! init_rs232_buffers(static_robot_arm, &exp_envi_rx_buff_sem, &exp_envi_tx_buff_sem, &exp_envi_rx_buff_shm, &exp_envi_tx_buff_shm ))  {
+	if (! init_rs232_buffers(static_robot_arm, &exp_envi_rx_buff_sem, &exp_envi_tx_buff_sem, &exp_envi_rx_buff_shm, &exp_envi_tx_buff_shm,  static_rt_tasks_data->current_system_time))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! init_rs232_buffers()."); exit(1); }	
 
         period = nano2count(MOV_OBJ_HANDLER_PERIOD);

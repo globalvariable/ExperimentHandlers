@@ -5,7 +5,9 @@
 
 typedef struct 
 {
-	unsigned int				target_led_comp_idx;
+	unsigned int				selected_target_led_component_list_idx;
+	unsigned int				*target_led_component_indexes_list;
+	unsigned int				num_of_target_led_components;
 } ExpEnviHandParadigmRobotReach;
 
 

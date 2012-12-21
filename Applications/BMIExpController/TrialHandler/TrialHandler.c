@@ -21,9 +21,11 @@ int main( int argc, char *argv[])
 	if (! add_trial_type_to_trial_stats_data(trial_types_data, trial_stats_data))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_stats_types_data().");
 */
-	paradigm = allocate_trial_hand_paradigm(1, 2);
+	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 5000000000;
 	paradigm->trial_refractory = 4000000000;
+	paradigm->num_of_robot_start_positions = 1;
+	paradigm->num_of_robot_target_positions = 2;
 
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 

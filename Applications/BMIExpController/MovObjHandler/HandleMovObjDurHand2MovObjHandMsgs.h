@@ -5,7 +5,6 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 #include "HandleSpikeDataBuff.h"
-#include "ConfigMovObjComponentNums.h"
 #include "../../../Library/Status/MovObjStatus.h"
 #include "../../../Library/Status/MovObjDurStatus.h"
 #include "../../../Library/MovObjData/MovObjData.h"

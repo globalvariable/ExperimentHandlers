@@ -19,8 +19,8 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 				switch (*exp_envi_status)
 				{
 					case EXP_ENVI_STATUS_OUT_OF_TRIAL:
-						exp_envi_paradigm->target_led_comp_idx = msg_item.additional_data;
-						switch (exp_envi_paradigm->target_led_comp_idx)
+						exp_envi_paradigm->selected_target_led_component_list_idx = msg_item.additional_data;
+						switch (exp_envi_paradigm->target_led_component_indexes_list[exp_envi_paradigm->selected_target_led_component_list_idx])
 						{
 							case LEFT_LED:	
 								*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_AVAILABLE;

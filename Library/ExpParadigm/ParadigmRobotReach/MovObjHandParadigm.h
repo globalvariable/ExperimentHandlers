@@ -8,12 +8,32 @@
 
 typedef struct 
 {
+	unsigned int				selected_position_idx;	
+	unsigned int				num_of_positions;
+	CartesianCoordinates		*cart_coordinates;
+	ThreeDofRobotServoPulse	*robot_pulse_widths;
+} RobotSpacePoints;
+
+typedef struct 
+{
+	EllipsoidThreshold			selected_target_threshold;
+	EllipsoidThreshold			min_target_threshold;
+	EllipsoidThreshold			max_target_threshold;
+	double					target_threshold_change_rate;
+	EllipsoidThreshold			point_threshold;
+}
+MovObjThreshold;
+
+
+typedef struct 
+{
 	TimeStamp				stay_at_start_duration;
 	TimeStamp				stay_at_target_duration;	
 	TimeStamp				send_pw_command_wait_period;
 	TimeStamp				receive_position_wait_period;
-	ThreeDofRobotServoPulse	move_to_target_position_pulse;		//  pulse width value of starting position or target. Trial Handler provides this info before resetting position to start position or target position. 
-	EllipsoidThreshold			target_threshold;
+	MovObjThreshold			threshold;
+	RobotSpacePoints			start_info;
+	RobotSpacePoints			target_info;
 } MovObjHandParadigmRobotReach;
 
 

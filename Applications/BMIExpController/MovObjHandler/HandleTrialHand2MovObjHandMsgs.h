@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include <stdbool.h>
+#include "ConfigMovObjHandler.h"
 #include "../../../Library/Status/MovObjStatus.h"
 #include "../../../Library/Status/MovObjDurStatus.h"
 #include "../../../Library/MovObjData/MovObjData.h"

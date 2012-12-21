@@ -35,13 +35,47 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->stay_at_target_duration = 100000000;
 	mov_obj_paradigm->send_pw_command_wait_period = 25000000;
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
-	mov_obj_paradigm->move_to_target_position_pulse.pulse[0] = 1430;
-	mov_obj_paradigm->move_to_target_position_pulse.pulse[1] = 1600;
-	mov_obj_paradigm->move_to_target_position_pulse.pulse[2] = 1600;
 
-	mov_obj_paradigm->target_threshold.r_x = 5;
-	mov_obj_paradigm->target_threshold.r_y = 2;
-	mov_obj_paradigm->target_threshold.r_z = 2;
+
+	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 1);
+	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);
+	mov_obj_paradigm->start_info.num_of_positions = 1;
+
+	mov_obj_paradigm->start_info.cart_coordinates[0].height = 24.0 ;
+	mov_obj_paradigm->start_info.cart_coordinates[0].depth = -16.6;
+	mov_obj_paradigm->start_info.cart_coordinates[0].lateral = 0.0;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1425;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1831;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1254;
+
+	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
+	mov_obj_paradigm->target_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 2);
+	mov_obj_paradigm->target_info.num_of_positions = 2;
+
+	mov_obj_paradigm->target_info.cart_coordinates[0].height = 18.5 ;
+	mov_obj_paradigm->target_info.cart_coordinates[0].depth = 12.5;
+	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = -8.0;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1624;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1511;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1424;
+	mov_obj_paradigm->target_info.cart_coordinates[1].height = 18.5 ;
+	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 12.5;
+	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = 8.0;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1226;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1511;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1424;
+
+	mov_obj_paradigm->threshold.min_target_threshold.r_x = 3;  //height
+	mov_obj_paradigm->threshold.min_target_threshold.r_y = 3; // depth
+	mov_obj_paradigm->threshold.min_target_threshold.r_z = 3;
+	mov_obj_paradigm->threshold.max_target_threshold.r_x = 35;  //height
+	mov_obj_paradigm->threshold.max_target_threshold.r_y = 20; // depth
+	mov_obj_paradigm->threshold.max_target_threshold.r_z = 20;
+	mov_obj_paradigm->threshold.target_threshold_change_rate = 0.1;
+
+	mov_obj_paradigm->threshold.point_threshold.r_x = 1;
+	mov_obj_paradigm->threshold.point_threshold.r_y = 1;
+	mov_obj_paradigm->threshold.point_threshold.r_z = 1;
 
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);

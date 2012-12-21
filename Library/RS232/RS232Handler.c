@@ -84,120 +84,129 @@ bool bind_to_exp_envi_tx_buffer_semaphore(SEM **exp_envi_tx_buff_sem) // init_ex
 	return TRUE;
 }
 
-bool init_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff, unsigned int buff_size) // This proc is used by mov obj handler program to enable RS232 and clear shared memory buffer. 
+bool init_exp_envi_rx_buffer_shm(ExpEnviRxShm **exp_envi_rx_buff_shm, unsigned int buff_size_to_use) // This proc is used by mov obj handler program to enable RS232 and clear shared memory buffer. 
 {
-	if (*exp_envi_rx_buff != NULL)
+	if (buff_size_to_use > EXP_ENVI_RX_BUFFER_SIZE) 
+         	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "buff_size_to_use > EXP_ENVI_RX_BUFFER_SIZE.");
+	if (*exp_envi_rx_buff_shm != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "exp_envi_rx_buff was allocated before.");
-	*exp_envi_rx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
-	if (*exp_envi_rx_buff == NULL)
+	*exp_envi_rx_buff_shm = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
+	if (*exp_envi_rx_buff_shm == NULL)
 	{
-		*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
-		memset(*exp_envi_rx_buff, 0, buff_size*sizeof(unsigned char));
+		*exp_envi_rx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, sizeof(ExpEnviRxShm));
+		memset(*exp_envi_rx_buff_shm, 0, sizeof(ExpEnviRxShm));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "Initialized exp_envi_rx_buff shm object.");  
 	}
 	else
 	{
-		rtai_free(SHM_NUM_EXP_ENVI_RX_BUFFER, *exp_envi_rx_buff);
-		*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, buff_size*sizeof(unsigned char));
-		memset(*exp_envi_rx_buff, 0, buff_size*sizeof(unsigned char));
+		rtai_free(SHM_NUM_EXP_ENVI_RX_BUFFER, *exp_envi_rx_buff_shm);
+		*exp_envi_rx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, sizeof(ExpEnviRxShm));
+		memset(*exp_envi_rx_buff_shm, 0, sizeof(ExpEnviRxShm));
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "Re-initialized exp_envi_rx_buff shm object..");  		
 	}
 	return TRUE;
 } 
 
-bool bind_to_exp_envi_rx_buffer_shm(unsigned char **exp_envi_rx_buff) // init_exp_envi_mov_obj_rs232_com1_shm is used by mov obj handler program. Other processes(i.e exp envi handler) using COM1 via semaphore are binded to the (static value) shm buffer created by mov obj handler. 
+bool bind_to_exp_envi_rx_buffer_shm(ExpEnviRxShm **exp_envi_rx_buff_shm) // init_exp_envi_mov_obj_rs232_com1_shm is used by mov obj handler program. Other processes(i.e exp envi handler) using COM1 via semaphore are binded to the (static value) shm buffer created by mov obj handler. 
 {
-	if (*exp_envi_rx_buff != NULL)
+	if (*exp_envi_rx_buff_shm != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "This program binded to shared memory previously.");
-	*exp_envi_rx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
-	if (*exp_envi_rx_buff == NULL)
+	*exp_envi_rx_buff_shm = rt_get_adr(SHM_NUM_EXP_ENVI_RX_BUFFER);
+	if (*exp_envi_rx_buff_shm == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "No exp_envi_rx_buff shared memory created. Initialize it with Mov Obj Handler.");
-	*exp_envi_rx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, 0);
-	if (*exp_envi_rx_buff == NULL)
+	*exp_envi_rx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_RX_BUFFER, 0);
+	if (*exp_envi_rx_buff_shm == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "Couldn't bind to exp_envi_rx_buffer_shm shared memory.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_rx_buffer_shm", "Binded to exp_envi_rx_buffer_shm shared memory.");  
 	return TRUE;
 }
 
-bool init_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff, unsigned int buff_size) // This proc is used by mov obj handler program to enable RS232 and clear shared memory buffer. 
+bool init_exp_envi_tx_buffer_shm(ExpEnviTxShm **exp_envi_tx_buff_shm, unsigned int buff_size_to_use, TimeStamp current_time) // This proc is used by mov obj handler program to enable RS232 and clear shared memory buffer. 
 {
-	if (*exp_envi_tx_buff != NULL)
+	if (buff_size_to_use > EXP_ENVI_TX_BUFFER_SIZE) 
+         	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_rx_buffer_shm", "buff_size_to_use > EXP_ENVI_RX_BUFFER_SIZE.");
+	if (*exp_envi_tx_buff_shm != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "exp_envi_tx_buff was allocated before.");
-	*exp_envi_tx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
-	if (*exp_envi_tx_buff == NULL)
+	*exp_envi_tx_buff_shm = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
+	if (*exp_envi_tx_buff_shm == NULL)
 	{
-		*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
-		memset(*exp_envi_tx_buff, 0, buff_size*sizeof(unsigned char));
+		*exp_envi_tx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, sizeof(ExpEnviTxShm));
+		memset(*exp_envi_tx_buff_shm, 0, sizeof(ExpEnviTxShm));
+		(*exp_envi_tx_buff_shm)->last_write_time = current_time;
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "Initialized exp_envi_tx_buff shm object.");  
 	}
 	else
 	{
-		rtai_free(SHM_NUM_EXP_ENVI_TX_BUFFER, exp_envi_tx_buff);
-		*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, buff_size*sizeof(unsigned char));
-		memset(*exp_envi_tx_buff, 0, buff_size*sizeof(unsigned char));
+		rtai_free(SHM_NUM_EXP_ENVI_TX_BUFFER, exp_envi_tx_buff_shm);
+		*exp_envi_tx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, sizeof(ExpEnviTxShm));
+		memset(*exp_envi_tx_buff_shm, 0, sizeof(ExpEnviTxShm));
+		(*exp_envi_tx_buff_shm)->last_write_time = current_time;
 		print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "init_exp_envi_tx_buffer_shm", "Re-initialized exp_envi_tx_buff shm object..");  		
 	}
 	return TRUE;
 } 
 
-bool bind_to_exp_envi_tx_buffer_shm(unsigned char **exp_envi_tx_buff) // init_exp_envi_mov_obj_rs232_com1_shm is used by mov obj handler program. Other processes(i.e exp envi handler) using COM1 via semaphore are binded to the (static value) shm buffer created by mov obj handler. 
+bool bind_to_exp_envi_tx_buffer_shm(ExpEnviTxShm **exp_envi_tx_buff_shm) // init_exp_envi_mov_obj_rs232_com1_shm is used by mov obj handler program. Other processes(i.e exp envi handler) using COM1 via semaphore are binded to the (static value) shm buffer created by mov obj handler. 
 {
-	if (*exp_envi_tx_buff != NULL)
+	if (*exp_envi_tx_buff_shm != NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "This program binded to shared memory previously.");
-	*exp_envi_tx_buff = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
-	if (*exp_envi_tx_buff == NULL)
+	*exp_envi_tx_buff_shm = rt_get_adr(SHM_NUM_EXP_ENVI_TX_BUFFER);
+	if (*exp_envi_tx_buff_shm == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "No exp_envi_tx_buff shared memory created. Initialize it with Mov Obj Handler.");
-	*exp_envi_tx_buff = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, 0);
-	if (*exp_envi_tx_buff == NULL)
+	*exp_envi_tx_buff_shm = rtai_malloc(SHM_NUM_EXP_ENVI_TX_BUFFER, 0);
+	if (*exp_envi_tx_buff_shm == NULL)
          	return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "Couldn't bind to exp_envi_tx_buffer_shm shared memory.");
 	print_message(INFO_MSG ,"ExpEnviHandlers", "RS232Handler", "bind_to_exp_envi_tx_buffer_shm", "Binded to exp_envi_tx_buffer_shm shared memory.");  
 	return TRUE;
 }
 
 
-bool write_to_exp_envi_rx_buff_shm(unsigned char *msg, unsigned char *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem) // mov obj handler writes here after handling rs232 rx buffer.
+bool write_to_exp_envi_rx_buff_shm(unsigned char *msg, ExpEnviRxShm *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem) // mov obj handler writes here after handling rs232 rx buffer.
 {
 	unsigned int i;
         rt_sem_wait(exp_envi_rx_buff_sem);
 	for (i = 0; i < buff_size; i++)
 	{
-		exp_envi_rx_buff_shm[i] = msg[i];
+		exp_envi_rx_buff_shm->exp_envi_rx_buff[i] = msg[i];
 	}
         rt_sem_signal(exp_envi_rx_buff_sem);
 	return TRUE;
 }
 
-bool read_exp_envi_rx_buff_shm(unsigned char *msg, unsigned char *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem) // exp envi handler reads here.
+bool read_exp_envi_rx_buff_shm(ExpEnviRxShm *msg, ExpEnviRxShm *exp_envi_rx_buff_shm, unsigned int buff_size, SEM *exp_envi_rx_buff_sem) // exp envi handler reads here.
 {
 	unsigned int i;
         rt_sem_wait(exp_envi_rx_buff_sem);
 	for (i = 0; i < buff_size; i++)
 	{
-		msg[i] = exp_envi_rx_buff_shm[i];
+		msg->exp_envi_rx_buff[i] = exp_envi_rx_buff_shm->exp_envi_rx_buff[i];
 	}
         rt_sem_signal(exp_envi_rx_buff_sem);
 	return TRUE;
 }
 
-bool write_to_exp_envi_tx_buff_shm(unsigned char *msg, unsigned char *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem) // exp_envi handler writes here to send command via mov obj handler.
+bool write_to_exp_envi_tx_buff_shm(ExpEnviTxShm *msg, ExpEnviTxShm *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem) // exp_envi handler writes here to send command via mov obj handler.
 {
 	unsigned int i;
         rt_sem_wait(exp_envi_tx_buff_sem);
+
+	exp_envi_tx_buff_shm->last_write_time = msg->last_write_time;
 	for (i = 0; i < buff_size; i++)
 	{
-		exp_envi_tx_buff_shm[i] = msg[i];
+		exp_envi_tx_buff_shm->exp_envi_tx_buff[i] = msg->exp_envi_tx_buff[i];
 	}
         rt_sem_signal(exp_envi_tx_buff_sem);
 	return TRUE;
 }
 
-bool read_exp_envi_tx_buff_shm(unsigned char *msg, unsigned char *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem) // mov obj handler reads here to tx via rs232.
+bool read_exp_envi_tx_buff_shm(ExpEnviTxShm *msg, ExpEnviTxShm *exp_envi_tx_buff_shm, unsigned int buff_size, SEM *exp_envi_tx_buff_sem) // mov obj handler reads here to tx via rs232.
 {
 	unsigned int i;
         rt_sem_wait(exp_envi_tx_buff_sem);
+	msg->last_write_time = exp_envi_tx_buff_shm->last_write_time;
 	for (i = 0; i < buff_size; i++)
 	{
-		msg[i] = exp_envi_tx_buff_shm[i];
+		msg->exp_envi_tx_buff[i] = exp_envi_tx_buff_shm->exp_envi_tx_buff[i];
 	}
         rt_sem_signal(exp_envi_tx_buff_sem);
 	return TRUE;
@@ -215,6 +224,7 @@ bool read_from_rs232_com1(unsigned char *msg, unsigned int msg_size)  // mov obj
 
 bool write_to_rs232_com1(unsigned char *msg, unsigned int msg_size)
 {
+	unsigned int i;
 	if (rt_spwrite(COM1, (char*) msg, (int)msg_size))
 		return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "write_to_rs232_com1", "rt_spwrite().");
 	return TRUE;

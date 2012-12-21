@@ -19,7 +19,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 							print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_message_log_buffer()");
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
-						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command())
+						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command");
 						// Schedule adc conversion results reading and pulse width sending again.
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = current_time + mov_obj_paradigm->send_pw_command_wait_period;
@@ -32,7 +32,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 							print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer().");
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION:
-						if (! handle_exp_envi_tx_shm_and_send_rs232_adc_command())
+						if (! handle_exp_envi_tx_shm_and_send_rs232_adc_command(current_time))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_exp_envi_tx_shm_and_send_rs232_adc_command()"); 
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = current_time + mov_obj_paradigm->send_pw_command_wait_period;
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.item_idx = MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;

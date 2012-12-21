@@ -17,13 +17,8 @@
 typedef struct __TrialHand2MovObjHandMsg TrialHand2MovObjHandMsg;
 typedef struct __TrialHand2MovObjHandMsgItem TrialHand2MovObjHandMsgItem;
 typedef unsigned int TrialHand2MovObjHandMsgType;
+typedef unsigned int TrialHand2MovObjHandMsgAdditional;
 
-typedef union 
-{
-	ThreeDofRobotServoPulse	move_to_target_position_pulse;
-	bool	dummy;
-}
-TrialHand2MovObjHandMsgAdditional;
 
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
 
