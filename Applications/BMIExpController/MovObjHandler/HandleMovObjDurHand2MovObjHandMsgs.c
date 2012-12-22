@@ -1,7 +1,7 @@
 #include "HandleMovObjDurHand2MovObjHandMsgs.h"
 
 
-bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, TimeStamp current_time, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, SpikeData *scheduled_spike_data, MovObjLocationType current_location, MessageLogBuffer *message_log, MovObjHandParadigmRobotReach *mov_obj_paradigm)
+bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, TimeStamp current_time, MovObjStatus *mov_obj_status, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, SpikeData *scheduled_spike_data, MovObjLocationType current_location, MessageLogBuffer *message_log, MovObjHandParadigmRobotReach *mov_obj_paradigm)
 {
 	MovObjHand2MovObjDurHandMsgAdditional mov_obj_hand_2_mov_obj_dur_hand_additional_data;
 	MovObjDurHand2MovObjHandMsgItem msg_item;
@@ -17,6 +17,27 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						get_mov_obj_dur_hand_2_mov_obj_hand_msg_type_string(msg_item.msg_type, str_mov_obj_dur_msg);
 						if (! write_to_message_log_buffer(message_log, INFO_MSG, current_time, "MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", str_mov_obj_dur_msg))
 							print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_message_log_buffer()");
+						switch (*mov_obj_status)
+						{
+							case MOV_OBJ_STATUS_OUT_OF_TRIAL:
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_OUT_OF_TRIAL");									
+							case MOV_OBJ_STATUS_STAYING_AT_START_POINT:
+								*mov_obj_status = MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL;
+								break;
+							case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL");									
+							case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT");
+							case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
+								*mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
+								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST, 0)) 
+									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
+								break;
+							case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_RESETTING_TO_START_POINT");
+							default: 
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - switch- default");							
+						}
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
 						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time))
@@ -46,7 +67,9 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 					case MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION:
 						if (! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm())
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! ! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm()");
-						calculate_forward_kinematics(robot_arm);
+						calculate_forward_kinematics(robot_arm);	
+						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))
+							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_robot_arm_position_threshold()");
 						break;	
 					default:
 						return FALSE;

@@ -38,6 +38,7 @@ struct __ExpEnviOutputCompTypeData
 {
 	ExpEnviOutputCompType				type;
 	ExpEnviCompStatus					status;		// high - low
+	TimeStamp							high_status_duration;		
 };
 
 struct __ExpEnviData   // DO NOT BRING EXP ENVI STATUS HERE. IT IS KIND OF PRIVATE WHICH CAN BE CHANGED BY EXP ENVI HANDLER
@@ -56,7 +57,7 @@ bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCo
 bool is_input_component_type_used(ExpEnviData* data, ExpEnviInputCompType comp_type, bool *used);
 
 bool get_output_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, unsigned int *idx);
-bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type);
+bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, TimeStamp high_status_duration);
 bool is_output_component_type_used(ExpEnviData* data, ExpEnviOutputCompType comp_type, bool *used);
 
 

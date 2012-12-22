@@ -224,7 +224,6 @@ bool read_from_rs232_com1(unsigned char *msg, unsigned int msg_size)  // mov obj
 
 bool write_to_rs232_com1(unsigned char *msg, unsigned int msg_size)
 {
-	unsigned int i;
 	if (rt_spwrite(COM1, (char*) msg, (int)msg_size))
 		return print_message(ERROR_MSG ,"ExpEnviHandlers", "RS232Handler", "write_to_rs232_com1", "rt_spwrite().");
 	return TRUE;

@@ -32,7 +32,7 @@ int main( int argc, char *argv[])
 
 	mov_obj_paradigm = g_new0(MovObjHandParadigmRobotReach, 1);
 	mov_obj_paradigm->stay_at_start_duration = 200000000;
-	mov_obj_paradigm->stay_at_target_duration = 100000000;
+	mov_obj_paradigm->stay_at_target_duration = 200000000;
 	mov_obj_paradigm->send_pw_command_wait_period = 25000000;
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
 
@@ -65,17 +65,17 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1511;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1424;
 
-	mov_obj_paradigm->threshold.min_target_threshold.r_x = 3;  //height
-	mov_obj_paradigm->threshold.min_target_threshold.r_y = 3; // depth
-	mov_obj_paradigm->threshold.min_target_threshold.r_z = 3;
-	mov_obj_paradigm->threshold.max_target_threshold.r_x = 35;  //height
-	mov_obj_paradigm->threshold.max_target_threshold.r_y = 20; // depth
-	mov_obj_paradigm->threshold.max_target_threshold.r_z = 20;
-	mov_obj_paradigm->threshold.target_threshold_change_rate = 0.1;
+	mov_obj_paradigm->threshold.min_target_reach_threshold.r_x = 3;  //height
+	mov_obj_paradigm->threshold.min_target_reach_threshold.r_y = 3; // depth
+	mov_obj_paradigm->threshold.min_target_reach_threshold.r_z = 3; // lateral
+	mov_obj_paradigm->threshold.max_target_reach_threshold.r_x = 35;  //height
+	mov_obj_paradigm->threshold.max_target_reach_threshold.r_y = 20; // depth
+	mov_obj_paradigm->threshold.max_target_reach_threshold.r_z = 20; // lateral
+	mov_obj_paradigm->threshold.target_reach_threshold_change_rate = 0.1;
 
-	mov_obj_paradigm->threshold.point_threshold.r_x = 1;
-	mov_obj_paradigm->threshold.point_threshold.r_y = 1;
-	mov_obj_paradigm->threshold.point_threshold.r_z = 1;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_x = 1;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_y = 1;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_z = 1;
 
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);

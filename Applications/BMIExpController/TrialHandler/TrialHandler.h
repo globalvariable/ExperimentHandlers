@@ -6,6 +6,7 @@
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 #include "Gui.h"
+#include "../ExpEnviHandler/ConfigExpEnviComponentNums.h"
 
 
 

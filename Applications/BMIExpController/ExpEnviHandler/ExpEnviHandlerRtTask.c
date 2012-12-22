@@ -59,7 +59,7 @@ bool create_exp_envi_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviData *
 	msgs_exp_envi_dur_hand_2_exp_envi_hand = allocate_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer(msgs_exp_envi_dur_hand_2_exp_envi_hand);
 	msgs_exp_envi_hand_2_exp_envi_dur_hand = allocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand);
 
-	if(! create_exp_envi_duration_handler_rt_thread(rt_tasks_data, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_data->num_of_inp_comps))
+	if(! create_exp_envi_duration_handler_rt_thread(rt_tasks_data, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_data->num_of_inp_comps, exp_envi_data->num_of_outp_comps))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "create_exp_envi_handler_rt_thread", "create_exp_envi_duration_handler_rt_thread().");	
 
 	if (exp_envi_handler_rt_thread !=0)
@@ -87,17 +87,11 @@ static void *rt_exp_envi_handler(void *args)
 	ExpEnviRxShm *exp_envi_rx_buff_shm = NULL;
 	ExpEnviTxShm *exp_envi_tx_buff_shm = NULL;
 
-	ExpEnviRS232Cmd *exp_envi_rs232_cmd = g_new0(ExpEnviRS232Cmd, 1);
- 	ExpEnviRS232Status *exp_envi_rs232_status = g_new0(ExpEnviRS232Status, 1);
 	ExpEnviHandParadigmRobotReach *exp_envi_paradigm = g_new0(ExpEnviHandParadigmRobotReach, 1);
 
-	printf ("%u\n", exp_envi_rs232_cmd->all_cmd);
-	exp_envi_rs232_cmd->exp_envi_switch = 1;
-	printf ("%u\n", exp_envi_rs232_cmd->all_cmd);
-
 	exp_envi_paradigm->target_led_component_indexes_list = g_new0(unsigned int, 2);
-	exp_envi_paradigm->target_led_component_indexes_list[0] = LEFT_LED;
-	exp_envi_paradigm->target_led_component_indexes_list[1] = RIGHT_LED;
+	exp_envi_paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;
+	exp_envi_paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
 	if (! check_rt_task_specs_to_init(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_CPU_THREAD_TASK_ID, EXP_ENVI_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
@@ -136,13 +130,13 @@ static void *rt_exp_envi_handler(void *args)
 		// routines
 		if (! handle_gui_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, static_msgs_gui_2_exp_envi_hand)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
-		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand,  msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_paradigm, exp_envi_rs232_cmd))  {
+		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_trial_hand_2_exp_envi_hand,  msgs_exp_envi_hand_2_exp_envi_dur_hand, exp_envi_paradigm))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
-		if (! handle_exp_envi_rx_shm(exp_envi_rs232_status, static_exp_envi_data, curr_system_time, msgs_exp_envi_hand_2_exp_envi_dur_hand)) {
+		if (! handle_exp_envi_rx_shm(static_exp_envi_data, curr_system_time, msgs_exp_envi_hand_2_exp_envi_dur_hand)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_rx_shm()."); break; }
 		if (! handle_exp_envi_dur_handler_to_exp_envi_handler_msg(static_exp_envi_data, &exp_envi_status, curr_system_time, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_trial_hand))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
-		if (! handle_exp_envi_tx_shm(exp_envi_rs232_cmd, curr_system_time)) {
+		if (! handle_exp_envi_tx_shm(static_exp_envi_data, curr_system_time)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_tx_shm()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, EXP_ENVI_HANDLER_CPU_ID, EXP_ENVI_HANDLER_CPU_THREAD_ID, EXP_ENVI_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

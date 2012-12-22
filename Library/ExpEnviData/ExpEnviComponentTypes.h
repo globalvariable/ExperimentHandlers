@@ -7,8 +7,10 @@
 #include <string.h>
 
 #define EXP_ENVI_COMP_NUM_NULL	0xFFFFFFFF	
-typedef unsigned int ExpEnviInputCompNum;	
-typedef unsigned int ExpEnviOutputCompNum;				
+
+typedef unsigned int ExpEnviCompNum;
+typedef ExpEnviCompNum ExpEnviInputCompNum;	
+typedef ExpEnviCompNum ExpEnviOutputCompNum;				
 
 typedef unsigned int ExpEnviInputCompType;					
 
@@ -24,9 +26,12 @@ typedef unsigned int ExpEnviOutputCompType;
 
 #define	EXP_ENVI_OUTPUT_COMPONENT_TYPE_MAX_STRING_LENGTH		100
 
-#define	EXP_ENVI_OUTPUT_COMPONENT_LEFT_TARGET_LED				0
-#define	EXP_ENVI_OUTPUT_COMPONENT_RIGHT_TARGET_LED				1
-#define	EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER					2
+#define	EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER					0
+#define	EXP_ENVI_OUTPUT_COMPONENT_BUZZER							1
+#define	EXP_ENVI_OUTPUT_COMPONENT_LEFT_TARGET_LED				2
+#define	EXP_ENVI_OUTPUT_COMPONENT_RIGHT_TARGET_LED				3
+#define	EXP_ENVI_OUTPUT_COMPONENT_GUIDE_LED						4
+#define	EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID				5
 
 
 

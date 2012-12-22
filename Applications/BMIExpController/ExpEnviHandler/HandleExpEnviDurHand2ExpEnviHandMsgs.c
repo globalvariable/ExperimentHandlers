@@ -12,54 +12,133 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 //		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", str_exp_envi_dur_msg);
 		switch (msg_item.msg_type)
 		{
-			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MIN:	
-				switch (msg_item.inp_comp_num)
+			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN:	
+				switch (msg_item.comp_num)
 				{
-					case IR_BEAM:
-						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[IR_BEAM]), &has_response))
+					case IR_BEAM_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &has_response))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_success_for_input_comp().");
 						if (has_response)
 						{
-							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "IR_BEAM RESPONSE");
+							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "IR_BEAM_IDX_IN_EXP_ENVI_DATA RESPONSE");
 							if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_START_TRIAL_REQUEST, 0))
 								return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
 						} 
 						break;			
-					case LEFT_LEVER:
-						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[LEFT_LEVER]), &has_response))
+					case LEFT_LEVER_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[LEFT_LEVER_IDX_IN_EXP_ENVI_DATA]), &has_response))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "min_time_out_for_input_comp().");
 						if (has_response)
 						{
-							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "LEFT_LEVER RESPONSE");
+							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "LEFT_LEVER_IDX_IN_EXP_ENVI_DATA RESPONSE");
 						} 
 						 break;	
-					case RIGHT_LEVER:
-						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER]), &has_response))
+					case RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA]), &has_response))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "min_time_out_for_input_comp().");
 						if (has_response)
 						{
-							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "RIGHT_LEVER RESPONSE");
+							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA RESPONSE");
 						} 
 						 break;			
 					default:
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");	
 				}
 				break;
-			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_TIMEOUT_FOR_MAX:	
-				switch (msg_item.inp_comp_num)
+			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MAX:	
+				switch (msg_item.comp_num)
 				{
-					case IR_BEAM:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[IR_BEAM])))
+					case IR_BEAM_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA])))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
 						break;			
-					case LEFT_LEVER:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[LEFT_LEVER])))
+					case LEFT_LEVER_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[LEFT_LEVER_IDX_IN_EXP_ENVI_DATA])))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
 						break;	
-					case RIGHT_LEVER:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER])))
+					case RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA:
+						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA])))
 							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
 						break;			
+					default:
+						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");
+				}
+				break;
+			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT:
+				switch (msg_item.comp_num)
+				{
+					case VALVE_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & VALVE_IDX_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[VALVE_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;			
+					case BUZZER_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & BUZZER_IDX_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[BUZZER_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;	
+					case LEFT_LED_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & LEFT_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;	
+					case RIGHT_LED_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & RIGHT_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;	
+					case GUIDE_LED_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & GUIDE_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;	
+					case LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status)
+						{
+							case EXP_ENVI_COMP_STATUS_LOW:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & LEVER_SOLENOID_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+							case EXP_ENVI_COMP_STATUS_HIGH:
+								exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								break;
+							default:
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status) - default");
+						}
+						break;	
 					default:
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");
 				}

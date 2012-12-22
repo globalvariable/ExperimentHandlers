@@ -113,7 +113,7 @@ bool get_output_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviOu
 	}
 	return FALSE;	
 }
-bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type)
+bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, TimeStamp high_status_duration)
 {
 	unsigned int i;
 	bool comp_type_used;
@@ -131,6 +131,8 @@ bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutput
 	g_free(data->outp_comp_types);
 	data->outp_comp_types = lcl_outp_comp_types;
 	data->outp_comp_types[data->num_of_outp_comps].type = comp_type;
+	data->outp_comp_types[data->num_of_outp_comps].status = EXP_ENVI_COMP_STATUS_LOW;
+	data->outp_comp_types[data->num_of_outp_comps].high_status_duration = high_status_duration;
 	data->num_of_outp_comps++;
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviData", "add_output_component_type_to_exp_envi_data", temp);	
 	return TRUE;

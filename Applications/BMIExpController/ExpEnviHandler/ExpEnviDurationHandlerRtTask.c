@@ -2,11 +2,18 @@
 
 static RtTasksData *static_rt_tasks_data = NULL;
 
-static ExpEnviInputsMinDurationStatus *exp_envi_inputs_min_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
-static ExpEnviInputsMaxDurationStatus *exp_envi_inputs_max_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
+static unsigned int num_of_input_components = 0;
+static ExpEnviDurationStatus *exp_envi_inputs_min_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
+static ExpEnviDurationStatus *exp_envi_inputs_max_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
 static TimeStamp *inputs_handling_end_time_min = NULL;
 static TimeStamp *inputs_handling_end_time_max = NULL;
-static unsigned int num_of_input_components = 0;
+
+static unsigned int num_of_output_components = 0;
+static ExpEnviDurationStatus *exp_envi_outputs_duration_status = NULL;   // Only exp envi duration handler can change exp envi duration status. 
+static TimeStamp *outputs_handling_end_time = NULL;
+
+
+
 ///  Define the guys above for outputs as well when necessary. 
 
 static ExpEnviHand2ExpEnviDurHandMsg *static_msgs_exp_envi_hand_2_exp_envi_dur_hand = NULL;    
@@ -18,7 +25,7 @@ static bool rt_exp_envi_duration_handler_stay_alive = 1;
 
 static void *rt_exp_envi_duration_handler(void *args);
 
-bool create_exp_envi_duration_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand, unsigned int num_of_inp_comps)
+bool create_exp_envi_duration_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2ExpEnviDurHandMsg *msgs_exp_envi_hand_2_exp_envi_dur_hand, unsigned int num_of_inp_comps, unsigned int num_of_outp_comps)
 {
 	unsigned int i;
 
@@ -26,15 +33,22 @@ bool create_exp_envi_duration_handler_rt_thread(RtTasksData *rt_tasks_data, ExpE
 
 	static_msgs_exp_envi_dur_hand_2_exp_envi_hand = msgs_exp_envi_dur_hand_2_exp_envi_hand;
 	static_msgs_exp_envi_hand_2_exp_envi_dur_hand = msgs_exp_envi_hand_2_exp_envi_dur_hand;
+
 	num_of_input_components = num_of_inp_comps;
-	exp_envi_inputs_min_duration_status = g_new0(ExpEnviInputsMinDurationStatus, num_of_inp_comps);
-	exp_envi_inputs_max_duration_status = g_new0(ExpEnviInputsMaxDurationStatus, num_of_inp_comps);
+	exp_envi_inputs_min_duration_status = g_new0(ExpEnviDurationStatus, num_of_inp_comps);
+	exp_envi_inputs_max_duration_status = g_new0(ExpEnviDurationStatus, num_of_inp_comps);
 	for (i = 0; i < num_of_input_components; i++) 
 		exp_envi_inputs_min_duration_status[i] = EXP_ENVI_INPUTS_MIN_DUR_STATUS_TIMER_OFF;
 	for (i = 0; i < num_of_input_components; i++) 
 		exp_envi_inputs_max_duration_status[i] = EXP_ENVI_INPUTS_MAX_DUR_STATUS_TIMER_OFF;
 	inputs_handling_end_time_min = g_new0(TimeStamp, num_of_inp_comps);
 	inputs_handling_end_time_max = g_new0(TimeStamp, num_of_inp_comps);
+
+	num_of_output_components = num_of_outp_comps;
+	exp_envi_outputs_duration_status = g_new0(ExpEnviDurationStatus, num_of_outp_comps);
+	for (i = 0; i < num_of_output_components; i++) 
+		exp_envi_outputs_duration_status[i] = EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_OFF;
+	outputs_handling_end_time = g_new0(TimeStamp, num_of_outp_comps);
 
 	if (exp_envi_duration_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"BMIExpController", "ExpEnviHandlerRtTask", "create_exp_envi_duration_handler_rt_thread", "CANNOT create rt_thread again.");	
@@ -80,9 +94,9 @@ static void *rt_exp_envi_duration_handler(void *args)
 		prev_time = curr_time;
 		curr_system_time = static_rt_tasks_data->current_system_time;
 		// routines
-		if (! handle_exp_envi_handler_to_exp_envi_dur_handler_msg(exp_envi_inputs_min_duration_status, exp_envi_inputs_max_duration_status, curr_system_time, static_msgs_exp_envi_hand_2_exp_envi_dur_hand, inputs_handling_end_time_min, inputs_handling_end_time_max)) {
+		if (! handle_exp_envi_handler_to_exp_envi_dur_handler_msg(exp_envi_inputs_min_duration_status, exp_envi_inputs_max_duration_status, curr_system_time, static_msgs_exp_envi_hand_2_exp_envi_dur_hand, inputs_handling_end_time_min, inputs_handling_end_time_max, exp_envi_outputs_duration_status, outputs_handling_end_time)) {
 			print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! handle_exp_envi_handler_to_exp_envi_dur_handler_msg()."); break; }
-		if (! handle_exp_envi_handler_duration(exp_envi_inputs_min_duration_status, exp_envi_inputs_max_duration_status, curr_system_time, inputs_handling_end_time_min, inputs_handling_end_time_max, num_of_input_components, static_msgs_exp_envi_dur_hand_2_exp_envi_hand))  {
+		if (! handle_exp_envi_handler_duration(exp_envi_inputs_min_duration_status, exp_envi_inputs_max_duration_status, curr_system_time, inputs_handling_end_time_min, inputs_handling_end_time_max, num_of_input_components, static_msgs_exp_envi_dur_hand_2_exp_envi_hand, num_of_output_components, exp_envi_outputs_duration_status, outputs_handling_end_time))  {
 			print_message(ERROR_MSG ,"BMIExpController", "ExpEnviDurationHandlerRtTask", "rt_exp_envi_duration_handler", "! handle_exp_envi_handler_duration()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, EXP_ENVI_DURATION_HANDLER_CPU_ID, EXP_ENVI_DURATION_HANDLER_CPU_THREAD_ID, EXP_ENVI_DURATION_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

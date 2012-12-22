@@ -19,17 +19,20 @@ typedef TimeStamp ExpEnviHand2ExpEnviDurHandMsgAdditional;
 
 #define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_STRING_LENGTH					100
 
-#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_NULL							0
-#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MIN_TIMER				1
-#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_MAX_TIMER				2
-#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MIN_TIMER				3
-#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_MAX_TIMER				4
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_NULL								0
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MIN_TIMER				1
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MAX_TIMER			2
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER			3
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER			4
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_OUTPUT_TIMER				5     // "send current time" to cancel out the timer which is set before 
+#define EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_OUTPUT_TIMER				6
+
 
 struct __ExpEnviHand2ExpEnviDurHandMsgItem
 {
 	TimeStamp 								msg_time;		
 	ExpEnviHand2ExpEnviDurHandMsgType		msg_type;
-	ExpEnviInputCompNum						inp_comp_num;
+	ExpEnviInputCompNum						comp_num;
 	ExpEnviHand2ExpEnviDurHandMsgAdditional	additional_data;		// min time
 };
 
@@ -45,7 +48,7 @@ bool get_exp_envi_hand_2_exp_envi_dur_hand_msg_type_string(ExpEnviHand2ExpEnviDu
 // Messaging through allocated memory (in same program) 
 ExpEnviHand2ExpEnviDurHandMsg* allocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer);
 ExpEnviHand2ExpEnviDurHandMsg* deallocate_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer);
-bool write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviDurHandMsgType msg_type, ExpEnviInputCompNum inp_comp_num, ExpEnviHand2ExpEnviDurHandMsgAdditional additional_data);
+bool write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer, TimeStamp msg_time, ExpEnviHand2ExpEnviDurHandMsgType msg_type, ExpEnviCompNum comp_num, ExpEnviHand2ExpEnviDurHandMsgAdditional additional_data);
 bool get_next_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer_item(ExpEnviHand2ExpEnviDurHandMsg* msg_buffer, ExpEnviHand2ExpEnviDurHandMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

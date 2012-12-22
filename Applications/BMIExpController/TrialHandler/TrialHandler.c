@@ -26,6 +26,10 @@ int main( int argc, char *argv[])
 	paradigm->trial_refractory = 4000000000;
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
+	paradigm->num_of_target_led_components = 2;
+	paradigm->target_led_component_indexes_list = g_new0(unsigned int, 2);
+	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
+	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 
