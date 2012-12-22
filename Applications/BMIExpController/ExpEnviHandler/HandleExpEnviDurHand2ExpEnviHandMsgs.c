@@ -71,7 +71,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & VALVE_IDX_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
@@ -83,7 +83,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & BUZZER_IDX_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
@@ -95,7 +95,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & LEFT_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
@@ -107,7 +107,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & RIGHT_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
@@ -119,7 +119,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & GUIDE_LED_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
@@ -131,7 +131,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						switch(exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & LEVER_SOLENOID_IN_EXP_ENVI_DATA & EXP_ENVI_COMP_STATUS_LOW");
+								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
 								exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
