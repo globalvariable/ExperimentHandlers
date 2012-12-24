@@ -81,15 +81,14 @@ TrialHand2SpikeGenMsg* deallocate_shm_trial_hand_2_spike_gen_msg_buffer(TrialHan
 	rtai_free(SHM_NUM_TRIAL_HAND_2_SPIKE_GEN, msg_buffer);	
 	return NULL;
 }
-bool write_to_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer, TimeStamp msg_time, TrialHand2SpikeGenMsgType msg_type, TrialHand2SpikeGenMsgAdditional additional_data_0, TrialHand2SpikeGenMsgAdditional additional_data_1)
+bool write_to_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer, TimeStamp msg_time, TrialHand2SpikeGenMsgType msg_type, TrialHand2SpikeGenMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	TrialHand2SpikeGenMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data_0 = additional_data_0;
-	buff[*idx].additional_data_1 = additional_data_1;
+	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == TRIAL_HAND_2_SPIKE_GEN_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
@@ -108,8 +107,7 @@ bool get_next_trial_hand_2_spike_gen_msg_buffer_item(TrialHand2SpikeGenMsg* msg_
 	buff_item = &(msg_buffer->buff[*idx]);	
 	msg_item->msg_time = buff_item->msg_time;		
 	msg_item->msg_type = buff_item->msg_type;
-	msg_item->additional_data_0 = buff_item->additional_data_0;		
-	msg_item->additional_data_1 = buff_item->additional_data_1;		
+	msg_item->additional_data = buff_item->additional_data;		
 	if ((*idx + 1) == TRIAL_HAND_2_SPIKE_GEN_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

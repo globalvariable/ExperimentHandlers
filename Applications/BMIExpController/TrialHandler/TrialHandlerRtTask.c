@@ -48,11 +48,12 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 	msgs_neural_net_2_trial_hand = allocate_shm_server_neural_net_2_trial_hand_msg_buffer(msgs_neural_net_2_trial_hand);
 	msgs_spike_gen_2_trial_hand = allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(msgs_spike_gen_2_trial_hand);
 
-/*	if (!connect_to_neural_net())
+	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_neural_net().");	
+
 	if (!connect_to_spike_gen())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_spike_gen().");	
-*/
+
 	if (! connect_to_mov_obj_hand())		// connect to mov obj hand before exp envi so that mov obj hand initializes semaphore and shm shared with exp envi hand.
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_exp_envi_hand().");	
 	sleep(1);
@@ -205,11 +206,12 @@ static bool connect_to_neural_net(void)
 {
 	NeuralNet2TrialHandMsgItem msg_item;
 	char str_neural_net_2_trial_hand_msg[NEURAL_NET_2_TRIAL_HAND_MSG_STRING_LENGTH];
-
+	TrialHand2NeuralNetMsgAdditional trial_hand_to_neural_net_msg_add;
 	msgs_trial_hand_2_neural_net = allocate_shm_client_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net);
 	if (msgs_trial_hand_2_neural_net == NULL)
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", "msgs_trial_hand_2_neural_net == NULL.");
-	if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, TRIAL_STATUS_NULL, 0))
+	trial_hand_to_neural_net_msg_add.dummy = 0;
+	if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, trial_hand_to_neural_net_msg_add))
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", "write_to_trial_hand_2_neural_net_msg_buffer().");
 
 	while (1) 
@@ -222,7 +224,8 @@ static bool connect_to_neural_net(void)
 			{
 				case NEURAL_NET_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");
-					if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, TRIAL_STATUS_TRIALS_DISABLED, 0))
+					trial_hand_to_neural_net_msg_add.dummy = 0;
+					if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_neural_net_msg_add))
 						return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neural_net", "write_to_trial_hand_2_neural_net_msg_buffer().");	
 					return TRUE;			
 				default:
@@ -238,11 +241,12 @@ static bool connect_to_spike_gen(void)
 {
 	SpikeGen2TrialHandMsgItem msg_item;
 	char str_spike_gen_2_trial_hand_msg[SPIKE_GEN_2_TRIAL_HAND_MSG_STRING_LENGTH];
-
+	TrialHand2SpikeGenMsgAdditional trial_hand_to_spike_gen_msg_add;
 	msgs_trial_hand_2_spike_gen = allocate_shm_client_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen);
 	if (msgs_trial_hand_2_spike_gen == NULL)
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", "msgs_trial_hand_2_spike_gen == NULL.");
-	if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_ARE_YOU_ALIVE, TRIAL_STATUS_NULL, 0))
+	trial_hand_to_spike_gen_msg_add.dummy = 0;
+	if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_ARE_YOU_ALIVE, trial_hand_to_spike_gen_msg_add))
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", "write_to_trial_hand_2_spike_gen_msg_buffer().");
 
 	while (1) 
@@ -255,7 +259,8 @@ static bool connect_to_spike_gen(void)
 			{
 				case SPIKE_GEN_2_TRIAL_HAND_MSG_I_AM_ALIVE:
 					print_message(INFO_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", "Connection to SPIKE_GEN is successful!!!");	
-					if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, TRIAL_STATUS_TRIALS_DISABLED, 0))
+					trial_hand_to_spike_gen_msg_add.dummy = 0;
+					if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, static_rt_tasks_data->current_system_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_spike_gen_msg_add))
 						return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_spike_gen", "write_to_trial_hand_2_spike_gen_msg_buffer().");
 					return TRUE;			
 				default:

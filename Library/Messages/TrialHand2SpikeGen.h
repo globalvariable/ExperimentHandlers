@@ -6,7 +6,13 @@
 typedef struct __TrialHand2SpikeGenMsg TrialHand2SpikeGenMsg;
 typedef struct __TrialHand2SpikeGenMsgItem TrialHand2SpikeGenMsgItem;
 typedef unsigned int TrialHand2SpikeGenMsgType;
-typedef unsigned int TrialHand2SpikeGenMsgAdditional;
+
+#include "TrialHand2NeuralNet.h"
+
+typedef TrialHand2NeuralNetTrialStatusMsgAdd TrialHand2SpikeGenTrialStatusMsgAdd;
+
+typedef TrialHand2NeuralNetMsgAdditional TrialHand2SpikeGenMsgAdditional;
+
 
 
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_STRING_LENGTH						100
@@ -29,8 +35,7 @@ struct __TrialHand2SpikeGenMsgItem
 {
 	TimeStamp 								msg_time;		
 	TrialHand2SpikeGenMsgType				msg_type;
-	TrialHand2SpikeGenMsgAdditional			additional_data_0;
-	TrialHand2SpikeGenMsgAdditional			additional_data_1;
+	TrialHand2SpikeGenMsgAdditional			additional_data;
 };
 
 struct __TrialHand2SpikeGenMsg		// Requests to TrialControllers
@@ -50,7 +55,7 @@ TrialHand2SpikeGenMsg* deallocate_trial_hand_2_spike_gen_msg_buffer(TrialHand2Sp
 TrialHand2SpikeGenMsg* allocate_shm_server_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer);
 TrialHand2SpikeGenMsg* allocate_shm_client_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer);
 TrialHand2SpikeGenMsg* deallocate_shm_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer);
-bool write_to_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer, TimeStamp msg_time, TrialHand2SpikeGenMsgType msg_type, TrialHand2SpikeGenMsgAdditional additional_data_0, TrialHand2SpikeGenMsgAdditional additional_data_1);
+bool write_to_trial_hand_2_spike_gen_msg_buffer(TrialHand2SpikeGenMsg* msg_buffer, TimeStamp msg_time, TrialHand2SpikeGenMsgType msg_type, TrialHand2SpikeGenMsgAdditional additional_data);
 bool get_next_trial_hand_2_spike_gen_msg_buffer_item(TrialHand2SpikeGenMsg* msg_buffer, TrialHand2SpikeGenMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 #endif

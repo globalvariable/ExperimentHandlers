@@ -11,6 +11,7 @@ typedef struct __TrialStatusEvents TrialStatusEvents;
 #include <string.h>
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
+#include "../Messages/TrialHand2NeuralNet.h"
 
 #define	TRIAL_STATUS_MAX_STRING_LENGTH			50
 
@@ -24,6 +25,7 @@ struct __TrialStatusEventItem
 {
 	TimeStamp	status_start_time;   
 	TrialStatus	trial_status;	// this is set before trial start during simulations. behaviors determines this during in vivo experiments.
+	unsigned int	selected_robot_target_idx_in_trial_hand_paradigm;
 };
 
 struct __TrialStatusEvents  // IT IS ESPECIALLY FOR GRAPHS TO INDICATE THE TRIAL STATUS CHANGE TIMES
@@ -38,7 +40,7 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str);   /
 
 TrialStatusEvents* allocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events, unsigned int buffer_size, TimeStamp status_change_latency);
 TrialStatusEvents* deallocate_trial_status_events_buffer(TrialStatusEvents* trial_status_events);
-void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialStatus trial_status);   // it can have multiple readers. so no read_idx defined.
+void schedule_trial_status_event(TrialStatusEvents* trial_status_events, TimeStamp trial_status_start_time, TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add);   // it can have multiple readers. so no read_idx defined.
 bool get_next_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events, unsigned int *read_idx, TrialStatusEventItem *event_item);
 TrialStatusEventItem get_last_trial_status_events_buffer_item(TrialStatusEvents* trial_status_events);
 #endif

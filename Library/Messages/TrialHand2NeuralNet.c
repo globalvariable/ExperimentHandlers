@@ -105,15 +105,14 @@ TrialHand2NeuralNetMsg* deallocate_shm_trial_hand_2_neural_net_msg_buffer(TrialH
 	rtai_free(SHM_NUM_TRIAL_HAND_2_NEURAL_NET, msg_buffer);	
 	return NULL;
 }
-bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data_0, TrialHand2NeuralNetMsgAdditional additional_data_1)
+bool write_to_trial_hand_2_neural_net_msg_buffer(TrialHand2NeuralNetMsg* msg_buffer, TimeStamp msg_time, TrialHand2NeuralNetMsgType msg_type, TrialHand2NeuralNetMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	TrialHand2NeuralNetMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data_0 = additional_data_0;
-	buff[*idx].additional_data_1 = additional_data_1;
+	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == TRIAL_HAND_2_NEURAL_NET_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
@@ -132,8 +131,7 @@ bool get_next_trial_hand_2_neural_net_msg_buffer_item(TrialHand2NeuralNetMsg* ms
 	buff_item = &(msg_buffer->buff[*idx]);	
 	msg_item->msg_time = buff_item->msg_time;		
 	msg_item->msg_type = buff_item->msg_type;
-	msg_item->additional_data_0 = buff_item->additional_data_0;		
-	msg_item->additional_data_1 = buff_item->additional_data_1;		
+	msg_item->additional_data = buff_item->additional_data;		
 	if ((*idx + 1) == TRIAL_HAND_2_NEURAL_NET_MSG_BUFF_SIZE)
 		*idx = 0;
 	else

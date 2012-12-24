@@ -56,10 +56,10 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot 
 	msgs_mov_obj_hand_2_neural_net_multi_thread = g_new0(MovObjHand2NeuralNetMsgMultiThread, 1); 
 
 	init_mov_obj_duration_handler();
-/*
+
 	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_neural_net().");	
-*/
+
 	if (! connect_to_trial_hand())
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "create_mov_obj_handler_rt_thread", "connect_to_trial_hand().");	
 
@@ -199,7 +199,7 @@ static bool connect_to_neural_net(void)
 	NeuralNet2MovObjHandMsgItem msg_item;
 	char str_neural_net_2_mov_obj_hand_msg[NEURAL_NET_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	unsigned int i, num_of_alive_responses = 0;
-	
+
 	for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
 	{
 		(*msgs_mov_obj_hand_2_neural_net_multi_thread)[i] = allocate_shm_client_mov_obj_hand_2_neural_net_multi_thread_msg_buffer_item(msgs_mov_obj_hand_2_neural_net_multi_thread, i, MIN_MOV_OBJ_HAND_2_NEURAL_NET_EVENT_SCHEDULING_DELAY);

@@ -12,15 +12,6 @@ int main( int argc, char *argv[])
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 
-/*	if (! add_trial_type_to_trial_types_data(trial_types_data, TRIAL_TYPE_IN_VIVO_BMI_LEFT_TARGET, 5000000000, 4000000000)) 
-		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_trial_types_data().");
-	if (! add_trial_type_to_trial_stats_data(trial_types_data, trial_stats_data))
-		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_stats_types_data().");
-	if (! add_trial_type_to_trial_types_data(trial_types_data, TRIAL_TYPE_IN_VIVO_BMI_RIGHT_TARGET, 5000000000, 4000000000)) 
-		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_trial_types_data().");
-	if (! add_trial_type_to_trial_stats_data(trial_types_data, trial_stats_data))
-		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "! add_trial_type_to_stats_types_data().");
-*/
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 5000000000;
 	paradigm->trial_refractory = 4000000000;
