@@ -45,7 +45,8 @@ typedef struct
 {
 	pthread_mutex_t 			mutex; 
 	ServoData				servos[THREE_DOF_ROBOT_NUM_OF_SERVOS];
-	ThreeDofRobotLimit		security_limits;
+	ThreeDofRobotLimit		security_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
+	ThreeDofRobotLimit		robotic_space_borders;	// reset position or trial if robot exceeds these borders.
 	ThreeDofRobotPosition		tip_position;
 	ThreeDofRobotPosition		elbow_position;
 	ThreeDofRobotSize		size;
@@ -65,5 +66,7 @@ void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit);
 bool check_three_dof_robot_out_of_security_limits(ThreeDofRobot *robot_arm);
+bool submit_robotic_space_borders(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit);
+bool check_three_dof_robot_out_of_robotic_space_borders(ThreeDofRobot *robot_arm);
 
 #endif

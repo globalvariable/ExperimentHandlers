@@ -10,6 +10,7 @@
 #include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../Library/Messages/MovObjHand2TrialHand.h"
+#include "ConfigMovObjHandler.h"
 
 bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadigmRobotReach *paradigm, MovObjStatus *mov_obj_status, TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand);
 

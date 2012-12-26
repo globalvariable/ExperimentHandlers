@@ -13,7 +13,8 @@ typedef struct __MovObjStats MovObjStats;
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 #include "MovObjComponentTypes.h"
 #include "MovObjLocationType.h"
-#include "NeuralNet2MovObjHandSched.h"
+#include "../Messages/NeuralNet2MovObjHand.h"
+
 
 struct __MovObjStats
 {

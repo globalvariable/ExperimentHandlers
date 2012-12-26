@@ -1,7 +1,7 @@
 #ifndef MOV_OBJ_HAND_2_NEURAL_NET_H
 #define MOV_OBJ_HAND_2_NEURAL_NET_H
 
-
+#define NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS	IZ_PS_NETWORK_SIM_NUM_OF_DEDICATED_CPUS*MAX_NUM_OF_CPU_THREADS_PER_CPU
 
 #define MIN_MOV_OBJ_HAND_2_NEURAL_NET_EVENT_SCHEDULING_DELAY MOV_OBJ_HANDLER_PERIOD + IZ_PS_NETWORK_SIM_PERIOD + 1000000 // 1 MS jitter buffer
 //  MESSAGES FROM MOV OBJ HANDLER TO NEURAL NET
@@ -9,7 +9,15 @@
 typedef struct __MovObjHand2NeuralNetMsg MovObjHand2NeuralNetMsg;
 typedef struct __MovObjHand2NeuralNetMsgItem MovObjHand2NeuralNetMsgItem;
 typedef unsigned int MovObjHand2NeuralNetMsgType;
-typedef double MovObjHand2NeuralNetMsgAdditional;
+
+#include "../Robot/ThreeDofRobot.h"
+
+typedef union 
+{
+	double three_dof_robot_joint_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];
+	bool dummy;
+} MovObjHand2NeuralNetMsgAdditional;
+
 #include "../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
 typedef MovObjHand2NeuralNetMsg *MovObjHand2NeuralNetMsgPtr;
@@ -19,7 +27,7 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL								0
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
-#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION							2
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE					2
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

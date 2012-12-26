@@ -32,8 +32,8 @@ void submit_servo_target(ServoData *servo_data, ServoPulse target_pulse_width, d
 void submit_servo_direction_and_speed(ServoData *servo_data,  ServoPulseChange amount)
 {
 	pthread_mutex_lock(&(servo_data->mutex));
-	servo_data->pulse_change = amount;
-	servo_data->pulse_target = servo_data->pulse_current + amount;
+	servo_data->pulse_change = 0;
+	servo_data->pulse_target = servo_data->pulse_target + amount;
 	pthread_mutex_unlock(&(servo_data->mutex));
 }
 
@@ -41,7 +41,12 @@ void evaluate_servo_pw_command(ServoData *servo_data)
 {
 	pthread_mutex_lock(&(servo_data->mutex));
 	servo_data->pulse_current += servo_data->pulse_change;
-	if (servo_data->pulse_change > 0)
+	if (servo_data->pulse_change == 0)	// it is evaluating submit_servo_direction_and_speed
+	{
+		servo_data->pulse_current = servo_data->pulse_target;
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
+	}
+	else if (servo_data->pulse_change > 0)  // target pulse width given and it reaches that pulse width with servo_data->pulse_change with the servo pulsing frequency period.
 	{
 		if (servo_data->pulse_current > servo_data->pulse_target)
 		{

@@ -106,3 +106,52 @@ bool check_three_dof_robot_out_of_security_limits(ThreeDofRobot *robot_arm)
 	}
 	return true;
 }
+
+bool submit_robotic_space_borders(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit)
+{
+	if (robot_arm->security_limits.depth_min >= depth_min)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.depth_min > depth_min.");
+	if (robot_arm->security_limits.depth_max <= depth_max)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.depth_max <= depth_max.");
+	if (robot_arm->security_limits.lateral_min >= lateral_min)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.lateral_min >= lateral_min.");
+	if (robot_arm->security_limits.lateral_max <= lateral_max)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.lateral_max <= lateral_max.");
+	if (robot_arm->security_limits.height_min >= height_min)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.height_min = height_min.");
+	if (robot_arm->security_limits.height_max <= height_max)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.height_max <= height_max.");
+	if (robot_arm->security_limits.j_angle_min >= joint_angle_lower_limit)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.j_angle_min >= joint_angle_lower_limit.");
+	if (robot_arm->security_limits.j_angle_max <= joint_angle_upper_limit)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "submit_robotic_space_borders", "robot_arm->security_limits.j_angle_max <= joint_angle_upper_limit.");
+
+	robot_arm->robotic_space_borders.depth_min = depth_min;
+	robot_arm->robotic_space_borders.depth_max = depth_max;
+	robot_arm->robotic_space_borders.lateral_min = lateral_min;
+	robot_arm->robotic_space_borders.lateral_max = lateral_max;
+	robot_arm->robotic_space_borders.height_min = height_min;
+	robot_arm->robotic_space_borders.height_max = height_max;
+	robot_arm->robotic_space_borders.j_angle_min = joint_angle_lower_limit;
+	robot_arm->robotic_space_borders.j_angle_max = joint_angle_upper_limit;
+
+	return true;
+}
+bool check_three_dof_robot_out_of_robotic_space_borders(ThreeDofRobot *robot_arm)
+{
+	ThreeDofRobotPosition *tip_position =&(robot_arm->tip_position);
+	ThreeDofRobotLimit	*space_borders = &(robot_arm->robotic_space_borders);
+	unsigned int i;
+	if ((space_borders->depth_min > tip_position->depth) || (space_borders->depth_max < tip_position->depth))
+		return false;
+	if ((space_borders->lateral_min > tip_position->lateral) || (space_borders->lateral_max < tip_position->lateral))
+		return false;
+	if ((space_borders->height_min > tip_position->height) || (space_borders->height_max < tip_position->height))
+		return false;
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+	{
+		if ((space_borders->j_angle_min > robot_arm->servos[i].current_angle) || (space_borders->j_angle_max < robot_arm->servos[i].current_angle))
+			return false;
+	}
+	return true;
+}

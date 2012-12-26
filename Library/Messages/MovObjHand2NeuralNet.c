@@ -9,9 +9,9 @@ bool get_mov_obj_hand_2_neural_net_msg_type_string(MovObjHand2NeuralNetMsgType m
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE");
 			return TRUE;
-		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION:
+		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE:
 			if (str != NULL)
- 				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_LOCATION");
+ 				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE");
 			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL:
@@ -132,7 +132,7 @@ MovObjHand2NeuralNetMsgMultiThread* allocate_shm_server_mov_obj_hand_2_neural_ne
 	for (i = 0; i < (NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS); i++)
 	{
 		(*msg_buffers)[i] = rtai_malloc(SHM_NUM_MOV_OBJ_HAND_2_NEURAL_NET+i, sizeof(MovObjHand2NeuralNetMsg));
-		memset((*msg_buffers)[i], 0, sizeof(MovObjHand2NeuralNetMsg));	
+//		memset((*msg_buffers)[i], 0, sizeof(MovObjHand2NeuralNetMsg));	 // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 		(*msg_buffers)[i]->buff_write_idx = 0;   // re-allocation with rtai_malloc might lead change in the shm of client's msg_buffer->event_scheduling_delay (if it has)
 		(*msg_buffers)[i]->buff_read_idx = 0;  // instead of memset, clear buffer pointers.		
 	}
