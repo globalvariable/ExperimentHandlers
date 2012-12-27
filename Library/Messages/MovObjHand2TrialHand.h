@@ -16,9 +16,7 @@ typedef double MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST				2		// sends it out when the robot reached the threshold point.
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST			3		// sends it out when the robot reached the threshold point.
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				4		// sends it out when the timeout after reaching to target appears
-#define MOV_OBJ_HAND_2_TRIAL_HAND_THRESHOLD_REACHED					5		// sends it out when the timeout after reaching to target appears
-#define MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH					6		// trial handler send trial timeour msg to mov obj hand and it resends it to trial handler with trajectory success ratio to save the order of the messages from mov obj hand to neural net through trial handler.
-#define MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO			7		// sends it out when the timeout after reaching to target appears
+
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

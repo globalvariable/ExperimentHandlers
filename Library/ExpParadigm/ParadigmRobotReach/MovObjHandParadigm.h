@@ -21,6 +21,7 @@ typedef struct
 	EllipsoidThreshold			max_target_reach_threshold;
 	double					target_reach_threshold_change_rate;
 	EllipsoidThreshold			point_reach_threshold;
+	EllipsoidThreshold			outer_threshold;
 }
 MovObjThreshold;
 

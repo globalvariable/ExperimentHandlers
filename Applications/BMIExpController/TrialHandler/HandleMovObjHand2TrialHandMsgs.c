@@ -24,8 +24,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						trial_hand_to_spike_gen_msg_add.trajectory_success_ratio = 0;
-						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN, trial_hand_to_spike_gen_msg_add))
+						trial_hand_to_neural_net_msg_add.dummy = 0;
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN, trial_hand_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
@@ -49,8 +49,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						trial_hand_to_spike_gen_msg_add.trajectory_success_ratio = 0;
-						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_spike_gen_msg_add))  // to tell unsuccesful trial
+						trial_hand_to_neural_net_msg_add.dummy = 0;
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 
 						break;  
@@ -93,84 +93,6 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						break;   // do nothing
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
 						break;	// do nothing
-					default:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-				}
-				break;
-			case MOV_OBJ_HAND_2_TRIAL_HAND_THRESHOLD_REACHED:    
-				switch (*trial_status)
-				{
-					case TRIAL_STATUS_TRIALS_DISABLED:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_IN_TRIAL:
-						trial_hand_to_neural_net_msg_add.dummy = 0;
-						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_MOV_OBJ_REACHED_THRESHOLD, trial_hand_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "! write_to_trial_hand_2_neural_net_msg_buffer()");
-						break;  
-					case TRIAL_STATUS_IN_REFRACTORY:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					default:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-				}
-				break;
-			case MOV_OBJ_HAND_2_TRIAL_HAND_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH:    
-				switch (*trial_status)
-				{
-					case TRIAL_STATUS_TRIALS_DISABLED:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_IN_TRIAL:
-						trial_hand_to_neural_net_msg_add.dummy = 0;
-						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH, trial_hand_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "! write_to_trial_hand_2_neural_net_msg_buffer()");
-						break;  
-					case TRIAL_STATUS_IN_REFRACTORY:	///   should send success ratio before trial ends. (mov obj sends it when it receives trial timeout or it reaches threshold)
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					default:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-				}
-				break;
-			case MOV_OBJ_HAND_2_TRIAL_HAND_TRAJECTORY_SUCCESS_RATIO:    
-				switch (*trial_status)
-				{
-					case TRIAL_STATUS_TRIALS_DISABLED:
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_IN_TRIAL:
-						trial_hand_to_neural_net_msg_add.trajectory_success_ratio = 0;
-						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRAJECTORY_SUCCESS_RATIO, trial_hand_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "! write_to_trial_hand_2_neural_net_msg_buffer()");
-						break;  
-					case TRIAL_STATUS_IN_REFRACTORY:	///   should send success ratio before trial ends. (mov obj sends it when it receives trial timeout or it reaches threshold)
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
-					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
-						get_trial_status_type_string(*trial_status, str_status);   
-						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
 						get_trial_status_type_string(*trial_status, str_status);   

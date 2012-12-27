@@ -85,7 +85,7 @@ void create_gui(ThreeDofRobot 	*robot_arm)
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
         entry_base_pulse_width = gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox),entry_base_pulse_width, FALSE,FALSE,0);
-	gtk_entry_set_text(GTK_ENTRY(entry_base_pulse_width), "1500");
+	gtk_entry_set_text(GTK_ENTRY(entry_base_pulse_width), "1425");
 	gtk_widget_set_size_request(entry_base_pulse_width, 50, 30) ;	
 	lbl = gtk_label_new("us");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
@@ -134,7 +134,7 @@ void create_gui(ThreeDofRobot 	*robot_arm)
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
         entry_shoulder_pulse_width= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox),entry_shoulder_pulse_width, FALSE,FALSE,0);
-	gtk_entry_set_text(GTK_ENTRY(entry_shoulder_pulse_width), "1500");
+	gtk_entry_set_text(GTK_ENTRY(entry_shoulder_pulse_width), "1431");
 	gtk_widget_set_size_request(entry_shoulder_pulse_width, 50, 30) ;	
 	lbl = gtk_label_new("us");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
@@ -183,7 +183,7 @@ void create_gui(ThreeDofRobot 	*robot_arm)
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);
         entry_elbow_pulse_width= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox),entry_elbow_pulse_width, FALSE,FALSE,0);
-	gtk_entry_set_text(GTK_ENTRY(entry_elbow_pulse_width), "1500");
+	gtk_entry_set_text(GTK_ENTRY(entry_elbow_pulse_width), "1014");
 	gtk_widget_set_size_request(entry_elbow_pulse_width, 50, 30) ;	
 	lbl = gtk_label_new("us");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE,FALSE,0);

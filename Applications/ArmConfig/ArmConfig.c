@@ -16,11 +16,11 @@ int main( int argc, char *argv[])
 	robot_arm = g_new0(ThreeDofRobot, 1);
 	init_three_dof_robot_arm(robot_arm);
 	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
-	submit_arm_security_limits(robot_arm, -19.0, 14.0, -20.0, 20.0, 3.0, 35.0, M_PI*(1.0/12.0), M_PI*(11.0/12.0));
+	submit_arm_security_limits(robot_arm, -19.0, 14.5, -20.0, 20.0, 3.0, 35.0, M_PI*(1.0/12.0), M_PI*(11.0/12.0));
 
-	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), 1430);
-	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), 1600);
-	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), 1600);
+	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), 1425);
+	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), 1431);
+	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), 1014);
 
 	pulse_width_0_degree = 879;
 	pulse_width_90_degree = 1430;

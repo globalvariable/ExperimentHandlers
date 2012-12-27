@@ -23,8 +23,8 @@ struct __TrialHand2NeuralNetTrialStatusMsgAdd
 union __TrialHand2NeuralNetMsgAdditional
 {
 	TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add;
+	double reward;
 	bool dummy;
-	double trajectory_success_ratio;
 };
 
 
@@ -39,9 +39,7 @@ union __TrialHand2NeuralNetMsgAdditional
 #define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START						3
 #define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						4
 #define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					5
-#define TRIAL_HAND_2_NEURAL_NET_MSG_MOV_OBJ_REACHED_THRESHOLD		6
-#define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_TIMEOUT_BEFORE_THRESHOLD_REACH	7
-#define TRIAL_HAND_2_NEURAL_NET_MSG_TRAJECTORY_SUCCESS_RATIO		8
+
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
