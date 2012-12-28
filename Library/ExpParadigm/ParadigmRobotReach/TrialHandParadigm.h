@@ -4,7 +4,7 @@
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../Coordinate/Cartesian.h"
 #include "../../Robot/ThreeDofRobot.h"
-
+#include "../../../BlueSpike/Library/Thresholding/Thresholding.h"
 
 
 typedef struct 
@@ -18,6 +18,10 @@ typedef struct
 	unsigned int				num_of_target_led_components;
 	TimeStamp				max_trial_length;			
 	TimeStamp				trial_refractory;	
+	EllipsoidThreshold			min_target_reach_threshold;
+	EllipsoidThreshold			max_target_reach_threshold;
+	EllipsoidThreshold			selected_target_reach_threshold;
+	double					target_reach_threshold_change_rate;
 } TrialHandParadigmRobotReach;
 
 

@@ -15,7 +15,8 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #define GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING		1
 #define GUI_2_TRIAL_HAND_MSG_DISABLE_TRIAL_HANDLING		2
 #define GUI_2_TRIAL_HAND_MSG_QUIT							3
-
+#define GUI_2_TRIAL_HAND_MSG_INCREASE_THRESHOLD		4
+#define GUI_2_TRIAL_HAND_MSG_DECREASE_THRESHOLD		5
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

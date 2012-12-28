@@ -18,6 +18,15 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_QUIT");
 			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_INCREASE_THRESHOLD:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_INCREASE_THRESHOLD");
+			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_DECREASE_THRESHOLD:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_DECREASE_THRESHOLD");
+			return TRUE;	
+
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

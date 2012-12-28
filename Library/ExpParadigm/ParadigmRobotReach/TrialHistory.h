@@ -2,7 +2,7 @@
 #define TRIAL_HISTORY_H
 
 
-typedef struct __TrialsHistory TrialsHistory;
+typedef struct __TrialHistory TrialHistory;
 
 #include "TrialData.h"
 
@@ -13,8 +13,8 @@ struct __TrialHistory
 	unsigned int 			buffer_size;
 };
 
-TrialsHistory* allocate_trials_history(TrialsHistory* hist, unsigned int buffer_size); 
-TrialsHistory* deallocate_trials_history(TrialsHistory* hist); 
+TrialHistory* allocate_trial_history(TrialHistory* hist, unsigned int buffer_size); 
+TrialHistory* deallocate_trial_history(TrialHistory* hist); 
 
 
 #endif

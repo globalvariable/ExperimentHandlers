@@ -17,9 +17,6 @@ typedef struct
 typedef struct 
 {
 	EllipsoidThreshold			selected_target_reach_threshold;
-	EllipsoidThreshold			min_target_reach_threshold;
-	EllipsoidThreshold			max_target_reach_threshold;
-	double					target_reach_threshold_change_rate;
 	EllipsoidThreshold			point_reach_threshold;
 	EllipsoidThreshold			outer_threshold;
 }

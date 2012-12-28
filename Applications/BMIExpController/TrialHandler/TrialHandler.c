@@ -7,7 +7,7 @@ int main( int argc, char *argv[])
 	RtTasksData *rt_tasks_data = NULL;
 	Gui2TrialHandMsg *msgs_gui_2_trial_hand = NULL;    
 	TrialHandParadigmRobotReach *paradigm = NULL;
-
+	TrialHistory *trial_history = NULL; 
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
@@ -22,13 +22,26 @@ int main( int argc, char *argv[])
 	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
+	paradigm->min_target_reach_threshold.r_x = 1;  //height
+	paradigm->min_target_reach_threshold.r_y = 1; // depth
+	paradigm->min_target_reach_threshold.r_z = 1; // lateral
+
+	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
+	paradigm->max_target_reach_threshold.r_y = 10; // depth    
+	paradigm->max_target_reach_threshold.r_z = 8; // lateral
+	paradigm->target_reach_threshold_change_rate = 0.1;
+
+	paradigm->selected_target_reach_threshold = paradigm->max_target_reach_threshold;
+
+	trial_history = allocate_trial_history(trial_history, 1000); 
+
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 
-	if (! create_trial_handler_rt_thread(rt_tasks_data, msgs_gui_2_trial_hand, paradigm))
+	if (! create_trial_handler_rt_thread(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, trial_history))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "create_trial_handler_rt_thread().");
 
 	gtk_init(&argc, &argv);
-	create_gui_handler(rt_tasks_data, msgs_gui_2_trial_hand);
+	create_gui_handler(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, trial_history);
 	gtk_main();
 	return 0;
 }	

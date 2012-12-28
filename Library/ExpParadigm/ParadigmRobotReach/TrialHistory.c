@@ -6,8 +6,8 @@ TrialHistory* allocate_trial_history(TrialHistory* hist, unsigned int buffer_siz
 {
 	if (hist != NULL)
 	{
-		hist = deallocate_trials_history(hist);
-		hist = allocate_trials_history(hist, buffer_size);
+		hist = deallocate_trial_history(hist);
+		hist = allocate_trial_history(hist, buffer_size);
 		return hist;
 	}  
 	hist = g_new0(TrialHistory,1);
@@ -21,7 +21,7 @@ TrialHistory* allocate_trial_history(TrialHistory* hist, unsigned int buffer_siz
 TrialHistory* deallocate_trial_history(TrialHistory* hist)
 {
 	if (hist == NULL)
-		return (TrialsHistory*)print_message(BUG_MSG ,"ExperimentHandler", "TrialData", "allocate_trials_history", "trials_history == NULL.");    
+		return (TrialHistory*)print_message(BUG_MSG ,"ExperimentHandler", "TrialData", "allocate_trials_history", "trials_history == NULL.");    
 	g_free(hist->history);
 	g_free(hist);
 	print_message(INFO_MSG ,"TrialControllers", "TrialsData", "deallocate_trials_data", "Destroyed trials_data.");

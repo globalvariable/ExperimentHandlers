@@ -17,7 +17,18 @@
 typedef struct __TrialHand2MovObjHandMsg TrialHand2MovObjHandMsg;
 typedef struct __TrialHand2MovObjHandMsgItem TrialHand2MovObjHandMsgItem;
 typedef unsigned int TrialHand2MovObjHandMsgType;
-typedef unsigned int TrialHand2MovObjHandMsgAdditional;
+
+typedef union __TrialHand2MovObjHandMsgAdditional TrialHand2MovObjHandMsgAdditional;
+
+#include "../../../BlueSpike/Library/Thresholding/Thresholding.h"
+
+union __TrialHand2MovObjHandMsgAdditional
+{
+	EllipsoidThreshold	threshold;
+	unsigned int		robot_start_position_idx;
+	unsigned int		robot_target_position_idx;
+	bool			dummy;
+};
 
 
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH					100
@@ -27,6 +38,7 @@ typedef unsigned int TrialHand2MovObjHandMsgAdditional;
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL					2		// send trial type as additional
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT				3		
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL					4
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ELLIPSOID_THRESHOLD		5
 
 struct __TrialHand2MovObjHandMsgItem
 {
