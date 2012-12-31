@@ -9,6 +9,7 @@ bool handle_trial_dur_handler_to_trial_handler_msg(TrialStatus *trial_status, Ti
 	TrialHand2NeuralNetMsgAdditional trial_hand_to_neural_net_msg_add;
 	TrialHand2SpikeGenMsgAdditional trial_hand_to_spike_gen_msg_add;
 	TrialHand2MovObjHandMsgAdditional  trial_hand_to_mov_obj_hand_msg_add;
+	double reward;
 	while (get_next_trial_dur_hand_2_trial_hand_msg_buffer_item(msgs_trial_dur_hand_2_trial_hand, &msg_item))
 	{
 		get_trial_dur_hand_2_trial_hand_msg_type_string(msg_item.msg_type, str_trial_dur_msg);
@@ -24,8 +25,10 @@ bool handle_trial_dur_handler_to_trial_handler_msg(TrialStatus *trial_status, Ti
 
 						history->history[history->buff_write_idx].reward_amount = -1.0;
 						history->history[history->buff_write_idx].trial_end_time = current_time;
-						trial_hand_to_neural_net_msg_add.reward = history->history[history->buff_write_idx].reward_amount;
-
+						reward = get_abs_mean_of_reward_of_previous_trials(history, 4);
+						reward = ((reward * 4.0) + fabs(history->history[history->buff_write_idx].reward_amount))/5.0;   // get mean of last 5 trials including this trial
+						trial_hand_to_neural_net_msg_add.reward = -reward;
+						printf ("reward --- : %.8f\n", trial_hand_to_neural_net_msg_add.reward);
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 

@@ -29,6 +29,11 @@ bool get_mov_obj_status_type_string(MovObjStatus mov_obj_status_type, char *str)
 			if (str != NULL)
 				strcpy(str, "MOV_OBJ_STATUS_RESETTING_TO_START_POINT");
 			return TRUE;
+		case MOV_OBJ_STATUS_DISABLED:
+			if (str != NULL)
+				strcpy(str, "MOV_OBJ_STATUS_DISABLED");
+			return TRUE;
+
 /////////////////////////		
 		case MOV_OBJ_STATUS_NULL:
 			if (str != NULL)

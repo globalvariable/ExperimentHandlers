@@ -138,6 +138,20 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					(*read_idx)++;
 			}    
 			break; 
+		case MOV_OBJ_STATUS_DISABLED:
+			while ((*read_idx) != write_idx)		
+			{
+				item = &(scheduled_spike_data->buff[*read_idx]);
+				if (item->peak_time < previous_system_time)
+					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				if (item->peak_time >= current_time)	
+					break;
+				if ((*read_idx + 1) == buffer_size)
+					*read_idx = 0;
+				else
+					(*read_idx)++;
+			}    
+			break; 
 		default:
 			get_mov_obj_status_type_string(mov_obj_status, str_mov_obj_status);
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", str_mov_obj_status);

@@ -17,7 +17,7 @@ typedef unsigned int MovObjStatus;   // !!!ONLY!!! mov_obj_duration handler can 
 #define	MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT					4
 #define	MOV_OBJ_STATUS_REACHED_TARGET_POINT						5
 #define	MOV_OBJ_STATUS_RESETTING_TO_START_POINT					6
-
+#define	MOV_OBJ_STATUS_DISABLED										7
 
 bool get_mov_obj_status_type_string(MovObjStatus mov_obj_status_type, char *str);   // pass NULL if you only want checking (to be faster) 
 

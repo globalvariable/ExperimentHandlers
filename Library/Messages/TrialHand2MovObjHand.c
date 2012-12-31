@@ -25,6 +25,14 @@ bool get_trial_hand_2_mov_obj_hand_msg_type_string(TrialHand2MovObjHandMsgType m
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ELLIPSOID_THRESHOLD");
 			return TRUE;
+		case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_ENABLED:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_ENABLED");
+			return TRUE;
+		case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_DISABLED:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_DISABLED");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_NULL:
 			if (str != NULL)

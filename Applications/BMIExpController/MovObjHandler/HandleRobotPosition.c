@@ -66,6 +66,8 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
 			break;
+		case MOV_OBJ_STATUS_DISABLED:
+			break;
 		default:
 			get_mov_obj_status_type_string(*mov_obj_status, str_mov_obj_status);   
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", str_mov_obj_status);

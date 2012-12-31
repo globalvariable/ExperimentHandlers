@@ -2,7 +2,7 @@
 
 static RtTasksData *static_rt_tasks_data = NULL;
 
-static MovObjStatus mov_obj_status = MOV_OBJ_STATUS_NULL;   // Only mov_obj handler can change status. 
+static MovObjStatus mov_obj_status = MOV_OBJ_STATUS_DISABLED;   // Only mov_obj handler can change status. 
 static MovObjLocationType current_location = 0;   
 
 static int mov_obj_handler_rt_thread = 0;
@@ -40,8 +40,6 @@ static bool connect_to_mov_obj_interf(void );
 bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm, MessageLogBuffer *message_log)
 {
 	static_rt_tasks_data = rt_tasks_data;
-
-	mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
 
 	static_robot_arm = robot_arm;
 	static_mov_obj_paradigm = mov_obj_paradigm;

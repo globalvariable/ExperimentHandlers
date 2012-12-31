@@ -13,7 +13,7 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
-	paradigm->max_trial_length = 5000000000;
+	paradigm->max_trial_length = 3000000000;
 	paradigm->trial_refractory = 4000000000;
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
@@ -29,7 +29,7 @@ int main( int argc, char *argv[])
 	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
 	paradigm->max_target_reach_threshold.r_y = 10; // depth    
 	paradigm->max_target_reach_threshold.r_z = 8; // lateral
-	paradigm->target_reach_threshold_change_rate = 0.1;
+	paradigm->target_reach_threshold_change_rate = 0.02;
 
 	paradigm->selected_target_reach_threshold = paradigm->max_target_reach_threshold;
 
