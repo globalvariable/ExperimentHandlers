@@ -6,7 +6,7 @@ static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;
 
 static TrialHandParadigmRobotReach *paradigm = NULL;
 
-static TrialHistory *history = NULL;
+static ClassifiedTrialHistory* classified_history = NULL;
 
 static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
@@ -31,7 +31,7 @@ static GtkWidget *lbl_interrogated_threshold_r_y;
 static GtkWidget *lbl_interrogated_threshold_r_z;
 static GtkWidget *btn_submit_trial_number;
 
-
+static GtkWidget *btn_statistics;
 
 
 static GtkWidget *lbl_num_of_trials;
@@ -49,9 +49,11 @@ static void decrease_threshold_button_func (void);
 
 static void submit_trial_number_button_func (void);
 
+static void statistics_button_func (void);
+
 static gboolean timeout_callback(gpointer user_data) ;
 
-bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, TrialHistory *trial_history)
+bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
@@ -61,7 +63,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	paradigm = trial_hand_paradigm;
 
-	history = trial_history;
+	classified_history = classified_trial_history;
 
         frame = gtk_frame_new ("");
         frame_label = gtk_label_new ("     Trials Handler    ");      
@@ -297,6 +299,12 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
         gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_rewarded_trials_of_trial_type, FALSE, FALSE, 0);
 
 
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_statistics = gtk_button_new_with_label("Statistics");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_statistics, TRUE, TRUE, 0);
+
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 5,6, 0, 6);  // column 5-6, row 0-6
@@ -317,6 +325,9 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	g_signal_connect(G_OBJECT(btn_submit_trial_number), "clicked", G_CALLBACK(submit_trial_number_button_func), NULL);
 
+	g_signal_connect(G_OBJECT(btn_statistics), "clicked", G_CALLBACK(statistics_button_func), NULL);
+
+
 	g_timeout_add(1000, timeout_callback, NULL);		// timeout shoud be less than buffer_followup_latency,
 
 	return TRUE;
@@ -335,7 +346,7 @@ static gboolean timeout_callback(gpointer user_data)
 	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_z);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_z), temp);
 
-	sprintf (temp, "%u", history->buff_write_idx);
+	sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
 	gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
 
 	return TRUE;
@@ -392,28 +403,46 @@ static void submit_trial_number_button_func (void)
 
 	trial_number = (unsigned int)atof(gtk_entry_get_text(GTK_ENTRY(entry_trial_number)));
 	
-	if (trial_number >= history->buffer_size)
+	if (trial_number >= classified_history->all_trials->buffer_size)
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "Invalid Trial Number.");	
-	trial_length = history->history[trial_number].trial_end_time - history->history[trial_number].trial_start_time;
+	trial_length = classified_history->all_trials->history[trial_number].trial_end_time - classified_history->all_trials->history[trial_number].trial_start_time;
 	sprintf (temp, "%.2f", trial_length/1000000000.0);
 	gtk_label_set_text (GTK_LABEL (lbl_trial_length), temp);
 
-	sprintf (temp, "%u", history->history[trial_number].robot_start_position_idx);
+	sprintf (temp, "%u",  classified_history->all_trials->history[trial_number].robot_start_position_idx);
 	gtk_label_set_text (GTK_LABEL (lbl_robot_start_position_idx), temp);
 
-	sprintf (temp, "%u", history->history[trial_number].robot_target_position_idx);
+	sprintf (temp, "%u", classified_history->all_trials->history[trial_number].robot_target_position_idx);
 	gtk_label_set_text (GTK_LABEL (lbl_robot_target_position_idx), temp);
 
-	sprintf (temp, "%.2f", history->history[trial_number].reward_amount);
+	sprintf (temp, "%.2f", classified_history->all_trials->history[trial_number].reward_magnitude);
 	gtk_label_set_text (GTK_LABEL (lbl_reward_amount), temp);
 
-	sprintf (temp, "%.2f", history->history[trial_number].rewarding_threshold.r_x);
+	sprintf (temp, "%.2f", classified_history->all_trials->history[trial_number].rewarding_threshold.r_x);
 	gtk_label_set_text (GTK_LABEL (lbl_interrogated_threshold_r_x), temp);
 
-	sprintf (temp, "%.2f", history->history[trial_number].rewarding_threshold.r_y);
+	sprintf (temp, "%.2f", classified_history->all_trials->history[trial_number].rewarding_threshold.r_y);
 	gtk_label_set_text (GTK_LABEL (lbl_interrogated_threshold_r_y), temp);
 
-	sprintf (temp, "%.2f", history->history[trial_number].rewarding_threshold.r_z);
+	sprintf (temp, "%.2f", classified_history->all_trials->history[trial_number].rewarding_threshold.r_z);
 	gtk_label_set_text (GTK_LABEL (lbl_interrogated_threshold_r_z), temp);
 }
 
+static void statistics_button_func (void)
+{
+	unsigned int i, j;
+
+	printf ("----------------------------------- Trial Statistics -----------------------------------\n");
+
+	for (i = 0; i < classified_history->num_of_start_positions; i ++)
+	{
+		for (j = 0; j < classified_history->num_of_target_positions; j ++)
+		{
+			printf ("------------- Robot Start Position Idx : %u --- Robot Target Position Idx : %u ---\n", i , j);	
+			printf ("Reward Magnitude: %.2f \n", classified_history->trial_types[i][j]->history[classified_history->trial_types[i][j]->buff_write_idx].reward_magnitude);	
+		}		
+	}
+
+
+	printf ("----------------------------- End of Trial Statistics --------------------------------\n");
+}

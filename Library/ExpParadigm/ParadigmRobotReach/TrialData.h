@@ -16,7 +16,7 @@ struct __TrialData
 	unsigned int			target_led_component_list_idx;
 	unsigned int			robot_start_position_idx;
 	unsigned int			robot_target_position_idx;
-	double				reward_amount;
+	double				reward_magnitude;
 	EllipsoidThreshold		rewarding_threshold;
 };
 

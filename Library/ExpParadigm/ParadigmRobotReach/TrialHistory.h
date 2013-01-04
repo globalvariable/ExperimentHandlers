@@ -3,6 +3,7 @@
 
 
 typedef struct __TrialHistory TrialHistory;
+typedef struct __ClassifiedTrialHistory ClassifiedTrialHistory;
 
 #include <math.h>
 #include "TrialData.h"
@@ -14,9 +15,20 @@ struct __TrialHistory
 	unsigned int 			buffer_size;
 };
 
+struct __ClassifiedTrialHistory
+{
+	TrialHistory			*all_trials;
+	TrialHistory			***trial_types;
+	unsigned int num_of_start_positions;
+	unsigned int num_of_target_positions;
+};
+
+
 TrialHistory* allocate_trial_history(TrialHistory* hist, unsigned int buffer_size); 
 TrialHistory* deallocate_trial_history(TrialHistory* hist); 
+
+ClassifiedTrialHistory* allocate_classified_trial_history(ClassifiedTrialHistory* classified_hist, unsigned int buffer_size, unsigned int num_of_start_positions, unsigned int num_of_target_positions);
+ClassifiedTrialHistory* deallocate_classified_trial_history(ClassifiedTrialHistory* classified_hist);
+
 double get_abs_mean_of_reward_of_previous_trials(TrialHistory* hist, unsigned int num_of_past_trials);
-
-
 #endif

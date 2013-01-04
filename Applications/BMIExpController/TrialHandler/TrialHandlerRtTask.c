@@ -6,7 +6,7 @@ static TrialStatus trial_status = TRIAL_STATUS_NULL;   // Only trial handler can
 
 static TrialHandParadigmRobotReach *static_paradigm = NULL;
 
-static TrialHistory *history = NULL;
+static ClassifiedTrialHistory *classified_history = NULL;
 
 static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;    
 
@@ -35,7 +35,7 @@ static bool connect_to_mov_obj_hand(void);
 static bool connect_to_neural_net(void);
 static bool connect_to_spike_gen(void);
 
-bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *paradigm, TrialHistory *trial_history)
+bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_trial_history)
 {
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -43,7 +43,7 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 
 	static_paradigm = paradigm;
 
-	history = trial_history;
+	classified_history = classified_trial_history;
 
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;	
 
@@ -120,11 +120,11 @@ static void *rt_trial_handler(void *args)
 		// routines
 		if (!handle_gui_to_trial_handler_msg(&trial_status, curr_system_time, static_msgs_gui_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm)) {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
-		if (!handle_trial_dur_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, history))  {
+		if (!handle_trial_dur_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, classified_history, static_paradigm))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
-		if (!handle_exp_envi_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, history))  {
+		if (!handle_exp_envi_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
-		if (!handle_mov_obj_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, history))  {
+		if (!handle_mov_obj_handler_to_trial_handler_msg(&trial_status, curr_system_time, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history))  {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

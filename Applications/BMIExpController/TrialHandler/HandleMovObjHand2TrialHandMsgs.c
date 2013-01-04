@@ -1,7 +1,7 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
 
-bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp current_time, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand,TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *paradigm, TrialHistory *history)
+bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp current_time, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand,TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_history)
 {
 	MovObjHand2TrialHandMsgItem msg_item;
 	char str_mov_obj_msg[MOV_OBJ_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
@@ -22,16 +22,20 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
-						if (current_time - history->history[history->buff_write_idx].trial_start_time < 1000000000)
+						if (current_time - classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_start_time < 1000000000)
 							reward = 0;
 						else
-							reward = ((double)(current_time - history->history[history->buff_write_idx].trial_start_time-1000000000)) / ((double)paradigm->max_trial_length); 
+							reward = ((double)(current_time - classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_start_time-1000000000)) / ((double)paradigm->max_trial_length); 
+
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude = reward;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].reward_magnitude = reward;
 						printf ("reward: %.8f\n", reward);
-						history->history[history->buff_write_idx].reward_amount = reward;
-						history->history[history->buff_write_idx].trial_end_time = current_time;
-						reward = get_abs_mean_of_reward_of_previous_trials(history, 4);
-						reward = ((reward * 4.0) + history->history[history->buff_write_idx].reward_amount)/5.0;  // get mean of last 5 trials including this trial
-						trial_hand_to_neural_net_msg_add.reward = reward;   
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_end_time = current_time;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_end_time = current_time;
+
+						reward = get_abs_mean_of_reward_of_previous_trials(classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx], 4);
+						reward = ((reward * 4.0) + fabs(classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude))/5.0;   // get mean of last 5 trials including this trial
+						trial_hand_to_neural_net_msg_add.reward = reward;
 						printf ("reward --- : %.8f\n", trial_hand_to_neural_net_msg_add.reward);
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
@@ -60,10 +64,15 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
 
-						history->history[history->buff_write_idx].reward_amount = -1.0;
-						history->history[history->buff_write_idx].trial_end_time = current_time;
-						reward = get_abs_mean_of_reward_of_previous_trials(history, 4);
-						reward = ((reward * 4.0) + fabs(history->history[history->buff_write_idx].reward_amount))/5.0;   // get mean of last 5 trials including this trial
+						reward = -1.0;
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude = reward;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].reward_magnitude = reward;
+						printf ("reward: %.8f\n", reward);
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_end_time = current_time;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_end_time = current_time;
+
+						reward = get_abs_mean_of_reward_of_previous_trials(classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx], 4);
+						reward = ((reward * 4.0) + fabs(classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude))/5.0;   // get mean of last 5 trials including this trial
 						trial_hand_to_neural_net_msg_add.reward = -reward;
 						printf ("reward --- : %.8f\n", trial_hand_to_neural_net_msg_add.reward);
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
@@ -93,12 +102,18 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
 						*trial_status = TRIAL_STATUS_IN_REFRACTORY;
-						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
 
-						if (history->buff_write_idx == history->buffer_size)
-							history->buff_write_idx = 0;
+						if (classified_history->all_trials->buff_write_idx == classified_history->all_trials->buffer_size)
+							classified_history->all_trials->buff_write_idx = 0;
 						else
-							history->buff_write_idx++;
+							classified_history->all_trials->buff_write_idx++;
+
+						if (classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx == classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buffer_size)
+							classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx = 0;
+						else
+							classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx++;
+
+						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
 						
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");

@@ -1,7 +1,7 @@
 #include "HandleExpEnviHand2TrialHandMsgs.h"
 
 
-bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp current_time, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *paradigm, TrialHistory *history)
+bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp current_time, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_history)
 {
 	ExpEnviHand2TrialHandMsgItem msg_item;
 	char str_exp_envi_msg[EXP_ENVI_HAND_2_TRIAL_HAND_MSG_STRING_LENGTH];
@@ -29,11 +29,18 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, Tim
 						paradigm->selected_robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
 						paradigm->selected_target_led_component_list_idx = paradigm->selected_robot_target_position_idx;
 					
-						history->history[history->buff_write_idx].trial_start_time = current_time;   
-						history->history[history->buff_write_idx].target_led_component_list_idx = paradigm->selected_target_led_component_list_idx;
-						history->history[history->buff_write_idx].robot_start_position_idx = paradigm->selected_robot_start_position_idx;
-						history->history[history->buff_write_idx].robot_target_position_idx = paradigm->selected_robot_target_position_idx;
-						history->history[history->buff_write_idx].rewarding_threshold = paradigm->selected_target_reach_threshold;
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_start_time = current_time;   
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].target_led_component_list_idx = paradigm->selected_target_led_component_list_idx;
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].robot_start_position_idx = paradigm->selected_robot_start_position_idx;
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].robot_target_position_idx = paradigm->selected_robot_target_position_idx;
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].rewarding_threshold = paradigm->selected_target_reach_threshold;
+
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_start_time = current_time;   
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].target_led_component_list_idx = paradigm->selected_target_led_component_list_idx;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].robot_start_position_idx = paradigm->selected_robot_start_position_idx;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].robot_target_position_idx = paradigm->selected_robot_target_position_idx;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].rewarding_threshold = paradigm->selected_target_reach_threshold;
+
 
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->max_trial_length))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
