@@ -25,15 +25,19 @@ MovObjThreshold;
 
 typedef struct 
 {
-	TimeStamp				stay_at_start_duration;
-	TimeStamp				stay_at_target_duration;	
-	TimeStamp				send_pw_command_wait_period;
-	TimeStamp				receive_position_wait_period;
-	MovObjThreshold			threshold;
-	RobotSpacePoints			start_info;
-	RobotSpacePoints			target_info;
+	TimeStamp					stay_at_start_duration;
+	TimeStamp					stay_at_target_duration;	
+	TimeStamp					send_pw_command_wait_period;
+	TimeStamp					receive_position_wait_period;
+	MovObjThreshold				threshold;
+	RobotSpacePoints				start_info;
+	RobotSpacePoints				target_info;
+	ThreeDofRobotCartesianLimit	cartesian_space_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
+	ServoAngularLimit				polar_space_limits[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 } MovObjHandParadigmRobotReach;
 
-
+bool submit_cartesian_robotic_space_borders(ThreeDofRobot *robot_arm, MovObjHandParadigmRobotReach *paradigm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max);
+bool submit_polar_robotic_space_borders(ThreeDofRobot *robot_arm, MovObjHandParadigmRobotReach *paradigm, double joint_angle_base_lower_limit, double joint_angle_base_upper_limit, double joint_angle_shoulder_lower_limit, double joint_angle_shoulder_upper_limit, double joint_angle_elbow_lower_limit, double joint_angle_elbow_upper_limit);
+bool check_robot_space_borders(ThreeDofRobot *robot_arm, MovObjHandParadigmRobotReach *paradigm);
 
 #endif

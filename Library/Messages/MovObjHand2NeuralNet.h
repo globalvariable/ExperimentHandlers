@@ -15,6 +15,8 @@ typedef unsigned int MovObjHand2NeuralNetMsgType;
 typedef union 
 {
 	double three_dof_robot_joint_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];
+	double three_dof_robot_min_joint_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];
+	double three_dof_robot_max_joint_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 	bool dummy;
 } MovObjHand2NeuralNetMsgAdditional;
 
@@ -28,6 +30,8 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL								0
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE						1
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE					2
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN					3
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX					4
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

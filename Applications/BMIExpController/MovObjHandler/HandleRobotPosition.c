@@ -39,7 +39,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[ELBOW_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);	
 			}
-			if (! check_three_dof_robot_out_of_robotic_space_borders(robot))
+			if (! check_robot_space_borders(robot, paradigm))
 			{
 				printf ("Out of cartesian space borders\n");
 				*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT;

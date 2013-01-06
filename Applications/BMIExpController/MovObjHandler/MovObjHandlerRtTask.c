@@ -222,7 +222,7 @@ static bool connect_to_neural_net(void)
 						print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Connection to NEURAL_NET is successful!!!");	
 						num_of_alive_responses++;
 						if (num_of_alive_responses == (NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS))
-							return TRUE;
+							goto SEND_JOINT_MIN_MAX;
 						break;			
 					default:
 						return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", str_neural_net_2_mov_obj_hand_msg);	
@@ -231,5 +231,19 @@ static bool connect_to_neural_net(void)
 		}
 		sleep(1); 
 	}
-	return print_message(BUG_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Wrong hit in the code.");
+	SEND_JOINT_MIN_MAX: 
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[BASE_SERVO] = static_mov_obj_paradigm->polar_space_limits[BASE_SERVO].min;
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[SHOULDER_SERVO] = static_mov_obj_paradigm->polar_space_limits[SHOULDER_SERVO].min;
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[ELBOW_SERVO] = static_mov_obj_paradigm->polar_space_limits[ELBOW_SERVO].min;
+	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN, mov_obj_hand_2_neural_net_msg_add))	
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
+
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[BASE_SERVO] = static_mov_obj_paradigm->polar_space_limits[BASE_SERVO].max;
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[SHOULDER_SERVO] = static_mov_obj_paradigm->polar_space_limits[SHOULDER_SERVO].max;
+	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[ELBOW_SERVO] = static_mov_obj_paradigm->polar_space_limits[ELBOW_SERVO].max;
+	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX, mov_obj_hand_2_neural_net_msg_add))	
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
+
+
+	return print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "Successfull !!!.");
 }

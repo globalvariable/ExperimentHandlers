@@ -38,6 +38,12 @@ typedef struct
 } ServoRange;
 
 typedef struct 
+{
+	double min;
+	double max;   // pi radians
+} ServoAngularLimit;
+
+typedef struct 
 { 
 	pthread_mutex_t 		mutex; 
 	ServoPulseCmd		pulse_command;	// pulse width to transmit (65536 - Timer value for MCU)
@@ -47,6 +53,7 @@ typedef struct
 	ServoPositionUnion	position;
 	ServoRange			range;
 	ServoAngle			current_angle;
+	ServoAngularLimit		angular_security_limit;
 } ServoData;
 
 void init_servo_data(ServoData *servo_data);

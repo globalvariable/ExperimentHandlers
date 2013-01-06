@@ -20,9 +20,7 @@ typedef struct
 	double lateral_max;
 	double height_min;
 	double height_max;
-	double j_angle_min;
-	double j_angle_max;
-} ThreeDofRobotLimit;
+} ThreeDofRobotCartesianLimit;
 
 typedef CartesianCoordinates ThreeDofRobotPosition; 
 
@@ -43,14 +41,13 @@ typedef struct
 
 typedef struct 
 {
-	pthread_mutex_t 			mutex; 
-	ServoData				servos[THREE_DOF_ROBOT_NUM_OF_SERVOS];
-	ThreeDofRobotLimit		security_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
-	ThreeDofRobotLimit		robotic_space_borders;	// reset position or trial if robot exceeds these borders.
-	ThreeDofRobotPosition		tip_position;
-	ThreeDofRobotPosition		elbow_position;
-	ThreeDofRobotSize		size;
-	ThreeDofRobotTrajectory	trajectory_history; // for example in one trial
+	pthread_mutex_t 				mutex; 
+	ServoData					servos[THREE_DOF_ROBOT_NUM_OF_SERVOS];
+	ThreeDofRobotCartesianLimit	cartesian_security_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
+	ThreeDofRobotPosition			tip_position;
+	ThreeDofRobotPosition			elbow_position;
+	ThreeDofRobotSize			size;
+	ThreeDofRobotTrajectory		trajectory_history; // for example in one trial
 } ThreeDofRobot;	
 
 typedef struct 
@@ -64,9 +61,8 @@ void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, dou
 void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size);
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
-void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit);
-bool check_three_dof_robot_out_of_security_limits(ThreeDofRobot *robot_arm);
-bool submit_robotic_space_borders(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_lower_limit, double joint_angle_upper_limit);
-bool check_three_dof_robot_out_of_robotic_space_borders(ThreeDofRobot *robot_arm);
+void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_base_lower_limit, double joint_angle_base_upper_limit, double joint_angle_shoulder_lower_limit, double joint_angle_shoulder_upper_limit, double joint_angle_elbow_lower_limit, double joint_angle_elbow_upper_limit);
+bool check_three_dof_robot_security_limits(ThreeDofRobot *robot_arm);
+
 
 #endif

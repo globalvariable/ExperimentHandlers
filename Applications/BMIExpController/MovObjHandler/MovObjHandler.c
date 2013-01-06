@@ -17,11 +17,15 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "rt_tasks_data == NULL.");
 
 	robot_arm = g_new0(ThreeDofRobot, 1);
+	mov_obj_paradigm = g_new0(MovObjHandParadigmRobotReach, 1);
+
 	init_three_dof_robot_arm(robot_arm);
 	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
-	submit_arm_security_limits(robot_arm, -19.0, 15.0, -20.0, 20.0, 3.0, 35.0, M_PI*(1.0/12.0), M_PI*(11.0/12.0));
-	if (! submit_robotic_space_borders(robot_arm, -18.0, 13.5, -19.0, 19.0, 4.0, 34.0, M_PI*(1.5/12.0) , M_PI*(10.5/12.0)))
-		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_robotic_space_borders().");
+	submit_arm_security_limits(robot_arm, -19.0, 15.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
+	if (! submit_cartesian_robotic_space_borders(robot_arm, mov_obj_paradigm, -18.0, 13.5, -19.0, 19.0, 4.0, 34.0))
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_cartesian_robotic_space_borders().");
+	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_polar_robotic_space_borders().");
 
 	submit_3_dof_arm_trajectory_history_buffer_size(robot_arm, 1000);
 
@@ -33,7 +37,7 @@ int main( int argc, char *argv[])
 	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), 956, 1431, 415, 654);
 	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), 904, 1391, 428, 666);
 
-	mov_obj_paradigm = g_new0(MovObjHandParadigmRobotReach, 1);
+
 
 	mov_obj_paradigm->stay_at_target_duration = 200000000;
 	mov_obj_paradigm->send_pw_command_wait_period = 25000000;

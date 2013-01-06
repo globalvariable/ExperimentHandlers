@@ -111,7 +111,7 @@ bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 	for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 		pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer.exp_envi_tx_buff[i];
 
-	if ( check_three_dof_robot_out_of_security_limits(static_robot_arm))
+	if ( check_three_dof_robot_security_limits(static_robot_arm))
 	{
 		evaluate_three_dof_robot_arm_pw_command(static_robot_arm);
 //		printf("%u\n", static_robot_arm->servos[ELBOW_SERVO].pulse_command.pulse_width);
