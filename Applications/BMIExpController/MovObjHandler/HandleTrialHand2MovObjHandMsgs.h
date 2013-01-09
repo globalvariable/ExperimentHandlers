@@ -11,6 +11,7 @@
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../Library/Messages/MovObjHand2TrialHand.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
+#include "../../../Library/Coordinate/Cartesian.h"
 #include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
 #include "../../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.h"
 

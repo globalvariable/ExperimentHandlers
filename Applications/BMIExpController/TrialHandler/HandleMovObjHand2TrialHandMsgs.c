@@ -1,6 +1,8 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
 
+#define PUNISHMENT_SCALER	20.0
+
 bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp current_time, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, TrialHand2TrialDurHandMsg *msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *msgs_trial_hand_2_mov_obj_hand,TrialHand2NeuralNetMsg *msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_history)
 {
 	MovObjHand2TrialHandMsgItem msg_item;
@@ -64,7 +66,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
 
-						reward = -1.0;
+						reward = -(msg_item.additional_data / PUNISHMENT_SCALER);
 						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude = reward;
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].reward_magnitude = reward;
 						printf ("reward: %.8f\n", reward);

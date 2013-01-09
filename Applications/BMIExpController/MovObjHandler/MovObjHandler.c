@@ -24,7 +24,7 @@ int main( int argc, char *argv[])
 	submit_arm_security_limits(robot_arm, -19.0, 15.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
 	if (! submit_cartesian_robotic_space_borders(robot_arm, mov_obj_paradigm, -18.0, 13.5, -19.0, 19.0, 4.0, 34.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_cartesian_robotic_space_borders().");
-	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
+	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*2.5)/12.0, (M_PI*9.5)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_polar_robotic_space_borders().");
 
 	submit_3_dof_arm_trajectory_history_buffer_size(robot_arm, 1000);
