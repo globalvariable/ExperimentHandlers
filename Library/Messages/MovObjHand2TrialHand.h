@@ -16,7 +16,7 @@ typedef double MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST				2		// sends it out when the robot reached the threshold point.
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST			3		// sends it out when the robot reached the threshold point.
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				4		// sends it out when the timeout after reaching to target appears
-
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED		5		// sends it out when the timeout after staying at start point appears.
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

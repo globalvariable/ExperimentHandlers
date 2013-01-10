@@ -21,6 +21,10 @@ bool get_mov_obj_hand_2_neural_net_msg_type_string(MovObjHand2NeuralNetMsgType m
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX");
 			return TRUE;
+		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_MOMENTARY_REWARD:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX");
+			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_NEURAL_NET_MSG_NULL:
 			if (str != NULL)

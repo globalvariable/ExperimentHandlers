@@ -45,6 +45,7 @@ typedef struct
 	ServoData					servos[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 	ThreeDofRobotCartesianLimit	cartesian_security_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
 	ThreeDofRobotPosition			tip_position;
+	ThreeDofRobotPosition			tip_position_prev;
 	ThreeDofRobotPosition			elbow_position;
 	ThreeDofRobotSize			size;
 	ThreeDofRobotTrajectory		trajectory_history; // for example in one trial
@@ -60,6 +61,7 @@ void init_three_dof_robot_arm(ThreeDofRobot *robot_arm);
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna);
 void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size);
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
+void push_current_arm_position_to_previous(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_base_lower_limit, double joint_angle_base_upper_limit, double joint_angle_shoulder_lower_limit, double joint_angle_shoulder_upper_limit, double joint_angle_elbow_lower_limit, double joint_angle_elbow_upper_limit);
 bool check_three_dof_robot_security_limits(ThreeDofRobot *robot_arm);

@@ -47,6 +47,19 @@ void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm)
 		evaluate_servo_pw_command(&(robot_arm->servos[i]));
 	pthread_mutex_unlock(&(robot_arm->mutex));
 }
+void push_current_arm_position_to_previous(ThreeDofRobot *robot_arm)
+{
+	ServoData *servo;
+	pthread_mutex_lock(&(robot_arm->mutex));
+	servo = &(robot_arm->servos[BASE_SERVO]);
+	servo->previous_angle = servo->current_angle;
+	servo = &(robot_arm->servos[SHOULDER_SERVO]);
+	servo->previous_angle = servo->current_angle;
+	servo = &(robot_arm->servos[ELBOW_SERVO]);
+	servo->previous_angle = servo->current_angle;
+	robot_arm->tip_position_prev = robot_arm->tip_position;
+	pthread_mutex_unlock(&(robot_arm->mutex));
+}
 
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 {

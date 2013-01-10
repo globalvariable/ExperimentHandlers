@@ -53,6 +53,7 @@ typedef struct
 	ServoPositionUnion	position;
 	ServoRange			range;
 	ServoAngle			current_angle;
+	ServoAngle			previous_angle;
 	ServoAngularLimit		angular_security_limit;
 } ServoData;
 

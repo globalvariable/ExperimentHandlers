@@ -21,6 +21,10 @@ bool get_mov_obj_hand_2_trial_hand_msg_type_string(MovObjHand2TrialHandMsgType m
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST");
 			return TRUE;
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED");
+			return TRUE;
 
 ////////////////////////		
 		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_NULL:
