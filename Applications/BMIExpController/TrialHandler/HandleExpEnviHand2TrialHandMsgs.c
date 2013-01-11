@@ -26,7 +26,12 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, Tim
 						break;   // do nothing
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
 						*trial_status = TRIAL_STATUS_IN_TRIAL;
-						paradigm->selected_robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+
+						if (paradigm->auto_target_select_mode_on)
+							paradigm->selected_robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+						else
+							paradigm->selected_robot_target_position_idx = paradigm->gui_selected_target_position_idx;
+
 						paradigm->selected_target_led_component_list_idx = paradigm->selected_robot_target_position_idx;
 					
 						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_start_time = current_time;   

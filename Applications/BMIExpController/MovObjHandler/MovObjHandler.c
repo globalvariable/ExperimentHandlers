@@ -12,6 +12,11 @@ int main( int argc, char *argv[])
 	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL; 
    	MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui = NULL; 
 
+	double a = 2.0;
+	double b = (a - 1) /10.0;
+	
+	printf("b %f\n", b);	
+
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "rt_tasks_data == NULL.");

@@ -7,6 +7,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 	MovObjDurHand2MovObjHandMsgItem msg_item;
 	char str_mov_obj_dur_msg[MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	MovObjHand2NeuralNetMsgAdditional	mov_obj_hand_2_neural_net_msg_add;
+
 	while (get_next_mov_obj_dur_hand_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_dur_hand_2_mov_obj_hand, &msg_item))
 	{
 		switch (msg_item.msg_type)
@@ -83,40 +84,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[ELBOW_SERVO] = robot_arm->servos[ELBOW_SERVO].current_angle;
 						if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE, mov_obj_hand_2_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
-						if (mov_obj_paradigm->target_info.selected_position_idx == 0)   // LEFT TARGET   ---> servo angle increases for movement towards left 
-						{
-							if ((robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle) > 0)
-							{
-								if ((fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)) > (M_PI/180.0))
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = 0;
-								else
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = (exp (-fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)))/40.0;
-							}
-							else
-							{
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = (-0.1 - exp (-fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)))/40.0;
-							}
-						}
-						else	if (mov_obj_paradigm->target_info.selected_position_idx == 1)	// RIGHT TARGET   ---> servo angle decreases for movement towards right 
-						{
-							if ((robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle) < 0)
-							{
-								if ((fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)) > (M_PI/180.0))
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = 0;
-								else
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = (exp (-fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)))/40.0;
-							}
-							else
-							{
-									mov_obj_hand_2_neural_net_msg_add.momentary_reward = (-0.1- exp (-fabs(robot_arm->servos[BASE_SERVO].current_angle - robot_arm->servos[BASE_SERVO].previous_angle)))/40.0;
-							}
-						}
-						else
-						{
-							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! Invalid target idx");
-						}
-						if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_MOMENTARY_REWARD, mov_obj_hand_2_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
+
 						break;	
 					default:
 						return FALSE;

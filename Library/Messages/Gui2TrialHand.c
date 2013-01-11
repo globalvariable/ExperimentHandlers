@@ -26,7 +26,18 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_DECREASE_THRESHOLD");
 			return TRUE;	
-
+		case GUI_2_TRIAL_HAND_MSG_SELECT_TARGET:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_SELECT_TARGET");
+			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_ON:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_ON");
+			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF");
+			return TRUE;	
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

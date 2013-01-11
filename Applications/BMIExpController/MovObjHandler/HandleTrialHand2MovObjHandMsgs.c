@@ -69,6 +69,7 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL: 
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT; 
 						punishment = distance_btwn_two_points(&(robot_arm->tip_position), &(mov_obj_paradigm->target_info.cart_coordinates[mov_obj_paradigm->target_info.selected_position_idx]));
+						printf ("Distance to target = %f\n", punishment);		
 						if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, punishment)) 
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
 						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);

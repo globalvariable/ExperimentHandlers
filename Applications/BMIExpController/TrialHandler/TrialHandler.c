@@ -18,9 +18,12 @@ int main( int argc, char *argv[])
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
-	paradigm->target_led_component_indexes_list = g_new0(unsigned int, 2);
+
+	paradigm->target_led_component_indexes_list = g_new0(unsigned int, paradigm->num_of_target_led_components);
 	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
+
+	paradigm->auto_target_select_mode_on = TRUE; 
 
 	paradigm->min_target_reach_threshold.r_x = 1;  //height
 	paradigm->min_target_reach_threshold.r_y = 1; // depth

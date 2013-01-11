@@ -335,6 +335,69 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
 				}
 				break;
+			case GUI_2_TRIAL_HAND_MSG_SELECT_TARGET:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
+			case GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->auto_target_select_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						paradigm->auto_target_select_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->auto_target_select_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->auto_target_select_mode_on = FALSE;
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
+			case GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_ON:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->auto_target_select_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						paradigm->auto_target_select_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->auto_target_select_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->auto_target_select_mode_on = TRUE;
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
 			default:
 				return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);	
 		}

@@ -33,7 +33,7 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE					2
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN					3
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX					4
-#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_MOMENTARY_REWARD				5
+
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

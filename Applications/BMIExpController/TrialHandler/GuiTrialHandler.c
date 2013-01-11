@@ -13,6 +13,11 @@ static GtkWidget *btn_enable_trials;
 static GtkWidget *btn_disable_trials;
 static GtkWidget *btn_quit_trials;
 
+static GtkWidget *btn_select_target;
+static GtkWidget *entry_select_target;
+
+static GtkWidget *btn_auto_target_select_mode_on_off;
+
 static GtkWidget *lbl_threshold_r_x;
 static GtkWidget *lbl_threshold_r_y;
 static GtkWidget *lbl_threshold_r_z;
@@ -43,6 +48,9 @@ static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
 static void quit_trials_button_func (void);
+
+static void auto_target_select_mode_on_off_button_func(void);
+static void select_target_button_func (void);
 
 static void increase_threshold_button_func (void);
 static void decrease_threshold_button_func (void);
@@ -102,6 +110,27 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	gtk_box_pack_start (GTK_BOX (hbox), btn_quit_trials, TRUE, TRUE, 0);
 
        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_auto_target_select_mode_on_off = gtk_button_new_with_label("Target Select: AUTO");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_auto_target_select_mode_on_off , TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_select_target = gtk_button_new_with_label("Select Target");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_select_target , TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+	lbl = gtk_label_new("Idx: ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+	entry_select_target = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_select_target, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_select_target, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_select_target), "0");
 
  	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
@@ -320,6 +349,9 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	g_signal_connect(G_OBJECT(btn_disable_trials), "clicked", G_CALLBACK(disable_trials_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_quit_trials), "clicked", G_CALLBACK(quit_trials_button_func), NULL);
 
+	g_signal_connect(G_OBJECT(btn_auto_target_select_mode_on_off), "clicked", G_CALLBACK(auto_target_select_mode_on_off_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_select_target), "clicked", G_CALLBACK(select_target_button_func), NULL);
+
 	g_signal_connect(G_OBJECT(btn_increase_threshold), "clicked", G_CALLBACK(increase_threshold_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_decrease_threshold), "clicked", G_CALLBACK(decrease_threshold_button_func), NULL);
 
@@ -380,8 +412,35 @@ static void disable_trials_button_func (void)
 static void quit_trials_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_QUIT, 0))
-		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "disable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "quit_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 }
+
+static void auto_target_select_mode_on_off_button_func(void)
+{
+	if (paradigm->auto_target_select_mode_on)
+	{
+		if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF, 0))
+			return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "auto_target_select_mode_on_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");
+		gtk_button_set_label (GTK_BUTTON (btn_auto_target_select_mode_on_off),"Target Select: MANUAL");		
+	}
+	else
+	{
+		if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_ON, 0))
+			return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "auto_target_select_mode_on_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+		gtk_button_set_label (GTK_BUTTON (btn_auto_target_select_mode_on_off),"Target Select: AUTO");		
+	}	
+}
+
+static void select_target_button_func (void)
+{
+	unsigned int target_idx;
+	target_idx = (unsigned int)atof(gtk_entry_get_text(GTK_ENTRY(entry_select_target)));
+	if (target_idx >= paradigm->num_of_robot_target_positions)
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "select_target_button_func", "target_idx >= static_trial_hand_paradigm->num_of_robot_target_positions.");	
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_SELECT_TARGET, target_idx))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "increase_threshold_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+}
+
 
 static void increase_threshold_button_func (void)
 {

@@ -100,4 +100,24 @@ double get_abs_mean_of_reward_of_previous_trials(TrialHistory* hist, unsigned in
 	return sum/((double)num_of_past_trials);
 }
 
+TimeStamp get_previous_trial_type_trial_length(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx)
+{
+	unsigned int idx; 
+	if (hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx == 0)
+		 idx = hist->trial_types[start_position_idx][target_position_idx]->buffer_size - 1;
+	else
+		 idx = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx - 1;
 
+	return hist->trial_types[start_position_idx][target_position_idx]->history[idx].trial_length;
+}
+
+double get_previous_trial_type_remained_distance_to_target(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx)
+{
+	unsigned int idx; 
+	if (hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx == 0)
+		 idx = hist->trial_types[start_position_idx][target_position_idx]->buffer_size - 1;
+	else
+		 idx = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx - 1;
+
+	return hist->trial_types[start_position_idx][target_position_idx]->history[idx].remained_distance_to_target;
+}

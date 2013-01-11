@@ -11,6 +11,8 @@ typedef struct
 {
 	unsigned int				selected_robot_start_position_idx;
 	unsigned int				selected_robot_target_position_idx;
+	unsigned int				gui_selected_target_position_idx;
+	unsigned int				auto_target_select_mode_on;
 	unsigned int				num_of_robot_start_positions;
 	unsigned int				num_of_robot_target_positions;
 	unsigned int				selected_target_led_component_list_idx;

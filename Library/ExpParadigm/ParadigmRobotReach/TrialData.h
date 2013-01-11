@@ -13,10 +13,12 @@ struct __TrialData
 {
 	TimeStamp			trial_start_time;   
 	TimeStamp			trial_end_time;	// this is set before trial start during simulations. behaviors determines this during in vivo experiments.
+	TimeStamp			trial_length;
 	unsigned int			target_led_component_list_idx;
 	unsigned int			robot_start_position_idx;
 	unsigned int			robot_target_position_idx;
 	double				reward_magnitude;
+	double				remained_distance_to_target;
 	EllipsoidThreshold		rewarding_threshold;
 };
 
