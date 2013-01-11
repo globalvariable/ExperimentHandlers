@@ -23,9 +23,10 @@ bool handle_trial_dur_handler_to_trial_handler_msg(TrialStatus *trial_status, Ti
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
 
+/*						BELOW message is discarde SINCE ->  when trial timeout appears, trial hand sends timeout message to mov obj hand. later on mov obj hand send punishment request and trial handles this message to send the situation to neural net and exp envi handler. 
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
-
+*/
 						trial_hand_to_mov_obj_hand_msg_add.dummy = 0;
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT, trial_hand_to_mov_obj_hand_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");

@@ -19,6 +19,7 @@ struct __TrialData
 	unsigned int			robot_target_position_idx;
 	double				reward_magnitude;
 	double				remained_distance_to_target;
+	double				initial_distance_to_target;
 	EllipsoidThreshold		rewarding_threshold;
 };
 

@@ -24,6 +24,8 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 						*mov_obj_status = MOV_OBJ_STATUS_STAYING_AT_START_POINT;
 						mov_obj_paradigm->target_info.selected_position_idx = msg_item.additional_data.robot_target_position_idx;  
 
+						if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time, MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_INITIAL_DIST_2_TARGET, distance_btwn_two_points(&(robot_arm->tip_position), &(mov_obj_paradigm->target_info.cart_coordinates[mov_obj_paradigm->target_info.selected_position_idx])))) 
+							return print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = current_time + mov_obj_paradigm->stay_at_start_duration;
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.item_idx = MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION;
 						if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE, mov_obj_hand_2_mov_obj_dur_hand_additional_data))
@@ -77,9 +79,7 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);						
 						break;
 					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
-						print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);	
-						get_mov_obj_status_type_string(*mov_obj_status, str_mov_obj_status);   
-						return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_mov_obj_status);
+						break;   // Trial Handler can send TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIAL_TIMEOUT by the time mov obj hand reaches the threshold that makes the status MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 						print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);	
 						get_mov_obj_status_type_string(*mov_obj_status, str_mov_obj_status);   

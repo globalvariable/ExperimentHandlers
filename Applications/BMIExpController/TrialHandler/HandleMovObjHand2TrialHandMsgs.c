@@ -11,7 +11,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
 	double reward;
 	TimeStamp prev_trial_length;
-	double prev_remained_distance_to_target, remained_distance_to_target;
+	double prev_remained_distance_to_target, remained_distance_to_target, travel_distance;
 	while (get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(msgs_mov_obj_hand_2_trial_hand, &msg_item))
 	{
 		get_mov_obj_hand_2_trial_hand_msg_type_string(msg_item.msg_type, str_mov_obj_msg);
@@ -33,22 +33,37 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length = current_time - classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_start_time;
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].remained_distance_to_target = remained_distance_to_target;
 
+						prev_remained_distance_to_target = get_previous_trial_type_remained_distance_to_target(classified_history, paradigm->selected_robot_start_position_idx, paradigm->selected_robot_target_position_idx);
 						prev_trial_length = get_previous_trial_type_trial_length(classified_history, paradigm->selected_robot_start_position_idx, paradigm->selected_robot_target_position_idx);
 
 						// always punish for the first trial
-						reward = ((double)prev_trial_length - (double)(classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length)) / 1000000000.0;   // scale by 1 second
-
+						if (prev_trial_length < 1000000000)
+						{
+							if (classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length < 1000000000)
+								reward = 0;
+							else
+								reward = (((double)1000000000 - (double)classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length) / 1000000000.0) /20.0;   // scale by 1 second						
+						}
+						else
+						{
+							reward = (((double)prev_trial_length - (double)classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length) / 1000000000.0) / 20.0;   // scale by 1 second
+						}
 
 						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude = reward;
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].reward_magnitude = reward;
 
-						trial_hand_to_neural_net_msg_add.reward = reward;
-						printf ("reward --- : %.8f\n", trial_hand_to_neural_net_msg_add.reward);
+
+						printf ("reward --- : %.8f\n", reward);
+						printf ("prev_trial_length --- : %.8f seconds\n", prev_trial_length/1000000000.0);
+						printf ("trial_length --- : %.8f seconds\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length/1000000000.0);
+						printf ("prev distance to target --- : %.8f\n", prev_remained_distance_to_target);
 						printf ("distance to target --- : %.8f\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].remained_distance_to_target);
+						printf ("initial distance to target --- : %.8f\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].initial_distance_to_target);
+
+						trial_hand_to_neural_net_msg_add.reward = reward;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 
-						
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD, 0))
@@ -81,19 +96,22 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].remained_distance_to_target = remained_distance_to_target;
 
 						prev_remained_distance_to_target = get_previous_trial_type_remained_distance_to_target(classified_history, paradigm->selected_robot_start_position_idx, paradigm->selected_robot_target_position_idx);
+						prev_trial_length = get_previous_trial_type_trial_length(classified_history, paradigm->selected_robot_start_position_idx, paradigm->selected_robot_target_position_idx);
 
-
-						// always punish for the first trial
-						if (fabs(prev_remained_distance_to_target - remained_distance_to_target) < 1.0)
-							reward = -10.0 / 10.0;   // scale by 10 cm
-						else
-							reward = (prev_remained_distance_to_target - remained_distance_to_target) / 10.0;   // scale by 10 cm
-
+						travel_distance = (classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].initial_distance_to_target - remained_distance_to_target);  
+						if (fabs(travel_distance) < 0.5)
+							travel_distance = -0.5;
+						reward = travel_distance / 10.0; // scale by 10 cm
 						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].reward_magnitude = reward;
 						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].reward_magnitude = reward;
+
 						printf ("reward --- : %.8f\n", reward);
+						printf ("prev_trial_length --- : %.8f seconds\n", prev_trial_length/1000000000.0);
+						printf ("trial_length --- : %.8f seconds\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_length/1000000000.0);
 						printf ("prev distance to target --- : %.8f\n", prev_remained_distance_to_target);
 						printf ("distance to target --- : %.8f\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].remained_distance_to_target);
+						printf ("initial distance to target --- : %.8f\n", classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].initial_distance_to_target);
+
 						trial_hand_to_neural_net_msg_add.reward = reward;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
@@ -168,23 +186,41 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						break;   // do nothing
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 					case TRIAL_STATUS_IN_TRIAL:
 						trial_hand_to_neural_net_msg_add.dummy = 0;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START, trial_hand_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
-						break;   // do nothing
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						break;	// do nothing
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
 						get_trial_status_type_string(*trial_status, str_status);   
 						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 				}
 				break;
-
+			case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_INITIAL_DIST_2_TARGET:     // mov obj handler sends this when it receives a trial start msg from trial hand
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
+					case TRIAL_STATUS_IN_TRIAL:
+						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].initial_distance_to_target = msg_item.additional_data;
+						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].initial_distance_to_target = msg_item.additional_data;
+						break;  
+					case TRIAL_STATUS_IN_REFRACTORY:
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
+				}
+				break;
 
 			default:
 				return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_mov_obj_msg);	
