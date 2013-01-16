@@ -38,6 +38,10 @@ int main( int argc, char *argv[])
 	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), 1431);
 	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), 1014);
 
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]), M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), M_PI_2); 
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), 1.0*(M_PI/6.0));  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+
 	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), 879, 1430, 358, 615);
 	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), 956, 1431, 415, 654);
 	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), 904, 1391, 428, 666);
@@ -47,7 +51,7 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->stay_at_target_duration = 200000000;
 	mov_obj_paradigm->send_pw_command_wait_period = 25000000;
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
-	mov_obj_paradigm->stay_at_start_duration = mov_obj_paradigm->send_pw_command_wait_period;   ///  so that move obj hand bins the spikes from neural net before moving.
+	mov_obj_paradigm->stay_at_start_duration = 200000000;   
 
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 1);
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);

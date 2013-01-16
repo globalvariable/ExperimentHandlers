@@ -89,6 +89,34 @@ void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 	tip_position->lateral = R*cos(theta); 
 }
 
+void calculate_forward_kinematics_with_three_sample_averaging(ThreeDofRobot *robot_arm)
+{
+	ThreeDofRobotPosition *tip_position;
+	ThreeDofRobotSize *size;
+	double R;
+	double beta_minus_alpha;
+	double alpha;
+	double theta;
+
+	pthread_mutex_lock(&(robot_arm->mutex));
+
+	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]));
+	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]));
+	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]));
+
+	tip_position = &(robot_arm->tip_position);
+	alpha = robot_arm->servos[SHOULDER_SERVO].current_angle;
+	beta_minus_alpha = robot_arm->servos[ELBOW_SERVO].current_angle - alpha;
+	size = &(robot_arm->size);
+	R = size->length_humerus*cos(alpha) + size->length_ulna*cos(beta_minus_alpha) + size->height_ulna*sin(beta_minus_alpha);
+	tip_position->height = size->length_humerus*sin(alpha) - size->length_ulna*sin(beta_minus_alpha) + size->height_ulna*cos(beta_minus_alpha);
+	theta = robot_arm->servos[BASE_SERVO].current_angle;
+	tip_position->depth = R*sin(theta);
+	tip_position->lateral = R*cos(theta); 
+
+	pthread_mutex_unlock(&(robot_arm->mutex));
+}
+
 void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_base_lower_limit, double joint_angle_base_upper_limit, double joint_angle_shoulder_lower_limit, double joint_angle_shoulder_upper_limit, double joint_angle_elbow_lower_limit, double joint_angle_elbow_upper_limit)
 {
 	robot_arm->cartesian_security_limits.depth_min = depth_min;
@@ -111,16 +139,32 @@ bool check_three_dof_robot_security_limits(ThreeDofRobot *robot_arm)
 	ThreeDofRobotCartesianLimit	*cart_security_limits = &(robot_arm->cartesian_security_limits);
 
 	unsigned int i;
-	if ((cart_security_limits->depth_min > tip_position->depth) || (cart_security_limits->depth_max < tip_position->depth))
-		return false;
-	if ((cart_security_limits->lateral_min > tip_position->lateral) || (cart_security_limits->lateral_max < tip_position->lateral))
-		return false;
-	if ((cart_security_limits->height_min > tip_position->height) || (cart_security_limits->height_max < tip_position->height))
-		return false;
+	if (cart_security_limits->depth_min > tip_position->depth)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->depth_min > tip_position->depth."); 
+	if (cart_security_limits->depth_max < tip_position->depth)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->depth_max < tip_position->depth."); 
+	if (cart_security_limits->lateral_min > tip_position->lateral)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->lateral_min > tip_position->lateral."); 
+	if (cart_security_limits->lateral_max < tip_position->lateral)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->lateral_max < tip_position->lateral."); 
+	if (cart_security_limits->height_min > tip_position->height)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->height_min > tip_position->height."); 
+	if (cart_security_limits->height_max < tip_position->height)
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->height_max < tip_position->height."); 
 	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 	{
-		if ((robot_arm->servos[i].angular_security_limit.min > robot_arm->servos[i].current_angle) || (robot_arm->servos[i].angular_security_limit.max < robot_arm->servos[i].current_angle))
+		if (robot_arm->servos[i].angular_security_limit.min > robot_arm->servos[i].current_angle) 
+		{
+			print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "robot_arm->servos[i].angular_security_limit.min > robot_arm->servos[i].current_angle."); 
+			printf ("Arm component #%u\n", i);
 			return false;
+		}
+		if (robot_arm->servos[i].angular_security_limit.max < robot_arm->servos[i].current_angle)
+		{
+			print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "robot_arm->servos[i].angular_security_limit.max < robot_arm->servos[i].current_angle"); 
+			printf ("Arm component #%u\n", i);
+			return false;
+		}
 	}
 	return true;
 }

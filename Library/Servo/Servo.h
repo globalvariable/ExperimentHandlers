@@ -55,6 +55,8 @@ typedef struct
 	ServoAngle			current_angle;
 	ServoAngle			previous_angle;
 	ServoAngularLimit		angular_security_limit;
+	ServoAngle			angle_sample_0;  // for filtering via averaging
+	ServoAngle			angle_sample_1;
 } ServoData;
 
 void init_servo_data(ServoData *servo_data);
@@ -68,5 +70,6 @@ void write_servo_position_val(ServoData *servo_data, unsigned char low_byte, uns
 void write_servo_pw_adc_ranges(ServoData *servo_data, ServoPulse zero_degree_pulse,ServoPulse ninety_degree_pulse, ServoPosition zero_degree_adc_val, ServoPosition ninety_degree_adc_val);
 void write_servo_0_degree_adc_val(ServoData *servo_data, ServoPosition zero_degree_adc_val);
 void write_servo_90_degree_adc_val(ServoData *servo_data, ServoPosition ninety_degree_adc_val);
-
+void init_servo_angles_for_three_sample_averaging(ServoData *servo, double sample);
+void calculate_servo_angle_with_three_sample_averaging(ServoData *servo);
 #endif

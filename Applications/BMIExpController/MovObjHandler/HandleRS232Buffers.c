@@ -93,7 +93,7 @@ bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 	unsigned char cmd_low_byte, cmd_high_byte;
 
 	if (! read_exp_envi_tx_buff_shm(&exp_envi_tx_buffer, static_exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_exp_envi_tx_buff_sem)) 
-		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_adc_command", "! read_exp_envi_tx_buff_shm()."); 
+		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! read_exp_envi_tx_buff_shm()."); 
 	if ((current_time - exp_envi_tx_buffer.last_write_time) < 10000000)
 	{
 		if (exp_envi_rx_switch)
@@ -122,11 +122,11 @@ bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 			pw_tx_buffer[ROBOT_PW_CMD_MSG_START_IDX + i +1] = cmd_high_byte;
 		}
 		if (! write_to_rs232_com1(pw_tx_buffer, PW_TX_BUFF_SIZE)) 
-			return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_adc_command", "! write_to_rs232_com1()."); 
+			return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! write_to_rs232_com1()."); 
 	}
 	else
 	{
-		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_adc_command", "! check_three_dof_robot_out_of_security_limits()."); 	
+		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! check_three_dof_robot_out_of_security_limits()."); 	
 	}
 	return TRUE;
 }

@@ -18,6 +18,9 @@ struct __TrialData
 	unsigned int			robot_start_position_idx;
 	unsigned int			robot_target_position_idx;
 	double				reward_magnitude;
+	bool				binary_reward; 
+	double				binary_reward_windowed_average; 
+	TimeStamp			trial_length_windowed_average; 
 	double				remained_distance_to_target;
 	double				initial_distance_to_target;
 	EllipsoidThreshold		rewarding_threshold;

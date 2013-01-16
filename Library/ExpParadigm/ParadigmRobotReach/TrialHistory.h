@@ -33,4 +33,6 @@ ClassifiedTrialHistory* deallocate_classified_trial_history(ClassifiedTrialHisto
 double get_abs_mean_of_reward_of_previous_trials(TrialHistory* hist, unsigned int num_of_past_trials);
 TimeStamp get_previous_trial_type_trial_length(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx);
 double get_previous_trial_type_remained_distance_to_target(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx);
+double calculate_and_get_windowed_binary_reward_average(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx, unsigned int window_size);
+TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx, unsigned int window_size);
 #endif

@@ -92,9 +92,9 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 						return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "Invalid Output Layer Number.");
 				}
 			}
-			submit_servo_direction_and_speed(&(robot->servos[BASE_SERVO]), 1*(base_servo_flexor_spike_counter - base_servo_extensor_spike_counter));
-			submit_servo_direction_and_speed(&(robot->servos[SHOULDER_SERVO]), 1*(shoulder_servo_flexor_spike_counter - shoulder_servo_extensor_spike_counter));
-			submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), 1*(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
+			submit_servo_direction_and_speed(&(robot->servos[BASE_SERVO]), 2*(base_servo_flexor_spike_counter - base_servo_extensor_spike_counter));
+			submit_servo_direction_and_speed(&(robot->servos[SHOULDER_SERVO]), 2*(shoulder_servo_flexor_spike_counter - shoulder_servo_extensor_spike_counter));
+			submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), 2*(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
 			while ((*read_idx) != write_idx)		

@@ -114,3 +114,18 @@ void write_servo_90_degree_adc_val(ServoData *servo_data, ServoPosition ninety_d
 	servo_data->range.position_90_degree = ninety_degree_adc_val;
 	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
 }
+
+void init_servo_angles_for_three_sample_averaging(ServoData *servo, double sample)
+{
+	servo->angle_sample_0 = sample;
+	servo->angle_sample_1 = sample;	
+}
+
+void calculate_servo_angle_with_three_sample_averaging(ServoData *servo)
+{
+	pthread_mutex_lock(&(servo->mutex));
+	servo->current_angle = ((((double)servo->position.position - (double)servo->range.position_0_degree) * servo->range.radian_per_pos_quanta) + servo->angle_sample_0 + servo->angle_sample_1)/3.0;
+	pthread_mutex_unlock(&(servo->mutex));
+	servo->angle_sample_1 = servo->angle_sample_0;
+	servo->angle_sample_0 = servo->current_angle;
+}

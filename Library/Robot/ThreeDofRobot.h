@@ -63,6 +63,8 @@ void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, u
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
 void push_current_arm_position_to_previous(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
+void submit_static_variables_for_forward_kinematics_with_three_sample_averaging(double servo_angle_base, double servo_angle_shoulder, double servo_angle_elbow);
+void calculate_forward_kinematics_with_three_sample_averaging(ThreeDofRobot *robot_arm);
 void submit_arm_security_limits(ThreeDofRobot *robot_arm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max, double joint_angle_base_lower_limit, double joint_angle_base_upper_limit, double joint_angle_shoulder_lower_limit, double joint_angle_shoulder_upper_limit, double joint_angle_elbow_lower_limit, double joint_angle_elbow_upper_limit);
 bool check_three_dof_robot_security_limits(ThreeDofRobot *robot_arm);
 
