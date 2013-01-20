@@ -1,44 +1,50 @@
 #include "ArmConfig.h"
 
-static ThreeDofRobot 	*robot_arm = NULL;
+#define BASE_SERVO_0_DEGREE_PULSE		879
+#define BASE_SERVO_90_DEGREE_PULSE		1430
+#define BASE_SERVO_0_DEGREE_ADC_VAL		358
+#define BASE_SERVO_90_DEGREE_ADC_VAL	615
 
+#define SHOULDER_SERVO_0_DEGREE_PULSE		956
+#define SHOULDER_SERVO_90_DEGREE_PULSE		1431
+#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	415
+#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	654
+
+#define ELBOW_SERVO_0_DEGREE_PULSE		904
+#define ELBOW_SERVO_90_DEGREE_PULSE		1391
+#define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
+#define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
+
+#define BASE_SERVO_INIT_PULSE				1425   // it should have been equal to BASE_SERVO_90_DEGREE_PULSE but there is an error due to imperfectness of servo and robot stands; this value worked well. 
+#define SHOULDER_SERVO_INIT_PULSE		1431
+#define ELBOW_SERVO_INIT_PULSE			1014
 
 
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
-	ServoPosition position_0_degree, position_90_degree;
-	ServoPulse pulse_width_0_degree, pulse_width_90_degree;
-
+	ThreeDofRobot *robot_arm = NULL;
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "rt_tasks_data == NULL.");
 	robot_arm = g_new0(ThreeDofRobot, 1);
 	init_three_dof_robot_arm(robot_arm);
 	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
-	submit_arm_security_limits(robot_arm, -19.0, 14.5, -20.0, 20.0, 3.0, 35.0, M_PI*(1.0/12.0), M_PI*(11.0/12.0));
+	submit_arm_security_limits(robot_arm, -19.0, 15.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
 
-	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), 1425);
-	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), 1431);
-	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), 1014);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), BASE_SERVO_0_DEGREE_PULSE, BASE_SERVO_90_DEGREE_PULSE, BASE_SERVO_0_DEGREE_ADC_VAL, BASE_SERVO_90_DEGREE_ADC_VAL);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_0_DEGREE_PULSE, SHOULDER_SERVO_90_DEGREE_PULSE, SHOULDER_SERVO_0_DEGREE_ADC_VAL, SHOULDER_SERVO_90_DEGREE_ADC_VAL);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_0_DEGREE_PULSE, ELBOW_SERVO_90_DEGREE_PULSE, ELBOW_SERVO_0_DEGREE_ADC_VAL, ELBOW_SERVO_90_DEGREE_ADC_VAL);
 
-	pulse_width_0_degree = 879;
-	pulse_width_90_degree = 1430;
-	position_0_degree = 358;
-	position_90_degree = 615;
-	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
+	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), BASE_SERVO_INIT_PULSE);
+	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_INIT_PULSE);
+	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_INIT_PULSE);
 
-	pulse_width_0_degree = 956;
-	pulse_width_90_degree = 1431;
-	position_0_degree = 415;
-	position_90_degree = 654;
-	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]), ((BASE_SERVO_INIT_PULSE-BASE_SERVO_0_DEGREE_PULSE)/(BASE_SERVO_90_DEGREE_PULSE-BASE_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), ((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2);
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
 
-	pulse_width_0_degree = 904;
-	pulse_width_90_degree = 1391;
-	position_0_degree = 428;
-	position_90_degree = 666;
-	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), pulse_width_0_degree, pulse_width_90_degree, position_0_degree, position_90_degree);
+	printf("%f\n", robot_arm->servos[SHOULDER_SERVO].angle_sample_0);
 
 	if (! init_rs232_com1(115200))
  		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_rs232_com1().");	

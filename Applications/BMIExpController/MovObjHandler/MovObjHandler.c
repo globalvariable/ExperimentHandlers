@@ -3,6 +3,25 @@
 static pthread_t logging_thread;
 void *logging_thread_function( void *message_log );
 
+#define BASE_SERVO_0_DEGREE_PULSE		879
+#define BASE_SERVO_90_DEGREE_PULSE		1430
+#define BASE_SERVO_0_DEGREE_ADC_VAL		358
+#define BASE_SERVO_90_DEGREE_ADC_VAL	615
+
+#define SHOULDER_SERVO_0_DEGREE_PULSE		956
+#define SHOULDER_SERVO_90_DEGREE_PULSE		1431
+#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	415
+#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	654
+
+#define ELBOW_SERVO_0_DEGREE_PULSE		904
+#define ELBOW_SERVO_90_DEGREE_PULSE		1391
+#define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
+#define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
+
+#define BASE_SERVO_INIT_PULSE				1425   // it should have been equal to BASE_SERVO_90_DEGREE_PULSE but there is an error due to imperfectness of servo and robot stands; this value worked well. 
+#define SHOULDER_SERVO_INIT_PULSE		1431
+#define ELBOW_SERVO_INIT_PULSE			1014
+
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
@@ -34,18 +53,17 @@ int main( int argc, char *argv[])
 
 	submit_3_dof_arm_trajectory_history_buffer_size(robot_arm, 1000);
 
-	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), 1425);
-	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), 1431);
-	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), 1014);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), BASE_SERVO_0_DEGREE_PULSE, BASE_SERVO_90_DEGREE_PULSE, BASE_SERVO_0_DEGREE_ADC_VAL, BASE_SERVO_90_DEGREE_ADC_VAL);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_0_DEGREE_PULSE, SHOULDER_SERVO_90_DEGREE_PULSE, SHOULDER_SERVO_0_DEGREE_ADC_VAL, SHOULDER_SERVO_90_DEGREE_ADC_VAL);
+	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_0_DEGREE_PULSE, ELBOW_SERVO_90_DEGREE_PULSE, ELBOW_SERVO_0_DEGREE_ADC_VAL, ELBOW_SERVO_90_DEGREE_ADC_VAL);
 
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]), M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), M_PI_2); 
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), 1.0*(M_PI/6.0));  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+	init_servo_pulse(&(robot_arm->servos[BASE_SERVO]), BASE_SERVO_INIT_PULSE);
+	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_INIT_PULSE);
+	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_INIT_PULSE);
 
-	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), 879, 1430, 358, 615);
-	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), 956, 1431, 415, 654);
-	write_servo_pw_adc_ranges(&(robot_arm->servos[ELBOW_SERVO]), 904, 1391, 428, 666);
-
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]), ((BASE_SERVO_INIT_PULSE-BASE_SERVO_0_DEGREE_PULSE)/(BASE_SERVO_90_DEGREE_PULSE-BASE_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), ((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2);
+	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
 
 
 	mov_obj_paradigm->stay_at_target_duration = 200000000;

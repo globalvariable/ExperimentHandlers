@@ -123,8 +123,6 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	btn_select_target = gtk_button_new_with_label("Select Target");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_select_target , TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 	lbl = gtk_label_new("Idx: ");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
 	entry_select_target = gtk_entry_new();

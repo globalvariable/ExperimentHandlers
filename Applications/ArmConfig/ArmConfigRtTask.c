@@ -103,8 +103,9 @@ static void *rt_servo_control(void *args)
 		for (i = 0; i <  ROBOT_POSITION_MSG_LEN; i+=2)
 			write_servo_position_val(&(static_robot_arm->servos[(unsigned int) (i/2)]), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
 
-		calculate_forward_kinematics(static_robot_arm);
-		
+//		calculate_forward_kinematics(static_robot_arm);
+		calculate_forward_kinematics_with_three_sample_averaging(static_robot_arm);	
+	
 		for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 			printf("%u\t", static_robot_arm->servos[i].position.position);
 		printf("\n");
@@ -128,7 +129,7 @@ static void *rt_servo_control(void *args)
 		for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 			pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer.exp_envi_tx_buff[i];
 
-		if ( check_three_dof_robot_out_of_security_limits(static_robot_arm))
+		if ( check_three_dof_robot_security_limits(static_robot_arm))
 		{
 			evaluate_three_dof_robot_arm_pw_command(static_robot_arm);
 			for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
