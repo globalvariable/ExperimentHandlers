@@ -89,7 +89,7 @@ void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 	tip_position->lateral = R*cos(theta); 
 }
 
-void calculate_forward_kinematics_with_three_sample_averaging(ThreeDofRobot *robot_arm)
+void calculate_forward_kinematics_with_averaging(ThreeDofRobot *robot_arm)
 {
 	ThreeDofRobotPosition *tip_position;
 	ThreeDofRobotSize *size;
@@ -100,9 +100,9 @@ void calculate_forward_kinematics_with_three_sample_averaging(ThreeDofRobot *rob
 
 	pthread_mutex_lock(&(robot_arm->mutex));
 
-	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]));
-	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]));
-	calculate_servo_angle_with_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]));
+	calculate_servo_angle_with_averaging(&(robot_arm->servos[BASE_SERVO]));
+	calculate_servo_angle_with_averaging(&(robot_arm->servos[SHOULDER_SERVO]));
+	calculate_servo_angle_with_averaging(&(robot_arm->servos[ELBOW_SERVO]));
 
 	tip_position = &(robot_arm->tip_position);
 	alpha = robot_arm->servos[SHOULDER_SERVO].current_angle;

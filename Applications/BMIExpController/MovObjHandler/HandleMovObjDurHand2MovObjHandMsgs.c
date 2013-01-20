@@ -71,7 +71,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 					case MOV_OBJ_DUR_STATUS_ITEM_READ_POSITION:
 						if (! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm())
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! ! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm()");
-						calculate_forward_kinematics_with_three_sample_averaging(robot_arm);	
+						calculate_forward_kinematics_with_averaging(robot_arm);	
 						push_current_arm_position_to_previous(robot_arm);
 						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_robot_arm_position_threshold()");

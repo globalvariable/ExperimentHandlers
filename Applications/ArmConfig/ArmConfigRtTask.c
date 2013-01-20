@@ -104,7 +104,7 @@ static void *rt_servo_control(void *args)
 			write_servo_position_val(&(static_robot_arm->servos[(unsigned int) (i/2)]), rx_buffer[ROBOT_POSITION_MSG_START_IDX + i], rx_buffer[ROBOT_POSITION_MSG_START_IDX + i + 1]);
 
 //		calculate_forward_kinematics(static_robot_arm);
-		calculate_forward_kinematics_with_three_sample_averaging(static_robot_arm);	
+		calculate_forward_kinematics_with_averaging(static_robot_arm);	
 	
 		for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 			printf("%u\t", static_robot_arm->servos[i].position.position);

@@ -40,11 +40,9 @@ int main( int argc, char *argv[])
 	init_servo_pulse(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_INIT_PULSE);
 	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_INIT_PULSE);
 
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[BASE_SERVO]), ((BASE_SERVO_INIT_PULSE-BASE_SERVO_0_DEGREE_PULSE)/(BASE_SERVO_90_DEGREE_PULSE-BASE_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), ((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2);
-	init_servo_angles_for_three_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
-
-	printf("%f\n", robot_arm->servos[SHOULDER_SERVO].angle_sample_0);
+	init_servo_angles_for_sample_averaging(&(robot_arm->servos[BASE_SERVO]), ((BASE_SERVO_INIT_PULSE-BASE_SERVO_0_DEGREE_PULSE)/(BASE_SERVO_90_DEGREE_PULSE-BASE_SERVO_0_DEGREE_PULSE))*M_PI_2, 3);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
+	init_servo_angles_for_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), ((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2, 3);
+	init_servo_angles_for_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2, 3);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
 
 	if (! init_rs232_com1(115200))
  		return print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_rs232_com1().");	

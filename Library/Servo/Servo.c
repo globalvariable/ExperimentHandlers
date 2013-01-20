@@ -115,17 +115,27 @@ void write_servo_90_degree_adc_val(ServoData *servo_data, ServoPosition ninety_d
 	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
 }
 
-void init_servo_angles_for_three_sample_averaging(ServoData *servo, double sample)
+void init_servo_angles_for_sample_averaging(ServoData *servo, ServoAngle initial_angle, unsigned int prev_angle_memo_size)
 {
-	servo->angle_sample_0 = sample;
-	servo->angle_sample_1 = sample;	
+	unsigned int i;
+	servo->prev_angles = g_new0(ServoAngle, prev_angle_memo_size);
+	servo->prev_angle_memo_size = prev_angle_memo_size;	
+	for (i = 0; i < prev_angle_memo_size; i++)
+		servo->prev_angles[i] = initial_angle;
 }
 
-void calculate_servo_angle_with_three_sample_averaging(ServoData *servo)
+void calculate_servo_angle_with_averaging(ServoData *servo)
 {
+	double last_angle, sum = 0.0;
+	unsigned int i , memo_size;
+	memo_size = servo->prev_angle_memo_size;
+	for (i = 0; i < memo_size; i++)
+ 		sum =  sum + servo->prev_angles[i];
 	pthread_mutex_lock(&(servo->mutex));
-	servo->current_angle = ((((double)servo->position.position - (double)servo->range.position_0_degree) * servo->range.radian_per_pos_quanta) + servo->angle_sample_0 + servo->angle_sample_1)/3.0;
+	last_angle =  ((double)servo->position.position - (double)servo->range.position_0_degree) * servo->range.radian_per_pos_quanta;
 	pthread_mutex_unlock(&(servo->mutex));
-	servo->angle_sample_1 = servo->angle_sample_0;
-	servo->angle_sample_0 = servo->current_angle;
+	servo->current_angle = 	(last_angle + sum) / ( (double) (memo_size+1));
+	for (i = 1; i < memo_size; i++)
+		servo->prev_angles[i-1] = servo->prev_angles[i];
+	servo->prev_angles[memo_size-1] = last_angle;
 }
