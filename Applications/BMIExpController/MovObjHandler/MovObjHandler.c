@@ -18,9 +18,9 @@ void *logging_thread_function( void *message_log );
 #define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
 #define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
 
-#define BASE_SERVO_INIT_PULSE				1425   // it should have been equal to BASE_SERVO_90_DEGREE_PULSE but there is an error due to imperfectness of servo and robot stands; this value worked well. 
-#define SHOULDER_SERVO_INIT_PULSE		1431
-#define ELBOW_SERVO_INIT_PULSE			1014
+#define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE   
+#define SHOULDER_SERVO_INIT_PULSE		1531
+#define ELBOW_SERVO_INIT_PULSE			1344
 
 int main( int argc, char *argv[])
 {
@@ -31,11 +31,6 @@ int main( int argc, char *argv[])
 	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL; 
    	MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui = NULL; 
 
-	double a = 2.0;
-	double b = (a - 1) /10.0;
-	
-	printf("b %f\n", b);	
-
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "rt_tasks_data == NULL.");
@@ -45,8 +40,8 @@ int main( int argc, char *argv[])
 
 	init_three_dof_robot_arm(robot_arm);
 	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
-	submit_arm_security_limits(robot_arm, -19.0, 15.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
-	if (! submit_cartesian_robotic_space_borders(robot_arm, mov_obj_paradigm, -18.0, 13.5, -19.0, 19.0, 4.0, 34.0))
+	submit_arm_security_limits(robot_arm, -19.0, 16.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
+	if (! submit_cartesian_robotic_space_borders(robot_arm, mov_obj_paradigm, -18.0, 15.5, -19.0, 19.0, 4.0, 34.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_cartesian_robotic_space_borders().");
 	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*2.5)/12.0, (M_PI*9.5)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_polar_robotic_space_borders().");
@@ -75,12 +70,12 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);
 	mov_obj_paradigm->start_info.num_of_positions = 1;
 
-	mov_obj_paradigm->start_info.cart_coordinates[0].height = 30.6 ;
-	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 10.7;
+	mov_obj_paradigm->start_info.cart_coordinates[0].height = 18.2 ;
+	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 14.3;
 	mov_obj_paradigm->start_info.cart_coordinates[0].lateral = 0.0;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1425;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1431;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1114;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1430;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
 	mov_obj_paradigm->target_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 2);
@@ -100,18 +95,18 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1511;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1424;
 */
-	mov_obj_paradigm->target_info.cart_coordinates[0].height = 30.8 ;
-	mov_obj_paradigm->target_info.cart_coordinates[0].depth = 10.9;
-	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = -8.0;
+	mov_obj_paradigm->target_info.cart_coordinates[0].height = 17.7;
+	mov_obj_paradigm->target_info.cart_coordinates[0].depth = 11.85;
+	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = -8.2;
 	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1645;
-	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1351;
-	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1014;
-	mov_obj_paradigm->target_info.cart_coordinates[1].height = 30.8 ;
-	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 10.9;
-	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = 8.0;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1205;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1351;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1014;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
+	mov_obj_paradigm->target_info.cart_coordinates[1].height = 17.7 ;
+	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 11.85;
+	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = 8.2;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1215;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1531;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1444;
 
 	mov_obj_paradigm->threshold.outer_threshold.r_x = 16;  //height
 	mov_obj_paradigm->threshold.outer_threshold.r_y = 46; // depth    ->>>  to provide a circle with radius of ~12 cm at the frontal surface of the cage
