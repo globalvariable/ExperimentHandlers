@@ -25,6 +25,18 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

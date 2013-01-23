@@ -38,6 +38,20 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF");
 			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING");
+			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING");
+			return TRUE;	
+		case GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING");
+			return TRUE;	
+
+
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

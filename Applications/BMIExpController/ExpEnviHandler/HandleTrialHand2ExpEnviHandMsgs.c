@@ -161,6 +161,12 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);
 				}
 				break;
+			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING:	
+				break;
+			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING:	
+				break;
+			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING:	
+				break;
 			default:
 				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);
 		}

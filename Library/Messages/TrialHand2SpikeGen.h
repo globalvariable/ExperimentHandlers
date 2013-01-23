@@ -20,6 +20,11 @@ typedef TrialHand2NeuralNetMsgAdditional TrialHand2SpikeGenMsgAdditional;
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_NULL									0
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_ARE_YOU_ALIVE						1
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED				2
+#define TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING					3
+#define TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING						4
+#define TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING					5
+
+
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

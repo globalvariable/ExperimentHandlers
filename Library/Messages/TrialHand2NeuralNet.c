@@ -25,6 +25,18 @@ bool get_trial_hand_2_neural_net_msg_type_string(TrialHand2NeuralNetMsgType msg_
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN");
 			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_NEURAL_NET_MSG_NULL:
 			if (str != NULL)

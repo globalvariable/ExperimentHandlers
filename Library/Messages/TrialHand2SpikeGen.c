@@ -13,6 +13,18 @@ bool get_trial_hand_2_spike_gen_msg_type_string(TrialHand2SpikeGenMsgType msg_ty
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED");
 			return TRUE;
+		case TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING");
+			return TRUE;
+		case TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_SPIKE_GEN_MSG_NULL:
 			if (str != NULL)

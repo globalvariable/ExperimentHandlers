@@ -24,6 +24,7 @@ union __TrialHand2NeuralNetMsgAdditional
 {
 	TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add;
 	double reward;
+	unsigned int trial_number;
 	bool dummy;
 };
 
@@ -39,7 +40,9 @@ union __TrialHand2NeuralNetMsgAdditional
 #define TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START						3
 #define TRIAL_HAND_2_NEURAL_NET_MSG_REWARD_GIVEN						4
 #define TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN					5
-
+#define TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING					6
+#define TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING					7
+#define TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING					8
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

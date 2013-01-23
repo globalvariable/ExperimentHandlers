@@ -3,6 +3,7 @@
 static RtTasksData *static_rt_tasks_data = NULL;
 
 static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;  
+static TrialHand2GuiMsg *static_msgs_trial_hand_2_gui = NULL;  
 
 static TrialHandParadigmRobotReach *paradigm = NULL;
 
@@ -44,6 +45,15 @@ static GtkWidget *lbl_num_of_rewarded_trials;
 static GtkWidget *lbl_num_of_trials_of_trial_type;
 static GtkWidget *lbl_num_of_rewarded_trials_of_trial_type;
 
+static GtkWidget *btn_select_directory_to_save;
+static GtkWidget *btn_create_recording_folder;
+
+static GtkWidget *lbl_trial_status;
+
+static GtkWidget *btn_start_recording;
+static GtkWidget *btn_stop_recording;
+static GtkWidget *btn_delete_recording;
+
 static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
@@ -59,15 +69,22 @@ static void submit_trial_number_button_func (void);
 
 static void statistics_button_func (void);
 
+static void create_recording_folder_button_func (void);
+
+static void start_recording_button_func (void);
+static void stop_recording_button_func (void);
+static void delete_recording_button_func (void);
+
 static gboolean timeout_callback(gpointer user_data) ;
 
-bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history)
+bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 
 	static_rt_tasks_data = rt_tasks_data;
 
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;
+	static_msgs_trial_hand_2_gui = msgs_trial_hand_2_gui;
 
 	paradigm = trial_hand_paradigm;
 
@@ -78,10 +95,10 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
    
         gtk_notebook_append_page (GTK_NOTEBOOK (tabs), frame, frame_label);  
 
- 	hbox = gtk_hbox_new(TRUE, 0);
+ 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_container_add (GTK_CONTAINER (frame), hbox);
 
-	table = gtk_table_new(2 ,6,TRUE);   // 2 rows 6 columns
+	table = gtk_table_new(2 ,3,TRUE);   // 2 rows 3 columns
 	gtk_box_pack_start(GTK_BOX(hbox),table, TRUE,TRUE,0);
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -104,12 +121,11 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	btn_disable_trials = gtk_button_new_with_label("Disable");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_disable_trials, TRUE, TRUE, 0);
-	gtk_widget_set_sensitive(btn_disable_trials, FALSE);	
 
 	btn_quit_trials = gtk_button_new_with_label("Quit");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_quit_trials, TRUE, TRUE, 0);
 
-       gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+       gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
@@ -188,7 +204,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 1,2, 0, 6);  // column 5-6, row 0-6
 
-	hbox = gtk_hbox_new(TRUE, 0);
+	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,5);
 
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -200,7 +216,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	lbl_num_of_trials = gtk_label_new("0");
         gtk_box_pack_start(GTK_BOX(hbox), lbl_num_of_trials, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(TRUE, 0);
+	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,5);
 
 	lbl = gtk_label_new("---- Interrogate Trial ----");
@@ -334,13 +350,59 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 5,6, 0, 6);  // column 5-6, row 0-6
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 2, 3, 0, 6);  // column 5-6, row 0-6
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	lbl_trial_status = gtk_label_new("TRIAL_STATUS_NOT_KNOWN");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_trial_status, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(lbl_trial_status, 300, 30);	
+
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 10);
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	      
+
+  	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+        gtk_box_pack_start(GTK_BOX(hbox), btn_select_directory_to_save, TRUE,TRUE,0);
+//	set_directory_btn_select_directory_to_save();
+
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_create_recording_folder = gtk_button_new_with_label("Create Recording Folders");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
+
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
 
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	lbl = gtk_label_new("data load save");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
+	lbl = gtk_label_new("DATA RECORDING CONTROL");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 5);
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_start_recording = gtk_button_new_with_label("START");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_start_recording, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(btn_start_recording, 20, 80);	
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_stop_recording = gtk_button_new_with_label("STOP");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_stop_recording, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(btn_stop_recording, 20, 80);	
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_delete_recording = gtk_button_new_with_label("DELETE");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_delete_recording, TRUE, TRUE, 0);
+
 
 	g_signal_connect(G_OBJECT(btn_reset_connections), "clicked", G_CALLBACK(reset_connections_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
@@ -357,15 +419,27 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	g_signal_connect(G_OBJECT(btn_statistics), "clicked", G_CALLBACK(statistics_button_func), NULL);
 
+	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
-	g_timeout_add(1000, timeout_callback, NULL);		// timeout shoud be less than buffer_followup_latency,
+	g_signal_connect(G_OBJECT(btn_start_recording), "clicked", G_CALLBACK(start_recording_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_stop_recording), "clicked", G_CALLBACK(stop_recording_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_delete_recording), "clicked", G_CALLBACK(delete_recording_button_func), NULL);
+
+	gtk_widget_set_sensitive(btn_disable_trials, FALSE);	
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);	
+	gtk_widget_set_sensitive(btn_delete_recording, FALSE);	
+
+	g_timeout_add(100, timeout_callback, NULL);		// timeout shoud be less than buffer_followup_latency,
 
 	return TRUE;
 }
 
 static gboolean timeout_callback(gpointer user_data) 
 {
-	char temp[50];
+	char temp[TRIAL_HAND_2_GUI_MSG_STRING_LENGTH];
+	TrialHand2GuiMsgItem msg_item;
+	static bool recording = FALSE;
+	TrialStatus trial_status;
 
 	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_x);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_x), temp);
@@ -376,9 +450,51 @@ static gboolean timeout_callback(gpointer user_data)
 	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_z);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_z), temp);
 
-	sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
-	gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
-
+	while (get_next_trial_hand_2_gui_msg_buffer_item(static_msgs_trial_hand_2_gui, &msg_item))
+	{
+		switch (msg_item.msg_type)
+		{
+			case TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK:
+				recording = TRUE;	
+				gtk_widget_set_sensitive(btn_start_recording, FALSE);
+				gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+				gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+				break;
+			case TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK:
+				recording = FALSE;	
+				gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+				gtk_widget_set_sensitive(btn_delete_recording, TRUE);
+				break;
+			case TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK:	
+				gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+				gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+				break;
+			case TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE:
+				trial_status = msg_item.additional_data;
+				get_trial_status_type_string(trial_status, temp);  
+				gtk_label_set_text(GTK_LABEL (lbl_trial_status ), temp);
+				switch (trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
+						gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						break;
+					default:
+						return print_message(BUG_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "switch (trial_status) - default");
+				}
+				break;
+			default:
+				return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "switch (msg_item.msg_type) - default");
+		}
+	}
 	return TRUE;
 }
 
@@ -392,10 +508,8 @@ static void enable_trials_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_ENABLE_TRIAL_HANDLING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
-	gtk_widget_set_sensitive(btn_enable_trials, FALSE);		
+	gtk_widget_set_sensitive(btn_enable_trials, FALSE);	
 	gtk_widget_set_sensitive(btn_disable_trials, TRUE);	
-	gtk_widget_set_sensitive(btn_quit_trials, FALSE);		
-
 }
 
 static void disable_trials_button_func (void)
@@ -502,4 +616,32 @@ static void statistics_button_func (void)
 
 
 	printf ("----------------------------- End of Trial Statistics --------------------------------\n");
+}
+
+static void create_recording_folder_button_func (void)
+{
+	char *path_temp = NULL, *path = NULL;
+	path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
+	path = &path_temp[7];   // since     uri returns file:///home/....	
+	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, path))		// record in last format version
+	{
+		
+	}
+}
+
+
+static void start_recording_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+}
+static void stop_recording_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+}
+static void delete_recording_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING, 0))
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
 }

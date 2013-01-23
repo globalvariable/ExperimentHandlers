@@ -189,6 +189,12 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 						return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_mov_obj_status);
 				}
 				break;
+			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING:	
+				break;
+			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING:	
+				break;
+			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_DELETE_RECORDING:	
+				break;
 			default:
 				return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);
 		}

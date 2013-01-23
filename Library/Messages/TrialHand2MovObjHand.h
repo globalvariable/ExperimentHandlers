@@ -27,6 +27,7 @@ union __TrialHand2MovObjHandMsgAdditional
 	EllipsoidThreshold	threshold;
 	unsigned int		robot_start_position_idx;
 	unsigned int		robot_target_position_idx;
+	unsigned int		trial_number;
 	bool			dummy;
 };
 
@@ -41,6 +42,9 @@ union __TrialHand2MovObjHandMsgAdditional
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ELLIPSOID_THRESHOLD		5
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_ENABLED				6
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_DISABLED				7
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING			8
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING				9
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_DELETE_RECORDING			10
 
 struct __TrialHand2MovObjHandMsgItem
 {
