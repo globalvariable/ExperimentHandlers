@@ -24,6 +24,8 @@ struct __TrialData
 	double				remained_distance_to_target;
 	double				initial_distance_to_target;
 	EllipsoidThreshold		rewarding_threshold;
+	unsigned int			gui_selected_target_position_idx;
+	bool				auto_target_select_mode_on;
 };
 
 

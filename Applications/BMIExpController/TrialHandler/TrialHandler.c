@@ -15,7 +15,8 @@ int main( int argc, char *argv[])
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 3000000000;
-	paradigm->trial_refractory = 4000000000;
+	paradigm->min_trial_refractory = 4000000000;
+	paradigm->max_extra_trial_refractory = 500000000;
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
@@ -23,8 +24,6 @@ int main( int argc, char *argv[])
 	paradigm->target_led_component_indexes_list = g_new0(unsigned int, paradigm->num_of_target_led_components);
 	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
-
-	paradigm->auto_target_select_mode_on = TRUE; 
 
 	paradigm->min_target_reach_threshold.r_x = 1;  //height
 	paradigm->min_target_reach_threshold.r_y = 1; // depth
@@ -35,7 +34,8 @@ int main( int argc, char *argv[])
 	paradigm->max_target_reach_threshold.r_z = 8; // lateral
 	paradigm->target_reach_threshold_change_rate = 0.02;
 
-	paradigm->selected_target_reach_threshold = paradigm->max_target_reach_threshold;
+	paradigm->current_trial_data.rewarding_threshold = paradigm->max_target_reach_threshold;
+	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
 
 	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions); 
 

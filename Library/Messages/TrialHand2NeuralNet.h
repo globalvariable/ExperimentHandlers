@@ -24,7 +24,7 @@ union __TrialHand2NeuralNetMsgAdditional
 {
 	TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add;
 	double reward;
-	unsigned int trial_number;
+	unsigned int recording_number;
 	bool dummy;
 };
 

@@ -75,6 +75,8 @@ static void start_recording_button_func (void);
 static void stop_recording_button_func (void);
 static void delete_recording_button_func (void);
 
+static void set_directory_btn_select_directory_to_save(void);
+
 static gboolean timeout_callback(gpointer user_data) ;
 
 bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui)
@@ -366,7 +368,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
   	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
         gtk_box_pack_start(GTK_BOX(hbox), btn_select_directory_to_save, TRUE,TRUE,0);
-//	set_directory_btn_select_directory_to_save();
+	set_directory_btn_select_directory_to_save();
 
 
    	hbox = gtk_hbox_new(FALSE, 0);
@@ -436,18 +438,19 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 static gboolean timeout_callback(gpointer user_data) 
 {
+	char *path_temp, *path;
 	char temp[TRIAL_HAND_2_GUI_MSG_STRING_LENGTH];
 	TrialHand2GuiMsgItem msg_item;
 	static bool recording = FALSE;
 	TrialStatus trial_status;
 
-	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_x);
+	sprintf (temp, "%.2f", paradigm->current_trial_data.rewarding_threshold.r_x);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_x), temp);
 	
-	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_y);
+	sprintf (temp, "%.2f", paradigm->current_trial_data.rewarding_threshold.r_y);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_y), temp);
 
-	sprintf (temp, "%.2f", paradigm->selected_target_reach_threshold.r_z);
+	sprintf (temp, "%.2f", paradigm->current_trial_data.rewarding_threshold.r_z);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_z), temp);
 
 	while (get_next_trial_hand_2_gui_msg_buffer_item(static_msgs_trial_hand_2_gui, &msg_item))
@@ -456,15 +459,28 @@ static gboolean timeout_callback(gpointer user_data)
 		{
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK:
 				recording = TRUE;	
-				gtk_widget_set_sensitive(btn_start_recording, FALSE);
-				gtk_widget_set_sensitive(btn_stop_recording, TRUE);
-				gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+				path_temp = NULL; path = NULL;
+				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
+				path = &path_temp[7];   // since     uri returns file:///home/....	
+				if ((*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, msg_item.additional_data))	
+				{
+					gtk_widget_set_sensitive(btn_start_recording, FALSE);
+					gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+					gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+				}
+				else
+					print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "timeout_callback", " *create_data_directory().");	
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK:
 				recording = FALSE;	
-				gtk_widget_set_sensitive(btn_start_recording, TRUE);
-				gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-				gtk_widget_set_sensitive(btn_delete_recording, TRUE);
+				if ((*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_rt_tasks_data->current_system_time, &(classified_history->all_trials->history[msg_item.additional_data])))	
+				{
+					gtk_widget_set_sensitive(btn_start_recording, TRUE);
+					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+					gtk_widget_set_sensitive(btn_delete_recording, TRUE);		
+				}
+				else
+					print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "timeout_callback", " *fclose_all_data_files().");
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK:	
 				gtk_widget_set_sensitive(btn_start_recording, TRUE);
@@ -478,14 +494,40 @@ static gboolean timeout_callback(gpointer user_data)
 				switch (trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
+						gtk_widget_set_sensitive(btn_start_recording, FALSE);
+						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+						gtk_widget_set_sensitive(btn_delete_recording, FALSE);
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
+						gtk_widget_set_sensitive(btn_start_recording, FALSE);
+						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+						gtk_widget_set_sensitive(btn_delete_recording, FALSE);					
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
 						sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
 						gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
+						if (recording)
+						{
+							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+							gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+						}
+						else
+						{
+							gtk_widget_set_sensitive(btn_start_recording, TRUE);
+							gtk_widget_set_sensitive(btn_delete_recording, TRUE);
+						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						if (recording)
+						{
+							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+							gtk_widget_set_sensitive(btn_delete_recording, FALSE);
+						}
+						else
+						{
+							gtk_widget_set_sensitive(btn_start_recording, TRUE);
+							gtk_widget_set_sensitive(btn_delete_recording, TRUE);
+						}
 						break;
 					default:
 						return print_message(BUG_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "switch (trial_status) - default");
@@ -529,7 +571,7 @@ static void quit_trials_button_func (void)
 
 static void auto_target_select_mode_on_off_button_func(void)
 {
-	if (paradigm->auto_target_select_mode_on)
+	if (paradigm->current_trial_data.auto_target_select_mode_on)
 	{
 		if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_AUTO_TARGET_SELECTION_OFF, 0))
 			return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "auto_target_select_mode_on_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");
@@ -623,20 +665,24 @@ static void create_recording_folder_button_func (void)
 	char *path_temp = NULL, *path = NULL;
 	path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 	path = &path_temp[7];   // since     uri returns file:///home/....	
-	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, path))		// record in last format version
+	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, paradigm))		// record in last format version
 	{
 		
 	}
+	else
+		print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "create_recording_folder_button_func", " *create_main_directory().");				
 }
 
 
 static void start_recording_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
-		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");	
 }
 static void stop_recording_button_func (void)
 {
+	if (classified_history->all_trials->buff_write_idx == 0)
+		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "stop_recording_button_func ", "classified_history->all_trials->buff_write_idx == 0, no trial started so far.");	
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
 }
@@ -644,4 +690,31 @@ static void delete_recording_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING, 0))
 		return (void)print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+}
+
+static void set_directory_btn_select_directory_to_save(void)
+{
+	char line[600];
+	FILE *fp = NULL;
+       	if ((fp = fopen("./path_initial_directory", "r")) == NULL)  
+       	{ 
+		print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "set_directory_btn_select_directory_to_save", "Couldn't find file: ./path_initial_directory.");
+		print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "set_directory_btn_select_directory_to_save", "/home is loaded as initial direcoty to create data folder.");
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),"/home");
+       	}
+       	else
+       	{
+		if (fgets(line, sizeof line, fp ) == NULL) 
+		{ 
+			print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "set_directory_btn_select_directory_to_save", "Couldn' t read ./path_initial_directory.");
+			print_message(ERROR_MSG ,"BMIExpController", "GuiTrialHandler", "set_directory_btn_select_directory_to_save", "/home is loaded as initial direcoty to create data folder.");
+			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),"/home");
+		}
+		else
+		{
+			line[strlen(line)-16] = 0;   
+			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),line);
+		}
+		fclose(fp); 		
+	}  	 
 }

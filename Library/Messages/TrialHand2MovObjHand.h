@@ -27,7 +27,7 @@ union __TrialHand2MovObjHandMsgAdditional
 	EllipsoidThreshold	threshold;
 	unsigned int		robot_start_position_idx;
 	unsigned int		robot_target_position_idx;
-	unsigned int		trial_number;
+	unsigned int		recording_number;
 	bool			dummy;
 };
 

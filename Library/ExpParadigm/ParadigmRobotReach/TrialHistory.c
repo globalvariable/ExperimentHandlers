@@ -79,6 +79,19 @@ ClassifiedTrialHistory* deallocate_classified_trial_history(ClassifiedTrialHisto
 	return NULL;	
 }
 
+bool write_trial_data_to_classified_trial_history(ClassifiedTrialHistory* classified_history, unsigned int robot_start_position_idx, unsigned int robot_target_position_idx, TrialData *trial_data)
+{
+	memcpy(&(classified_history->all_trials->history[classified_history->all_trials->buff_write_idx]), trial_data, sizeof(TrialData));
+	memcpy(&(classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->history[classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx]), trial_data, sizeof(TrialData));
+	if ((classified_history->all_trials->buff_write_idx + 1) == classified_history->all_trials->buffer_size)   // do not expand this buffer. All design is realised according to its this. It is a NON CIRCULAR BUFFER.
+		return print_message(ERROR_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL!!!.");    	
+	if ((classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx + 1) == classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buffer_size)   // do not expand this buffer. All design is realised according to its this. It is a NON CIRCULAR BUFFER.
+		return print_message(ERROR_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->trial_types[m][n]->buffer is FULL!!!.");  
+	classified_history->all_trials->buff_write_idx++;
+   	classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx++; 
+	return TRUE;
+}
+
 double get_abs_mean_of_reward_of_previous_trials(TrialHistory* hist, unsigned int num_of_past_trials)
 {
 	unsigned int start_idx;
@@ -122,30 +135,30 @@ double get_previous_trial_type_remained_distance_to_target(ClassifiedTrialHistor
 	return hist->trial_types[start_position_idx][target_position_idx]->history[idx].remained_distance_to_target;
 }
 
-double calculate_and_get_windowed_binary_reward_average(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx, unsigned int window_size)
+double calculate_and_get_windowed_binary_reward_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size)
 {
 	unsigned int write_idx_prev; 
-	unsigned int write_idx = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx;
-	if (write_idx == 0)
-		 write_idx_prev = hist->trial_types[start_position_idx][target_position_idx]->buffer_size - 1;
+
+	if (hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx == 0)
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buffer_size - 1;
 	else
-		 write_idx_prev = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx - 1;	
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx - 1;	
 
-	hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].binary_reward_windowed_average = ((hist->trial_types[start_position_idx][target_position_idx]->history[write_idx_prev].binary_reward_windowed_average * window_size) + ((double)hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].binary_reward)) / ((double)(window_size+1));
+	trial_data->binary_reward_windowed_average = ((hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->history[write_idx_prev].binary_reward_windowed_average * window_size) + ((double)trial_data->binary_reward)) / ((double)(window_size+1));
 
-	return hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].binary_reward_windowed_average;
+	return trial_data->binary_reward_windowed_average;
 }
 
-TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx, unsigned int window_size)
+TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size)
 {
 	unsigned int write_idx_prev; 
-	unsigned int write_idx = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx;
-	if (write_idx == 0)
-		 write_idx_prev = hist->trial_types[start_position_idx][target_position_idx]->buffer_size - 1;
+
+	if ( hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx == 0)
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buffer_size - 1;
 	else
-		 write_idx_prev = hist->trial_types[start_position_idx][target_position_idx]->buff_write_idx - 1;		
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx - 1;		
 
-	hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].trial_length_windowed_average = ((hist->trial_types[start_position_idx][target_position_idx]->history[write_idx_prev].trial_length_windowed_average * window_size) + hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].trial_length) / (window_size+1);
+	trial_data->trial_length_windowed_average = ((hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->history[write_idx_prev].trial_length_windowed_average * window_size) + trial_data->trial_length) / (window_size+1);
 
-	return hist->trial_types[start_position_idx][target_position_idx]->history[write_idx].trial_length_windowed_average;
+	return trial_data->trial_length_windowed_average;
 }

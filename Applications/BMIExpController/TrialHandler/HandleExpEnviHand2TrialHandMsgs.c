@@ -26,39 +26,26 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, Tim
 						break;   // do nothing
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
 						*trial_status = TRIAL_STATUS_IN_TRIAL;
-
-						if (paradigm->auto_target_select_mode_on)
-							paradigm->selected_robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+						paradigm->current_trial_data.trial_start_time = current_time;
+						if (paradigm->current_trial_data.auto_target_select_mode_on)
+							paradigm->current_trial_data.robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
 						else
-							paradigm->selected_robot_target_position_idx = paradigm->gui_selected_target_position_idx;
+							paradigm->current_trial_data.robot_target_position_idx = paradigm->current_trial_data.gui_selected_target_position_idx;
 
-						paradigm->selected_target_led_component_list_idx = paradigm->selected_robot_target_position_idx;
-					
-						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].trial_start_time = current_time;   
-						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].target_led_component_list_idx = paradigm->selected_target_led_component_list_idx;
-						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].robot_start_position_idx = paradigm->selected_robot_start_position_idx;
-						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].robot_target_position_idx = paradigm->selected_robot_target_position_idx;
-						classified_history->all_trials->history[classified_history->all_trials->buff_write_idx].rewarding_threshold = paradigm->selected_target_reach_threshold;
-
-						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].trial_start_time = current_time;   
-						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].target_led_component_list_idx = paradigm->selected_target_led_component_list_idx;
-						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].robot_start_position_idx = paradigm->selected_robot_start_position_idx;
-						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].robot_target_position_idx = paradigm->selected_robot_target_position_idx;
-						classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->history[classified_history->trial_types[paradigm->selected_robot_start_position_idx][paradigm->selected_robot_target_position_idx]->buff_write_idx].rewarding_threshold = paradigm->selected_target_reach_threshold;
-
+						paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.robot_target_position_idx;
 
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->max_trial_length))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL, paradigm->selected_target_led_component_list_idx))
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL, paradigm->current_trial_data.target_led_component_list_idx))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						trial_hand_to_mov_obj_hand_msg_add.threshold = paradigm->selected_target_reach_threshold;
+						trial_hand_to_mov_obj_hand_msg_add.threshold = paradigm->current_trial_data.rewarding_threshold;
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_ELLIPSOID_THRESHOLD, trial_hand_to_mov_obj_hand_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
-						trial_hand_to_mov_obj_hand_msg_add.robot_target_position_idx = paradigm->selected_robot_target_position_idx;
+						trial_hand_to_mov_obj_hand_msg_add.robot_target_position_idx = paradigm->current_trial_data.robot_target_position_idx;
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_TRIAL, trial_hand_to_mov_obj_hand_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
 						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_TRIAL;
-						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_target_position_idx = paradigm->selected_robot_target_position_idx;
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_target_position_idx = paradigm->current_trial_data.robot_target_position_idx;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						// DO NOT SEND TRIAL START MSG NOW. SEND IT WHEN THE ROBOT CONTROL IS AVAILABLE AFTER STAY_AT_START_DURATION ENDS.
@@ -66,7 +53,7 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, Tim
 //						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START, trial_hand_to_neural_net_msg_add))
 //							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						trial_hand_to_spike_gen_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_TRIAL;
-						trial_hand_to_spike_gen_msg_add.trial_status_change_msg_add.new_robot_target_position_idx = paradigm->selected_robot_target_position_idx;
+						trial_hand_to_spike_gen_msg_add.trial_status_change_msg_add.new_robot_target_position_idx = paradigm->current_trial_data.robot_target_position_idx;
 						if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_IN_TRIAL))

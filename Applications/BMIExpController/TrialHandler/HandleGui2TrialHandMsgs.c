@@ -11,7 +11,7 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 	TrialHand2NeuralNetMsgAdditional trial_hand_to_neural_net_msg_add;
 	TrialHand2SpikeGenMsgAdditional trial_hand_to_spike_gen_msg_add;
 	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
-	unsigned int trial_number;
+	unsigned int recording_number;
 	while (get_next_gui_2_trial_hand_msg_buffer_item(msgs_gui_2_trial_hand, &msg_item))
 	{
 		get_gui_2_trial_hand_msg_type_string(msg_item.msg_type, str_gui_msg);
@@ -23,10 +23,11 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						*trial_status = TRIAL_STATUS_IN_REFRACTORY;
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->trial_refractory))
+						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->min_trial_refractory))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
-						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
-						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->selected_robot_start_position_idx;
+
+						paradigm->current_trial_data.robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_ENABLED, trial_hand_2_mov_obj_hand_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
@@ -72,8 +73,6 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 
-						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());  
-						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->selected_robot_start_position_idx;
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL, trial_hand_2_mov_obj_hand_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_TRIALS_DISABLED))
@@ -85,8 +84,7 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());  
-						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->selected_robot_start_position_idx;
+
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL, trial_hand_2_mov_obj_hand_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_TRIALS_DISABLED))
@@ -98,8 +96,7 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						paradigm->selected_robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());  
-						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->selected_robot_start_position_idx;
+
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL, trial_hand_2_mov_obj_hand_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_TRIALS_DISABLED))
@@ -132,102 +129,102 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if ((paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increasing threshold cannot be done during trial");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if ((paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if ((paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					default:
@@ -240,102 +237,102 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if ((paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreasing threshold cannot be done during trial");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if ((paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if ((paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_x = paradigm->selected_target_reach_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_y = paradigm->selected_target_reach_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
 						}
-						if ((paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
+						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
 						}
 						else
 						{
 							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->selected_target_reach_threshold.r_z = paradigm->selected_target_reach_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
 						}
 						break;
 					default:
@@ -348,16 +345,16 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						paradigm->current_trial_data.gui_selected_target_position_idx = msg_item.additional_data;
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
-						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						paradigm->current_trial_data.gui_selected_target_position_idx = msg_item.additional_data;
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						paradigm->current_trial_data.gui_selected_target_position_idx = msg_item.additional_data;
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						paradigm->gui_selected_target_position_idx = msg_item.additional_data;
+						paradigm->current_trial_data.gui_selected_target_position_idx = msg_item.additional_data;
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
@@ -369,16 +366,16 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						paradigm->auto_target_select_mode_on = FALSE;
+						paradigm->current_trial_data.auto_target_select_mode_on = FALSE;
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
-						paradigm->auto_target_select_mode_on = FALSE;
+						paradigm->current_trial_data.auto_target_select_mode_on = FALSE;
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						paradigm->auto_target_select_mode_on = FALSE;
+						paradigm->current_trial_data.auto_target_select_mode_on = FALSE;
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						paradigm->auto_target_select_mode_on = FALSE;
+						paradigm->current_trial_data.auto_target_select_mode_on = FALSE;
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
@@ -390,16 +387,16 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						paradigm->auto_target_select_mode_on = TRUE;
+						paradigm->current_trial_data.auto_target_select_mode_on = TRUE;
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
-						paradigm->auto_target_select_mode_on = TRUE;
+						paradigm->current_trial_data.auto_target_select_mode_on = TRUE;
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						paradigm->auto_target_select_mode_on = TRUE;
+						paradigm->current_trial_data.auto_target_select_mode_on = TRUE;
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						paradigm->auto_target_select_mode_on = TRUE;
+						paradigm->current_trial_data.auto_target_select_mode_on = TRUE;
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
@@ -408,54 +405,165 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				}
 				break;
 			case GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING:
-				trial_number = classified_history->all_trials->buff_write_idx;
-				if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING, trial_number))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_2_mov_obj_hand_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING, trial_hand_2_mov_obj_hand_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_neural_net_msg_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING, trial_hand_to_neural_net_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_spike_gen_msg_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING, trial_hand_to_spike_gen_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, 0))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
-
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot start recording when TRIAL_STATUS_TRIALS_DISABLED");
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot start recording when TRIAL_STATUS_IN_TRIAL");
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						recording_number = classified_history->all_trials->buff_write_idx;  // delete previous 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						recording_number = classified_history->all_trials->buff_write_idx; 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
 				break;
-			case GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING:
-				if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING, 0))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_2_mov_obj_hand_add.dummy = 0;
-				if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING, trial_hand_2_mov_obj_hand_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_neural_net_msg_add.dummy = 0;
-				if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING, trial_hand_to_neural_net_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_spike_gen_msg_add.dummy = 0;
-				if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING, trial_hand_to_spike_gen_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, 0))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+			case GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING:		
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot stop recording when TRIAL_STATUS_TRIALS_DISABLED");
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot stop recording when TRIAL_STATUS_IN_TRIAL");
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						if (classified_history->all_trials->buff_write_idx == 0)
+						{
+							print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "No trial finished to be saved");
+							break;
+						}
+						recording_number = classified_history->all_trials->buff_write_idx-1;  // delete previous 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;				
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						if (classified_history->all_trials->buff_write_idx == 0)
+						{
+							print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "No trial finished to be saved");
+							break;
+						}
+						recording_number = classified_history->all_trials->buff_write_idx-1;  // delete previous 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;			
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
 				break;
 			case GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING:
-				trial_number = classified_history->all_trials->buff_write_idx;
-				if (trial_number != 0)  // trial number is incremented when a trial ends and gets into refractory period. at the beginning of the experiment, when there is no experiment has been run, trial_number will be "0".
-					trial_number--;
-				if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING, trial_number))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_2_mov_obj_hand_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_DELETE_RECORDING, trial_hand_2_mov_obj_hand_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_neural_net_msg_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING, trial_hand_to_neural_net_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				trial_hand_to_spike_gen_msg_add.trial_number = trial_number;
-				if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING, trial_hand_to_spike_gen_msg_add))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-				if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK, 0))
-					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot stop recording when TRIAL_STATUS_TRIALS_DISABLED");
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Cannot stop recording when TRIAL_STATUS_IN_TRIAL");
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						if (classified_history->all_trials->buff_write_idx == 0)
+						{
+							print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "No trial finished to be saved");
+							break;
+						}
+						recording_number = classified_history->all_trials->buff_write_idx-1;  // delete previous 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_DELETE_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;				
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						if (classified_history->all_trials->buff_write_idx == 0)
+						{
+							print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "No trial finished to be saved");
+							break;
+						}
+						recording_number = classified_history->all_trials->buff_write_idx-1;  // delete previous 
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_2_mov_obj_hand_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_DELETE_RECORDING, trial_hand_2_mov_obj_hand_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_DELETE_RECORDING, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
+						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING, trial_hand_to_spike_gen_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
+						break;			
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
 				break;
 			default:
 				return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);	
