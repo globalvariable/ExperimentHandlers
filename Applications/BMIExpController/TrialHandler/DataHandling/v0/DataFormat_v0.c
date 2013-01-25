@@ -14,6 +14,9 @@ static int create_meta_data(TimeStamp rec_start, char *data_directory_path);
 static int create_trial_data(char *data_directory_path);
 static int close_meta_data(TimeStamp rec_end);
 static int close_trial_data(TimeStamp rec_end, TrialData *trial_data);
+static int delete_data_files(char *data_directory_path);
+static int delete_meta_data(char *data_directory_path);
+static int delete_trial_data(char *data_directory_path);
 
 int create_main_directory_v0(int num, ...)
 {
@@ -64,19 +67,19 @@ int create_data_directory_v0(int num, ...)
 	char data_directory_path[600];
 	TimeStamp rec_start;
 
-	unsigned int i, data_directory_cntr, ret, trial_number;
+	unsigned int i, data_directory_cntr, ret, recording_number;
  
   	va_list arguments;
 	va_start ( arguments, num );   
     	path_chooser = va_arg ( arguments, char *); 
 	rec_start = va_arg ( arguments, TimeStamp); 
-	trial_number = va_arg ( arguments, unsigned int); 
+	recording_number = va_arg ( arguments, unsigned int); 
 	va_end ( arguments );
 
 	for (i = 0; i < NUM_OF_DATA_FILE_PER_RECORDING; i++)
 		file_ptr_arr[i] = NULL;
 
-	data_directory_cntr = trial_number;
+	data_directory_cntr = recording_number;
 	if (data_directory_cntr <10)
 	{
 		strcpy(data_directory_name, "dat0000");
@@ -157,6 +160,85 @@ int fclose_all_data_files_v0(int num, ...)
 	return 1;
 }
 
+int delete_data_directory_v0(int num, ...)   // call it after fclose_all_data_files_v0
+{
+	char data_directory_name[10];
+	char data_directory_num[10];
+	DIR	*dir_data_directory;	
+	char *path_chooser;
+	char data_directory_path[600];
+
+	unsigned int data_directory_cntr, recording_number;
+ 
+  	va_list arguments;
+	va_start ( arguments, num );   
+    	path_chooser = va_arg ( arguments, char *); 
+	recording_number = va_arg ( arguments, unsigned int); 
+	va_end ( arguments );
+
+	data_directory_cntr = recording_number;
+	if (data_directory_cntr <10)
+	{
+		strcpy(data_directory_name, "dat0000");
+		sprintf(data_directory_num, "%d" , data_directory_cntr);
+		strcat(data_directory_name, data_directory_num);
+	}
+	else if (data_directory_cntr <100)
+	{
+		strcpy(data_directory_name, "dat000");
+		sprintf(data_directory_num, "%d" , data_directory_cntr);
+		strcat(data_directory_name, data_directory_num);		
+	}
+	else if (data_directory_cntr <1000)
+	{
+		strcpy(data_directory_name, "dat00");
+		sprintf(data_directory_num, "%d" , data_directory_cntr);
+		strcat(data_directory_name, data_directory_num);		
+	}	
+	else if (data_directory_cntr <10000)
+	{
+		strcpy(data_directory_name, "dat0");
+		sprintf(data_directory_num, "%d" , data_directory_cntr);
+		strcat(data_directory_name, data_directory_num);		
+	}	
+	else if (data_directory_cntr <100000)
+	{
+		strcpy(data_directory_name, "dat");
+		sprintf(data_directory_num, "%d" , data_directory_cntr);
+		strcat(data_directory_name, data_directory_num);			
+	}	
+	else
+	{
+		printf("Recorder: ERROR: data directory counter is %d.\n", data_directory_cntr);
+		printf("Recorder: ERROR: Supported range is 0<= x <100000.\n\n");		
+		return 0;
+	}
+	
+	strcpy(data_directory_path, path_chooser);	
+	strcat(data_directory_path, "/RecordTrialHandler/");
+	strcat(data_directory_path, data_directory_name);	
+	if ((dir_data_directory = opendir(data_directory_path)) == NULL)
+        {
+        	printf ("Recorder: ERROR: path: %s does not have %s folder.\n", data_directory_path, data_directory_name);		
+		closedir(dir_data_directory);
+                return 0;
+        }
+	closedir(dir_data_directory);	 
+
+	if (! delete_data_files(data_directory_path))
+		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_directory_v0", "! delete_data_files(data_directory_path)");
+
+	if (rmdir(data_directory_path) != 0) 
+		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_directory_v0", "! remove(data_directory_path)");
+
+	return 1;
+}
+
+int write_to_data_files_v0(int num, ...)
+{
+	return 1;
+}
+
 int write_notes_to_files_v0(int num, ...)
 {
 	return 1;
@@ -166,10 +248,7 @@ int write_additional_notes_to_files_v0(int num, ...)
 	return 1;
 }
 
-int delete_last_recording_v0(int num, ...)
-{
-	return 1;
-}
+
 
 static int create_main_meta_file(char *main_directory_path, TrialHandParadigmRobotReach *paradigm)
 {
@@ -291,3 +370,37 @@ static int close_trial_data(TimeStamp rec_end, TrialData *trial_data)
 	return 1;
 }
 
+
+static int delete_data_files(char *data_directory_path)
+{
+	if (! delete_meta_data(data_directory_path))
+		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_meta_data(data_directory_path)");
+	
+	if (! delete_trial_data(data_directory_path))
+		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_trial_data(data_directory_path)");
+
+	return 1;
+}
+
+static int delete_meta_data(char *data_directory_path)
+{
+	char temp[600];
+		
+	strcpy(temp, data_directory_path);
+	strcat(temp, "/meta");
+	
+	if (remove(temp) != 0)  { printf ("ERROR: TrialHandler: Couldn't delete file: %s\n\n", temp); return 0; }
+
+	return 1;	
+}
+
+static int delete_trial_data(char *data_directory_path)
+{
+	char temp[600];
+
+	strcpy(temp, data_directory_path);
+	strcat(temp, "/trial_data");	
+	if (remove(temp) != 0)  { printf ("ERROR: TrialHandler: Couldn't delete file: %s\n\n", temp); return 0; }
+
+	return 1;	
+}

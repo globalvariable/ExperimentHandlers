@@ -14,7 +14,7 @@ typedef unsigned int TrialHand2GuiMsgAdditional;
 #define TRIAL_HAND_2_GUI_MSG_NULL									0
 #define TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK			1   // acknowledge
 #define TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK			2   // acknowledge
-#define TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK		3   // acknowledge
+#define TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK		3   // acknowledge  // sent to cancel current recording
 #define TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE				4
 
 #include <stdbool.h>
@@ -33,7 +33,7 @@ struct __TrialHand2GuiMsgItem
 
 struct __TrialHand2GuiMsg		// Requests to TrialControllers
 {
-	TrialHand2GuiMsgItem		buff[TRIAL_HAND_2_GUI_MSG_BUFFER_SIZE];
+	TrialHand2GuiMsgItem		buff[TRIAL_HAND_2_GUI_MSG_BUFF_SIZE];
 	unsigned int				buff_write_idx;	// only one message sender can write into this buffer and edit this write index
 	unsigned int				buff_read_idx;	// only one request handler can edit this read index
 };

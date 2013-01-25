@@ -5,8 +5,11 @@
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
-	Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand = NULL;    
+	Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand = NULL;  
+  	ExpEnviHand2GuiMsg *msgs_exp_envi_hand_2_gui = NULL;  
 	ExpEnviData *exp_envi_data = NULL;
+	ExpEnviInputStatusHistory *exp_envi_input_status_history = NULL;
+	ExpEnviOutputStatusHistory *exp_envi_output_status_history = NULL;
 
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
@@ -43,11 +46,15 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_output_component_type_to_exp_envi_data().");
 
 	msgs_gui_2_exp_envi_hand = allocate_gui_2_exp_envi_hand_msg_buffer(msgs_gui_2_exp_envi_hand);
+	msgs_exp_envi_hand_2_gui = allocate_exp_envi_hand_2_gui_msg_buffer(msgs_exp_envi_hand_2_gui);
 
-	if(! create_exp_envi_handler_rt_thread(rt_tasks_data, exp_envi_data, msgs_gui_2_exp_envi_hand))
+	exp_envi_input_status_history = allocate_exp_envi_input_status_history(exp_envi_input_status_history, 100);
+	exp_envi_output_status_history = allocate_exp_envi_output_status_history(exp_envi_output_status_history, 100);
+
+	if(! create_exp_envi_handler_rt_thread(rt_tasks_data, exp_envi_data, msgs_gui_2_exp_envi_hand, msgs_exp_envi_hand_2_gui, exp_envi_input_status_history, exp_envi_output_status_history))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "create_exp_envi_handler_rt_thread().");
 	gtk_init(&argc, &argv);
-	create_gui_handler(rt_tasks_data, msgs_gui_2_exp_envi_hand);
+	create_gui_handler(rt_tasks_data, msgs_gui_2_exp_envi_hand, msgs_exp_envi_hand_2_gui, exp_envi_input_status_history, exp_envi_output_status_history);
 	gtk_main();
 	return 0;
 }	

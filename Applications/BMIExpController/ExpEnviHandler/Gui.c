@@ -1,6 +1,6 @@
 #include "Gui.h"
 
-void create_gui_handler(RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand)
+void create_gui_handler(RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand, ExpEnviHand2GuiMsg *msgs_exp_envi_hand_2_gui, ExpEnviInputStatusHistory *exp_envi_input_status_history, ExpEnviOutputStatusHistory *exp_envi_output_status_history)
 {
 	GtkWidget *window, *vbox, *tabs;
 
@@ -19,7 +19,7 @@ void create_gui_handler(RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (tabs), GTK_POS_TOP);
         gtk_box_pack_start(GTK_BOX(vbox),tabs, TRUE, TRUE, 0);
 
-	if (!create_exp_envi_handler_tab(tabs, rt_tasks_data, msgs_gui_2_exp_envi_hand))
+	if (!create_exp_envi_handler_tab(tabs, rt_tasks_data, msgs_gui_2_exp_envi_hand, msgs_exp_envi_hand_2_gui, exp_envi_input_status_history, exp_envi_output_status_history))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_exp_envi_handler_gui().");
 
 	gtk_widget_show_all(window);

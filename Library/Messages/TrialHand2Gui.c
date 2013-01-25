@@ -12,9 +12,9 @@ bool get_trial_hand_2_gui_msg_type_string(TrialHand2GuiMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK");
 			return TRUE;	
-		case TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK:
+		case TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK:
 			if (str != NULL)
-				strcpy(str, "TRIAL_HAND_2_GUI_MSG_BROADCAST_DELETE_RECORDING_MSG_ACK");
+				strcpy(str, "TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK");
 			return TRUE;	
 		case TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE:
 			if (str != NULL)
@@ -60,7 +60,7 @@ bool write_to_trial_hand_2_gui_msg_buffer(TrialHand2GuiMsg* msg_buffer, TimeStam
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
 	buff[*idx].additional_data = additional_data;
-	if ((*idx + 1) == TRIAL_HAND_2_GUI_MSG_BUFFER_SIZE)
+	if ((*idx + 1) == TRIAL_HAND_2_GUI_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
 		(*idx)++;
@@ -79,7 +79,7 @@ bool get_next_trial_hand_2_gui_msg_buffer_item(TrialHand2GuiMsg* msg_buffer, Tri
 	msg_item->msg_time = buff_item->msg_time;		
 	msg_item->msg_type = buff_item->msg_type;
 	msg_item->additional_data = buff_item->additional_data;	
-	if ((*idx + 1) == TRIAL_HAND_2_GUI_MSG_BUFFER_SIZE)
+	if ((*idx + 1) == TRIAL_HAND_2_GUI_MSG_BUFF_SIZE)
 		*idx = 0;
 	else
 		(*idx)++;

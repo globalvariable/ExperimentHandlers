@@ -2,7 +2,7 @@
 
 
 
-void create_gui_handler(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui)
+void create_gui_handler(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history)
 {
 	GtkWidget *window, *vbox, *tabs;
 
@@ -21,7 +21,7 @@ void create_gui_handler(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (tabs), GTK_POS_TOP);
         gtk_box_pack_start(GTK_BOX(vbox),tabs, TRUE, TRUE, 0);
 
-	if (!create_trial_handler_tab(tabs, rt_tasks_data, msgs_gui_2_trial_hand, trial_hand_paradigm, classified_trial_history, msgs_trial_hand_2_gui))
+	if (!create_trial_handler_tab(tabs, rt_tasks_data, msgs_gui_2_trial_hand, trial_hand_paradigm, classified_trial_history, msgs_trial_hand_2_gui, trial_status_history))
 		print_message(ERROR_MSG ,"BMIExpController", "Gui", "create_gui", "create_trial_handler_gui().");
 
 	gtk_widget_show_all(window);

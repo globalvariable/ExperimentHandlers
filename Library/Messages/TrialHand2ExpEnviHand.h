@@ -19,7 +19,7 @@ typedef unsigned int TrialHand2ExpEnviHandMsgAdditional;
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT				5	
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_RECORDING					6
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STOP_RECORDING					7
-#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DELETE_RECORDING					8
+#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_CANCEL_RECORDING					8    		// sent to cancel current recording
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

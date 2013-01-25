@@ -44,15 +44,15 @@ bool write_to_gui_2_mov_obj_hand_msg_buffer(Gui2MovObjHandMsg* msg_buffer, TimeS
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
-	Gui2MovObjHandMsgItem *buff = msg_buffer->buff;
-	buff[*idx].msg_time = msg_time;
-	buff[*idx].msg_type = msg_type;
-	buff[*idx].additional_data = additional_data;
-	if ((*idx + 1) == GUI_2_MOV_OBJ_HAND_MSG_BUFFER_SIZE)
+	Gui2MovObjHandMsgItem *item = &(msg_buffer->buff[*idx]);
+	item->msg_time = msg_time;
+	item->msg_type = msg_type;
+	item->additional_data = additional_data;
+	if (((*idx) + 1) == GUI_2_MOV_OBJ_HAND_MSG_BUFFER_SIZE)
 		*idx = 0;
 	else
 		(*idx)++;
-	if (*idx == msg_buffer->buff_read_idx)
+	if ((*idx) == msg_buffer->buff_read_idx)
 		return print_message(BUG_MSG ,"ExperimentHandlers", "Gui2MovObjHand", "write_to_gui_2_mov_obj_hand_msg_buffer", "BUFFER IS FULL!!!.");    		
 	return TRUE;
 }

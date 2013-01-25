@@ -17,13 +17,13 @@ int initialize_data_read_write_handlers(void)
 	return 1;
 }
 
-int is_trial_handler_data(char *trial_handler_data_path)
+int is_exp_envi_handler_data(char *exp_envi_handler_data_path)
 {
 	char path[600];
 	char line[200];
 	FILE *fp;
 	int line_cntr = 0;
-	strcpy(path, trial_handler_data_path);
+	strcpy(path, exp_envi_handler_data_path);
 	strcat(path, "/meta");
 	if ((fp = fopen(path, "r")) == NULL)  { printf ("ERROR: TrialHandler: Couldn't read file: %s\n\n", path); return 0; }
 	if (fgets(line, sizeof line, fp ) == NULL)   {  printf("ERROR: Couldn' t read %d th line of %s\n", line_cntr, path);  fclose(fp); return 0; } else {line_cntr++;}   
@@ -34,16 +34,16 @@ int is_trial_handler_data(char *trial_handler_data_path)
 		return 0;	
 }
 
-int get_format_version(int *version, char *trial_handler_data_path)
+int get_format_version(int *version, char *exp_envi_handler_data_path)
 {
 	char path[600];
 	char line[200];
 	char word[10];
 	int line_cntr = 0;
 	FILE *fp;
-	if (is_trial_handler_data(trial_handler_data_path))
+	if (is_exp_envi_handler_data(exp_envi_handler_data_path))
 	{
-		strcpy(path, trial_handler_data_path);
+		strcpy(path, exp_envi_handler_data_path);
 		strcat(path, "/meta");		
 		if ((fp = fopen(path, "r")) == NULL)  { printf ("ERROR: Recorder: Couldn't read file: %s\n\n", path); return 0; }
 		if (fgets(line, sizeof line, fp ) == NULL)   {  printf("ERROR: Couldn' t read %d th line of %s\n", line_cntr, path);  fclose(fp); return 0; } else {line_cntr++;}   

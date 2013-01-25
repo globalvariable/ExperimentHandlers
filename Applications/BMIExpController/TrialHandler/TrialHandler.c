@@ -9,6 +9,8 @@ int main( int argc, char *argv[])
 	TrialHand2GuiMsg *msgs_trial_hand_2_gui = NULL;    
 	TrialHandParadigmRobotReach *paradigm = NULL;
 	ClassifiedTrialHistory* classified_history = NULL; 
+	TrialStatusHistory *trial_status_history = NULL;
+
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
@@ -42,14 +44,16 @@ int main( int argc, char *argv[])
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 	msgs_trial_hand_2_gui = allocate_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui);
 
-	if (! create_trial_handler_rt_thread(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, classified_history, msgs_trial_hand_2_gui))
+	trial_status_history = allocate_trial_status_history(trial_status_history, 20);
+
+	if (! create_trial_handler_rt_thread(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, classified_history, msgs_trial_hand_2_gui, trial_status_history))
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "create_trial_handler_rt_thread().");
 
 
 	initialize_data_read_write_handlers();
 
 	gtk_init(&argc, &argv);
-	create_gui_handler(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, classified_history, msgs_trial_hand_2_gui);
+	create_gui_handler(rt_tasks_data, msgs_gui_2_trial_hand, paradigm, classified_history, msgs_trial_hand_2_gui, trial_status_history);
 	gtk_main();
 	return 0;
 }	

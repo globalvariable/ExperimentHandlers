@@ -22,7 +22,7 @@ typedef TrialHand2NeuralNetMsgAdditional TrialHand2SpikeGenMsgAdditional;
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED				2
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING					3
 #define TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING						4
-#define TRIAL_HAND_2_SPIKE_GEN_MSG_DELETE_RECORDING					5
+#define TRIAL_HAND_2_SPIKE_GEN_MSG_CANCEL_RECORDING					5   // sent to cancel current recording
 
 
 

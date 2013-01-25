@@ -11,7 +11,7 @@ typedef unsigned int Gui2ExpEnviHandMsgAdditional;
 
 #define GUI_2_EXP_ENVI_HAND_MSG_STRING_LENGTH		50
 
-#define GUI_2_EXP_ENVI_HAND_MSG_NULL							0
+#define GUI_2_EXP_ENVI_HAND_MSG_NULL					0
 
 
 #include <stdbool.h>

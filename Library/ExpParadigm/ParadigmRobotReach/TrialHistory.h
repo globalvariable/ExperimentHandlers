@@ -12,7 +12,7 @@ struct __TrialHistory
 {
 	TrialData				*history;
 	unsigned int 			buff_write_idx;    ///   IT IS USED AS TRIAL NUMBER AS WELL: SO THAT THE TRIAL HANDLING CAPACITY OF THE SYSTEM IS LIMITED BY BUFFER SIZE
-	unsigned int 			buffer_size;
+	unsigned int 			buffer_size;		/// IT IS NOT A CIRCULAR BUFFER
 };
 
 struct __ClassifiedTrialHistory

@@ -46,9 +46,9 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING");
 			return TRUE;	
-		case GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING:
+		case GUI_2_TRIAL_HAND_MSG_BROADCAST_CANCEL_RECORDING:
 			if (str != NULL)
-				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_DELETE_RECORDING");
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_CANCEL_RECORDING");
 			return TRUE;	
 
 
