@@ -15,3 +15,6 @@
 #define GUIDE_LED_IDX_IN_EXP_ENVI_DATA		4
 #define LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA	5
 
+#define NUM_OF_OUTPUT_COMPONENTS			6		// the output components are allocated dynamically in exp_envi_data. These definitions are here for faster reaching to some data related to these components. 
+
+

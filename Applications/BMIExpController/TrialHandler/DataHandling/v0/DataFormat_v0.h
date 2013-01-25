@@ -13,6 +13,7 @@
 #include "../../../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../../Library/ExpParadigm/ParadigmRobotReach/TrialHandParadigm.h"
 #include "../../../../../Library/ExpParadigm/ParadigmRobotReach/TrialHistory.h"
+#include "../../../../../Library/Status/TrialStatusHistory.h"
 
 int create_main_directory_v0(int num, ...);
 int create_data_directory_v0(int num, ...);

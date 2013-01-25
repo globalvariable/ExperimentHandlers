@@ -72,76 +72,118 @@ bool init_rs232_buffers(SEM **exp_envi_rx_buff_sem, SEM **exp_envi_tx_buff_sem, 
 	return TRUE;
 }
 
-bool handle_exp_envi_tx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time)
+bool handle_exp_envi_tx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, ExpEnviOutputStatusHistory *exp_envi_output_status_history)
 {
 	ExpEnviTxShm exp_envi_tx_buffer;
+	static ExpEnviCompStatus output_components_status_prev[NUM_OF_OUTPUT_COMPONENTS] = {0,0,0,0,0,0};
 
-	switch(exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status)
+	if (exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[VALVE_IDX_IN_EXP_ENVI_DATA])
 	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->valve = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->valve = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[VALVE_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}		
-	switch(exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status)
-	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->buzzer = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->buzzer = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[BUZZER_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}	
-	switch(exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status)
-	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->left_led = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->left_led = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}		
-	switch(exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status)
-	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->right_led = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->right_led = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}	
-	switch(exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status)
-	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->guide_led = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->guide_led = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}		
-	switch(exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status)
-	{
-		case EXP_ENVI_COMP_STATUS_LOW:
-			exp_envi_rs232_cmd->levers_available = 0;
-			break;
-		case EXP_ENVI_COMP_STATUS_HIGH:
-			exp_envi_rs232_cmd->levers_available = 1;
-			break;
-		default:
-			return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
-	}	
+		switch(exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->valve = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->valve = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[VALVE_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}
+		output_components_status_prev[VALVE_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER, exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
+
+	if (exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[BUZZER_IDX_IN_EXP_ENVI_DATA])
+	{			
+		switch(exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->buzzer = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->buzzer = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[BUZZER_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}
+		output_components_status_prev[BUZZER_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_BUZZER, exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
+	
+	if (exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[LEFT_LED_IDX_IN_EXP_ENVI_DATA])
+	{	
+		switch(exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->left_led = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->left_led = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}		
+		output_components_status_prev[LEFT_LED_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_LEFT_TARGET_LED, exp_envi_data->outp_comp_types[LEFT_LED_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
+
+	if (exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[RIGHT_LED_IDX_IN_EXP_ENVI_DATA])
+	{	
+		switch(exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->right_led = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->right_led = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "hhandle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}		
+		output_components_status_prev[RIGHT_LED_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_RIGHT_TARGET_LED, exp_envi_data->outp_comp_types[RIGHT_LED_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
+
+	if (exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[GUIDE_LED_IDX_IN_EXP_ENVI_DATA])
+	{	
+		switch(exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->guide_led = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->guide_led = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "handle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}		
+		output_components_status_prev[GUIDE_LED_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_GUIDE_LED, exp_envi_data->outp_comp_types[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
+	
+	if (exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA])
+	{	
+		switch(exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status)
+		{
+			case EXP_ENVI_COMP_STATUS_LOW:
+				exp_envi_rs232_cmd->levers_available = 0;
+				break;
+			case EXP_ENVI_COMP_STATUS_HIGH:
+				exp_envi_rs232_cmd->levers_available = 1;
+				break;
+			default:
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "handle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status) - default");
+		}		
+		output_components_status_prev[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status;
+		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID, exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status))
+			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
+	}
 
 	exp_envi_tx_buffer.last_write_time = current_time;
 	exp_envi_tx_buffer.exp_envi_tx_buff[0] = exp_envi_rs232_cmd->all_cmd;

@@ -46,7 +46,7 @@ bool get_next_trial_status_history_item(TrialStatusHistory* hist, TrialStatusHis
 		return FALSE;
 	idx = &(hist->buff_read_idx);
 	memcpy(item, &(hist->history[*idx]), sizeof(TrialStatusHistoryItem));
-	if ((*idx + 1) == hist->buffer_size)
+	if (((*idx) + 1) == hist->buffer_size)
 		*idx = 0;
 	else
 		(*idx)++;	

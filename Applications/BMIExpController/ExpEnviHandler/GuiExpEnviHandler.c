@@ -8,6 +8,10 @@ static ExpEnviHand2GuiMsg *static_msgs_exp_envi_hand_2_gui = NULL;
 static ExpEnviInputStatusHistory *static_exp_envi_input_status_history = NULL;
 static ExpEnviOutputStatusHistory *static_exp_envi_output_status_history = NULL;
 
+static ExpEnviHandParadigmRobotReach *static_exp_envi_paradigm = NULL;
+
+static ExpEnviData *static_exp_envi_data = NULL;
+
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
 
@@ -17,7 +21,7 @@ static void set_directory_btn_select_directory_to_save(void);
 
 static gboolean timeout_callback(gpointer user_data) ;
 
-bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand, ExpEnviHand2GuiMsg *msgs_exp_envi_hand_2_gui, ExpEnviInputStatusHistory *exp_envi_input_status_history, ExpEnviOutputStatusHistory *exp_envi_output_status_history)
+bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2ExpEnviHandMsg *msgs_gui_2_exp_envi_hand, ExpEnviHand2GuiMsg *msgs_exp_envi_hand_2_gui, ExpEnviInputStatusHistory *exp_envi_input_status_history, ExpEnviOutputStatusHistory *exp_envi_output_status_history, ExpEnviData *exp_envi_data, ExpEnviHandParadigmRobotReach *exp_envi_paradigm)
 {
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -28,6 +32,10 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 
 	static_exp_envi_input_status_history = exp_envi_input_status_history;
 	static_exp_envi_output_status_history = exp_envi_output_status_history;
+
+	static_exp_envi_data = exp_envi_data;
+
+	static_exp_envi_paradigm = exp_envi_paradigm;
 
         frame = gtk_frame_new ("");
         frame_label = gtk_label_new ("     Exp Envi Handler    ");      
@@ -121,8 +129,10 @@ static gboolean timeout_callback(gpointer user_data)
 				path_temp = NULL; path = NULL;
 				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 				path = &path_temp[7];   // since     uri returns file:///home/....		
+
 				static_exp_envi_input_status_history->buff_read_idx = static_exp_envi_input_status_history->buff_write_idx;
 				static_exp_envi_output_status_history->buff_read_idx = static_exp_envi_output_status_history->buff_write_idx;
+
 				recording_number = msg_item.additional_data;
 				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, static_rt_tasks_data->current_system_time))	
 				{
@@ -166,7 +176,7 @@ static void create_recording_folder_button_func (void)
 	path_len = strlen(path_temp);
 	if (strcmp(&(path_temp[path_len-8]),"EXP_DATA") == 0)
 		return (void)print_message(ERROR_MSG ,"ExpEnviHandler", "GuiExpEnviHandler", "create_recording_folder_button_func", "Selected folder is /EXP_DATA main folder. Select a folder inside this folder.");				
-	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, path))		// record in last format version
+	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path,static_exp_envi_paradigm, static_exp_envi_data))		// record in last format version
 	{
 		
 	}
