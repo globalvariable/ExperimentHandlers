@@ -38,11 +38,11 @@ int create_main_directory_v0(int num, ...)
 	va_end ( arguments );
 	
 	strcpy(main_directory_path, path_chooser);	
-	strcat(main_directory_path, "/RecordTrialHandler");
+	strcat(main_directory_path, "/TrialHandlerRecord");
 	if ((dir_main_folder = opendir(main_directory_path)) != NULL)
         {
-        	printf ("TrialHandler: ERROR: path: %s already has RecordTrialHandler folder.\n", path_chooser);		
-        	printf ("TrialHandler: ERROR: Select another folder or delete RecordTrialHandler directory.\n\n");	
+        	printf ("TrialHandler: ERROR: path: %s already has TrialHandlerRecord folder.\n", path_chooser);		
+        	printf ("TrialHandler: ERROR: Select another folder or delete TrialHandlerRecord directory.\n\n");	
 		closedir(dir_main_folder );	        		
                 return 0;
         }
@@ -50,8 +50,8 @@ int create_main_directory_v0(int num, ...)
         
 	mkdir(main_directory_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH | S_IWOTH);
 
-        printf ("TrialHandler: Created /RecordTrialHandler folder in: %s.\n", path_chooser);
-        printf ("TrialHandler: /RecordTrialHandler path is: %s.\n", main_directory_path); 
+        printf ("TrialHandler: Created /TrialHandlerRecord folder in: %s.\n", path_chooser);
+        printf ("TrialHandler: /TrialHandlerRecord path is: %s.\n", main_directory_path); 
         
 	if (!create_main_meta_file(main_directory_path, paradigm))
 		return 0;
@@ -123,7 +123,7 @@ int create_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/RecordTrialHandler/");
+	strcat(data_directory_path, "/TrialHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) != NULL)
         {
@@ -222,7 +222,7 @@ int delete_data_directory_v0(int num, ...)   // call it after fclose_all_data_fi
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/RecordTrialHandler/");
+	strcat(data_directory_path, "/TrialHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) == NULL)
         {

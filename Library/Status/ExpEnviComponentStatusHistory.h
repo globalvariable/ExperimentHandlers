@@ -1,5 +1,5 @@
-#ifndef EXP_ENVI_HISTORY_H
-#define EXP_ENVI_HISTORY_H
+#ifndef EXP_ENVI_COMPONENT_STATUS_HISTORY_H
+#define EXP_ENVI_COMPONENT_STATUS_HISTORY_H
 
 
 typedef struct __ExpEnviInputStatusHistoryItem ExpEnviInputStatusHistoryItem;
@@ -7,8 +7,8 @@ typedef struct __ExpEnviOutputStatusHistoryItem ExpEnviOutputStatusHistoryItem;
 typedef struct __ExpEnviInputStatusHistory ExpEnviInputStatusHistory;
 typedef struct __ExpEnviOutputStatusHistory ExpEnviOutputStatusHistory;
 
-#include "ExpEnviComponentTypes.h"
-#include "../Status/ExpEnviComponentStatus.h"
+#include "../ExpEnviData/ExpEnviComponentTypes.h"
+#include "ExpEnviComponentStatus.h"
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
 #include "../../../BlueSpike/Library/Misc/Misc.h"
 

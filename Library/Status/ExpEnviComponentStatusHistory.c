@@ -1,4 +1,4 @@
-#include "ExpEnviHistory.h"
+#include "ExpEnviComponentStatusHistory.h"
 
 
 ExpEnviInputStatusHistory* allocate_exp_envi_input_status_history(ExpEnviInputStatusHistory* hist, unsigned int buffer_size)

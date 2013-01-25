@@ -41,11 +41,11 @@ int create_main_directory_v0(int num, ...)
 	va_end ( arguments );
 	
 	strcpy(main_directory_path, path_chooser);	
-	strcat(main_directory_path, "/RecordExpEnviHandler");
+	strcat(main_directory_path, "/ExpEnviHandlerRecord");
 	if ((dir_main_folder = opendir(main_directory_path)) != NULL)
         {
-        	printf ("ExpEnviHandler: ERROR: path: %s already has RecordExpEnviHandler folder.\n", path_chooser);		
-        	printf ("ExpEnviHandler: ERROR: Select another folder or delete RecordExpEnviHandler directory.\n\n");	
+        	printf ("ExpEnviHandler: ERROR: path: %s already has ExpEnviHandlerRecord folder.\n", path_chooser);		
+        	printf ("ExpEnviHandler: ERROR: Select another folder or delete ExpEnviHandlerRecord directory.\n\n");	
 		closedir(dir_main_folder );	        		
                 return 0;
         }
@@ -53,8 +53,8 @@ int create_main_directory_v0(int num, ...)
         
 	mkdir(main_directory_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH | S_IWOTH);
 
-        printf ("ExpEnviHandler: Created /RecordExpEnviHandler folder in: %s.\n", path_chooser);
-        printf ("ExpEnviHandler: /RecordExpEnviHandler path is: %s.\n", main_directory_path); 
+        printf ("ExpEnviHandler: Created /ExpEnviHandlerRecord folder in: %s.\n", path_chooser);
+        printf ("ExpEnviHandler: /ExpEnviHandlerRecord path is: %s.\n", main_directory_path); 
         
 	if (!create_main_meta_file(main_directory_path, paradigm, exp_envi_data))
 		return 0;
@@ -125,7 +125,7 @@ int create_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/RecordExpEnviHandler/");
+	strcat(data_directory_path, "/ExpEnviHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) != NULL)
         {
@@ -223,7 +223,7 @@ int delete_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/RecordExpEnviHandler/");
+	strcat(data_directory_path, "/ExpEnviHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) == NULL)
         {

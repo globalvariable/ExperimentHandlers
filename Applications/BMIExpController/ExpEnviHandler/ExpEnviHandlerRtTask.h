@@ -17,7 +17,7 @@
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "ExpEnviDurationHandlerRtTask.h"
 #include "../../../Library/ExpEnviData/ExpEnviData.h"
-#include "../../../Library/ExpEnviData/ExpEnviHistory.h"
+#include "../../../Library/Status/ExpEnviComponentStatusHistory.h"
 #include "HandleGui2ExpEnviHandMsgs.h"
 #include "HandleExpEnviDurHand2ExpEnviHandMsgs.h"
 #include "HandleTrialHand2ExpEnviHandMsgs.h"

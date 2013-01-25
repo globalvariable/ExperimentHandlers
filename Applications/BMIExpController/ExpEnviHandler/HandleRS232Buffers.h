@@ -12,7 +12,7 @@
 #include "../../Library/ExpEnviData/ExpEnviEvaluate.h"
 #include "../../Library/Messages/ExpEnviHand2ExpEnviDurHand.h"
 #include "../../../../BlueSpike/System/TimeStamp/TimeStamp.h"
-#include "../../Library/ExpEnviData/ExpEnviHistory.h"
+#include "../../Library/Status/ExpEnviComponentStatusHistory.h"
 
 
 bool init_rs232_buffers(SEM **exp_envi_rx_buff_sem, SEM **exp_envi_tx_buff_sem, ExpEnviRxShm **exp_envi_rx_buff_shm, ExpEnviTxShm **exp_envi_tx_buff_shm);

@@ -6,7 +6,7 @@
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "DataHandling/DataHandling.h"
-#include "../../../Library/ExpEnviData/ExpEnviHistory.h"
+#include "../../../Library/Status/ExpEnviComponentStatusHistory.h"
 #include "../../../Library/ExpEnviData/ExpEnviData.h"
 #include "../../../Library/ExpParadigm/ParadigmRobotReach/ExpEnviHandParadigm.h"
 

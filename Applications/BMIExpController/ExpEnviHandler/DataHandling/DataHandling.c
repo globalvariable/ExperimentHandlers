@@ -25,10 +25,10 @@ int is_exp_envi_handler_data(char *exp_envi_handler_data_path)
 	int line_cntr = 0;
 	strcpy(path, exp_envi_handler_data_path);
 	strcat(path, "/meta");
-	if ((fp = fopen(path, "r")) == NULL)  { printf ("ERROR: TrialHandler: Couldn't read file: %s\n\n", path); return 0; }
+	if ((fp = fopen(path, "r")) == NULL)  { printf ("ERROR: ExpEnviHandler: Couldn't read file: %s\n\n", path); return 0; }
 	if (fgets(line, sizeof line, fp ) == NULL)   {  printf("ERROR: Couldn' t read %d th line of %s\n", line_cntr, path);  fclose(fp); return 0; } else {line_cntr++;}   
 	fclose(fp);   
-	if (strcmp(line, "----------TrialHandler - Main Meta File----------\n" ) == 0)
+	if (strcmp(line, "----------ExpEnviHandler - Main Meta File----------\n" ) == 0)
 		return 1;
 	else
 		return 0;	

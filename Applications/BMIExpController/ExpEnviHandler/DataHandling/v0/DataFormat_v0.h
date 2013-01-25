@@ -13,7 +13,7 @@
 #include "../../../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../../Library/ExpParadigm/ParadigmRobotReach/ExpEnviHandParadigm.h"
 #include "../../../../../Library/ExpEnviData/ExpEnviData.h"
-#include "../../../../../Library/ExpEnviData/ExpEnviHistory.h"
+#include "../../../../../Library/Status/ExpEnviComponentStatusHistory.h"
 
 int create_main_directory_v0(int num, ...);
 int create_data_directory_v0(int num, ...);
