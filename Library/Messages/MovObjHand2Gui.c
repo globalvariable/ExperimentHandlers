@@ -4,9 +4,17 @@ bool get_mov_obj_hand_2_gui_msg_type_string(MovObjHand2GuiMsgType msg_type, char
 {
 	switch (msg_type)
 	{
-		case MOV_OBJ_HAND_2_GUI_MSG_LOCATION:
+		case MOV_OBJ_HAND_2_GUI_MSG_START_RECORDING:
 			if (str != NULL)
- 				strcpy(str, "MOV_OBJ_HAND_2_GUI_MSG_LOCATION");
+ 				strcpy(str, "MOV_OBJ_HAND_2_GUI_MSG_START_RECORDING");
+			return TRUE;
+		case MOV_OBJ_HAND_2_GUI_MSG_STOP_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_GUI_MSG_STOP_RECORDING");
+			return TRUE;
+		case MOV_OBJ_HAND_2_GUI_MSG_CANCEL_RECORDING:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_GUI_MSG_CANCEL_RECORDING");
 			return TRUE;
 /////////////////////////		
 		case MOV_OBJ_HAND_2_GUI_MSG_NULL:
@@ -40,17 +48,14 @@ MovObjHand2GuiMsg* deallocate_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* m
 	return NULL;
 }
 
-bool write_to_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer, TimeStamp msg_time, MovObjHand2GuiMsgType msg_type, MovObjCompType component, MovObjHand2GuiMsgAdditional additional_data_0, MovObjHand2GuiMsgAdditional additional_data_1, MovObjHand2GuiMsgAdditional additional_data_2)
+bool write_to_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer, TimeStamp msg_time, MovObjHand2GuiMsgType msg_type, MovObjHand2GuiMsgAdditional additional_data)
 {
 	unsigned int *idx;
 	idx = &(msg_buffer->buff_write_idx);
 	MovObjHand2GuiMsgItem *buff = msg_buffer->buff;
 	buff[*idx].msg_time = msg_time;
 	buff[*idx].msg_type = msg_type;
-	buff[*idx].component = component;
-	buff[*idx].additional_data_0 = additional_data_0;
-	buff[*idx].additional_data_1 = additional_data_1;
-	buff[*idx].additional_data_2 = additional_data_2;
+	buff[*idx].additional_data = additional_data;
 	if ((*idx + 1) == MOV_OBJ_HAND_2_GUI_MSG_BUFFER_SIZE)
 		*idx = 0;
 	else
@@ -69,10 +74,7 @@ bool get_next_mov_obj_hand_2_gui_msg_buffer_item(MovObjHand2GuiMsg* msg_buffer, 
 	buff_item = &(msg_buffer->buff[*idx]);	
 	msg_item->msg_time = buff_item->msg_time;		
 	msg_item->msg_type = buff_item->msg_type;
-	msg_item->component = buff_item->component;
-	msg_item->additional_data_0 = buff_item->additional_data_0;	
-	msg_item->additional_data_1 = buff_item->additional_data_1;	
-	msg_item->additional_data_2 = buff_item->additional_data_2;	
+	msg_item->additional_data = buff_item->additional_data;	
 	if ((*idx + 1) == MOV_OBJ_HAND_2_GUI_MSG_BUFFER_SIZE)
 		*idx = 0;
 	else

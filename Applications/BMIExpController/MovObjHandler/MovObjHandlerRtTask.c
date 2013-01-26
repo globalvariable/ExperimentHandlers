@@ -25,6 +25,10 @@ static MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand = NULL;
 static MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread = NULL;
 static NeuralNet2MovObjHandMsgMultiThread *msgs_neural_net_2_mov_obj_hand_multi_thread = NULL;
 
+static MovObjStatusHistory* static_mov_obj_status_history = NULL;
+static ThreeDofRobotAngleHistory *static_robot_angle_history = NULL;
+static ThreeDofRobotPulseHistory *static_robot_pulse_history = NULL;
+
 static MessageLogBuffer *static_message_log = NULL;
 
 static SpikeData *scheduled_spike_data = NULL;
@@ -37,7 +41,7 @@ static bool connect_to_mov_obj_interf(void );
 */
 
 
-bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm, MessageLogBuffer *message_log)
+bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot *robot_arm, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, MovObjHandParadigmRobotReach *mov_obj_paradigm, MessageLogBuffer *message_log, MovObjStatusHistory* mov_obj_status_history, ThreeDofRobotAngleHistory *robot_angle_history, ThreeDofRobotPulseHistory *robot_pulse_history)
 {
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -46,6 +50,10 @@ bool create_mov_obj_handler_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRobot 
 
 	static_msgs_gui_2_mov_obj_hand = msgs_gui_2_mov_obj_hand;
 	static_msgs_mov_obj_hand_2_gui = msgs_mov_obj_hand_2_gui;
+
+	static_mov_obj_status_history = mov_obj_status_history;
+	static_robot_angle_history = robot_angle_history;
+	static_robot_pulse_history = robot_pulse_history;
 
 	static_message_log = message_log;
 
@@ -138,13 +146,13 @@ static void *rt_mov_obj_handler(void *args)
 		// routines
 		if (! handle_gui_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, static_msgs_gui_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
-		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, static_mov_obj_paradigm, static_message_log))  {
+		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, static_mov_obj_paradigm, static_message_log, static_mov_obj_status_history, static_msgs_mov_obj_hand_2_gui))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_to_mov_obj_dur_handler_msg(curr_system_time, msgs_mov_obj_hand_2_mov_obj_dur_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_duration(curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
-		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, &mov_obj_status, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location, static_message_log, static_mov_obj_paradigm))  {
+		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, &mov_obj_status, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location, static_message_log, static_mov_obj_paradigm, static_robot_pulse_history, static_robot_angle_history, static_mov_obj_status_history))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		// first handle duration status and robot position which determine mov_obj_status. Later on hanle spike outputs of neural net.  it changes the target pulse width value to reset the position to target led during reseting status. 
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {

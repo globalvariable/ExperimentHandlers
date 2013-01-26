@@ -17,47 +17,12 @@ void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, dou
 	robot_arm->size.height_ulna = height_ulna;
 }
 
-void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size)
-{
-	robot_arm->trajectory_history.buffer = g_new0(ThreeDofRobotPosition, buff_size);
-	robot_arm->trajectory_history.buffer_size = buff_size;
-	robot_arm->trajectory_history.write_idx = 0;
-}
-
-bool write_to_3_dof_arm_trajectory_history(ThreeDofRobot *robot_arm,  double height, double depth, double lateral)
-{
-	ThreeDofRobotPosition *item = &(robot_arm->trajectory_history.buffer[robot_arm->trajectory_history.write_idx]);
-	item->height = height;
-	item->depth = depth;
-	item->lateral = lateral;
-	if ((robot_arm->trajectory_history.write_idx+1) == robot_arm->trajectory_history.read_idx)
-		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "write_to_3_dof_arm_trajectory_history", "BUFFER FULL!!!");
-	if ((robot_arm->trajectory_history.write_idx+1) == robot_arm->trajectory_history.buffer_size)
-		robot_arm->trajectory_history.write_idx = 0;
-	else
-		robot_arm->trajectory_history.write_idx++;	
-	return TRUE;	
-}
-
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm)
 {
 	unsigned int i;
 	pthread_mutex_lock(&(robot_arm->mutex));
 	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 		evaluate_servo_pw_command(&(robot_arm->servos[i]));
-	pthread_mutex_unlock(&(robot_arm->mutex));
-}
-void push_current_arm_position_to_previous(ThreeDofRobot *robot_arm)
-{
-	ServoData *servo;
-	pthread_mutex_lock(&(robot_arm->mutex));
-	servo = &(robot_arm->servos[BASE_SERVO]);
-	servo->previous_angle = servo->current_angle;
-	servo = &(robot_arm->servos[SHOULDER_SERVO]);
-	servo->previous_angle = servo->current_angle;
-	servo = &(robot_arm->servos[ELBOW_SERVO]);
-	servo->previous_angle = servo->current_angle;
-	robot_arm->tip_position_prev = robot_arm->tip_position;
 	pthread_mutex_unlock(&(robot_arm->mutex));
 }
 

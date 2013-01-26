@@ -53,7 +53,6 @@ typedef struct
 	ServoPositionUnion	position;
 	ServoRange			range;
 	ServoAngle			current_angle;
-	ServoAngle			previous_angle;
 	ServoAngularLimit		angular_security_limit;
 	ServoAngle			*prev_angles;  // for filtering via averaging
 	unsigned int			prev_angle_memo_size; // for filtering via averaging

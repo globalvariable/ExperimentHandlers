@@ -6,13 +6,15 @@
 typedef struct __MovObjHand2GuiMsg MovObjHand2GuiMsg;
 typedef struct __MovObjHand2GuiMsgItem MovObjHand2GuiMsgItem;
 typedef unsigned int MovObjHand2GuiMsgType;
-typedef double MovObjHand2GuiMsgAdditional;
+typedef unsigned int MovObjHand2GuiMsgAdditional;
 
 
 #define MOV_OBJ_HAND_2_GUI_MSG_STRING_LENGTH		50
 
 #define MOV_OBJ_HAND_2_GUI_MSG_NULL					0
-#define MOV_OBJ_HAND_2_GUI_MSG_LOCATION				1
+#define MOV_OBJ_HAND_2_GUI_MSG_START_RECORDING	1
+#define MOV_OBJ_HAND_2_GUI_MSG_STOP_RECORDING		2
+#define MOV_OBJ_HAND_2_GUI_MSG_CANCEL_RECORDING	3
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
@@ -26,10 +28,7 @@ struct __MovObjHand2GuiMsgItem
 {
 	TimeStamp 						msg_time;		
 	MovObjHand2GuiMsgType			msg_type;
-	MovObjCompType 					component;
-	MovObjHand2GuiMsgAdditional		additional_data_0;
-	MovObjHand2GuiMsgAdditional		additional_data_1;
-	MovObjHand2GuiMsgAdditional		additional_data_2;
+	MovObjHand2GuiMsgAdditional		additional_data;
 };
 
 struct __MovObjHand2GuiMsg		// Requests to TrialControllers
@@ -42,7 +41,7 @@ struct __MovObjHand2GuiMsg		// Requests to TrialControllers
 MovObjHand2GuiMsg* allocate_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer);
 MovObjHand2GuiMsg* deallocate_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer);
 bool get_mov_obj_hand_2_gui_msg_type_string(MovObjHand2GuiMsgType msg_type, char *str);
-bool write_to_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer, TimeStamp msg_time, MovObjHand2GuiMsgType msg_type, MovObjCompType component, MovObjHand2GuiMsgAdditional additional_data_0,  MovObjHand2GuiMsgAdditional additional_data_1,  MovObjHand2GuiMsgAdditional additional_data_2);
+bool write_to_mov_obj_hand_2_gui_msg_buffer(MovObjHand2GuiMsg* msg_buffer, TimeStamp msg_time, MovObjHand2GuiMsgType msg_type, MovObjHand2GuiMsgAdditional additional_data);
 bool get_next_mov_obj_hand_2_gui_msg_buffer_item(MovObjHand2GuiMsg* msg_buffer, MovObjHand2GuiMsgItem *msg_item);	// take care of static read_idx value //only request buffer handler uses
 
 

@@ -33,14 +33,6 @@ typedef struct
 
 typedef struct 
 {
-	ThreeDofRobotPosition	*buffer;
-	unsigned int			write_idx;
-	unsigned int			read_idx;
-	unsigned int			buffer_size;
-} ThreeDofRobotTrajectory;
-
-typedef struct 
-{
 	pthread_mutex_t 				mutex; 
 	ServoData					servos[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 	ThreeDofRobotCartesianLimit	cartesian_security_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
@@ -48,7 +40,6 @@ typedef struct
 	ThreeDofRobotPosition			tip_position_prev;
 	ThreeDofRobotPosition			elbow_position;
 	ThreeDofRobotSize			size;
-	ThreeDofRobotTrajectory		trajectory_history; // for example in one trial
 } ThreeDofRobot;	
 
 typedef struct 
@@ -59,9 +50,7 @@ typedef struct
 
 void init_three_dof_robot_arm(ThreeDofRobot *robot_arm);
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna);
-void submit_3_dof_arm_trajectory_history_buffer_size(ThreeDofRobot *robot_arm, unsigned int buff_size);
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
-void push_current_arm_position_to_previous(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 void submit_static_variables_for_forward_kinematics_with_three_sample_averaging(double servo_angle_base, double servo_angle_shoulder, double servo_angle_elbow);
 void calculate_forward_kinematics_with_averaging(ThreeDofRobot *robot_arm);

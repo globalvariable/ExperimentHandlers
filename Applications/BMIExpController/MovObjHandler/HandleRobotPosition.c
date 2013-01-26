@@ -3,7 +3,7 @@
 
 
 
-bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadigmRobotReach *paradigm, MovObjStatus *mov_obj_status, TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand)
+bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadigmRobotReach *paradigm, MovObjStatus *mov_obj_status, TimeStamp current_time, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjStatusHistory* mov_obj_status_history)
 {
 	MovObjThreshold *threshold = &(paradigm->threshold);
 	CartesianCoordinates	*target_coordinates;
@@ -31,6 +31,8 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				submit_servo_target(&(robot->servos[BASE_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[ELBOW_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
+				if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT))
+					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_status_history()");
 			}
 			if (! apply_ellipsoid_threshold(&(threshold->outer_threshold), tip_position->height, tip_position->depth, tip_position->lateral, target_coordinates->height, target_coordinates->depth, target_coordinates->lateral))
 			{
@@ -43,6 +45,8 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				submit_servo_target(&(robot->servos[BASE_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[ELBOW_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);	
+				if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT))
+					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_status_history()");
 			}
 			if (! check_robot_space_borders(robot, paradigm))
 			{
@@ -54,7 +58,9 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");	
 				submit_servo_target(&(robot->servos[BASE_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-				submit_servo_target(&(robot->servos[ELBOW_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);			
+				submit_servo_target(&(robot->servos[ELBOW_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);		
+				if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT))
+					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_status_history()");	
 			}
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
@@ -67,6 +73,8 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.item_idx = MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION;
 				if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, current_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE, mov_obj_hand_2_mov_obj_dur_hand_additional_data))
 					return print_message(BUG_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer()");
+				if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_REACHED_TARGET_POINT))
+					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_status_history()");
 			}
 			break;
 		case MOV_OBJ_STATUS_REACHED_TARGET_POINT:

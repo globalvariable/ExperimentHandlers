@@ -86,7 +86,7 @@ bool handle_exp_envi_tx_shm_and_send_rs232_adc_command(TimeStamp current_time)
 	return TRUE;
 }
 
-bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time)
+bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history)
 {
 	unsigned int i;
 	ExpEnviTxShm exp_envi_tx_buffer;
@@ -128,6 +128,8 @@ bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 	{
 		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! check_three_dof_robot_out_of_security_limits()."); 	
 	}
+	if (! write_to_three_dof_robot_pulse_history(robot_pulse_history, current_time, static_robot_arm->servos[BASE_SERVO].current_angle, static_robot_arm->servos[SHOULDER_SERVO].current_angle, static_robot_arm->servos[ELBOW_SERVO].current_angle))
+		return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! write_to_three_dof_robot_pulse_history()."); 
 	return TRUE;
 }
 

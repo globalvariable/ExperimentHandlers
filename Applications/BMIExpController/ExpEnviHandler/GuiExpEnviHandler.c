@@ -71,7 +71,7 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
    	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
 
-	btn_create_recording_folder = gtk_button_new_with_label("Create Recording Folders");
+	btn_create_recording_folder = gtk_button_new_with_label("Create Recording Folder");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);

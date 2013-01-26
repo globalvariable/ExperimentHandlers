@@ -30,6 +30,9 @@ int main( int argc, char *argv[])
 	MessageLogBuffer *message_log = NULL;
 	Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand = NULL; 
    	MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui = NULL; 
+	MovObjStatusHistory* mov_obj_status_history = NULL;
+	ThreeDofRobotAngleHistory *robot_angle_history = NULL;
+	ThreeDofRobotPulseHistory *robot_pulse_history = NULL;
 
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
@@ -45,8 +48,6 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_cartesian_robotic_space_borders().");
 	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*2.5)/12.0, (M_PI*9.5)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_polar_robotic_space_borders().");
-
-	submit_3_dof_arm_trajectory_history_buffer_size(robot_arm, 1000);
 
 	write_servo_pw_adc_ranges(&(robot_arm->servos[BASE_SERVO]), BASE_SERVO_0_DEGREE_PULSE, BASE_SERVO_90_DEGREE_PULSE, BASE_SERVO_0_DEGREE_ADC_VAL, BASE_SERVO_90_DEGREE_ADC_VAL);
 	write_servo_pw_adc_ranges(&(robot_arm->servos[SHOULDER_SERVO]), SHOULDER_SERVO_0_DEGREE_PULSE, SHOULDER_SERVO_90_DEGREE_PULSE, SHOULDER_SERVO_0_DEGREE_ADC_VAL, SHOULDER_SERVO_90_DEGREE_ADC_VAL);
@@ -119,13 +120,18 @@ int main( int argc, char *argv[])
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);
 
+	mov_obj_status_history = allocate_mov_obj_status_history(mov_obj_status_history, 50); 
+	robot_angle_history = allocate_three_dof_robot_angle_history(robot_angle_history, 1000);
+	robot_pulse_history = allocate_three_dof_robot_pulse_history(robot_pulse_history, 1000);
+
+
 	message_log = allocate_message_log_buffer(message_log, 200);
     	pthread_create( &logging_thread, NULL, logging_thread_function, (void*)message_log);
 
-	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, robot_arm, msgs_gui_2_mov_obj_hand,  msgs_mov_obj_hand_2_gui, mov_obj_paradigm, message_log))
+	if(! create_mov_obj_handler_rt_thread(rt_tasks_data, robot_arm, msgs_gui_2_mov_obj_hand,  msgs_mov_obj_hand_2_gui, mov_obj_paradigm, message_log, mov_obj_status_history, robot_angle_history, robot_pulse_history))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "create_mov_obj_handler_rt_thread().");
 	gtk_init(&argc, &argv);
-	create_gui_handler(rt_tasks_data, msgs_gui_2_mov_obj_hand, msgs_mov_obj_hand_2_gui, robot_arm, mov_obj_paradigm);
+	create_gui_handler(rt_tasks_data, msgs_gui_2_mov_obj_hand, msgs_mov_obj_hand_2_gui, robot_arm, mov_obj_paradigm, mov_obj_status_history, robot_angle_history, robot_pulse_history);
 	gtk_main();
 	return 0;
 }	

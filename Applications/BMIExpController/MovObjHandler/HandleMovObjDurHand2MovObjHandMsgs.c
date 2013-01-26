@@ -1,7 +1,7 @@
 #include "HandleMovObjDurHand2MovObjHandMsgs.h"
 
 
-bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, TimeStamp current_time, MovObjStatus *mov_obj_status, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, SpikeData *scheduled_spike_data, MovObjLocationType current_location, MessageLogBuffer *message_log, MovObjHandParadigmRobotReach *mov_obj_paradigm)
+bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, TimeStamp current_time, MovObjStatus *mov_obj_status, MovObjDurHand2MovObjHandMsg *msgs_mov_obj_dur_hand_2_mov_obj_hand, MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand, MovObjHand2MovObjDurHandMsg *msgs_mov_obj_hand_2_mov_obj_dur_hand, MovObjHand2NeuralNetMsgMultiThread *msgs_mov_obj_hand_2_neural_net_multi_thread, SpikeData *scheduled_spike_data, MovObjLocationType current_location, MessageLogBuffer *message_log, MovObjHandParadigmRobotReach *mov_obj_paradigm, ThreeDofRobotPulseHistory *robot_pulse_history, ThreeDofRobotAngleHistory *robot_angle_history, MovObjStatusHistory* mov_obj_status_history)
 {
 	MovObjHand2MovObjDurHandMsgAdditional mov_obj_hand_2_mov_obj_dur_hand_additional_data;
 	MovObjDurHand2MovObjHandMsgItem msg_item;
@@ -27,6 +27,8 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 								*mov_obj_status = MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL;
 								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED, 0))
 									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
+								if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL))
+									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");
 								break;
 							case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL");									
@@ -36,6 +38,8 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 								*mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
 								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST, 0)) 
 									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
+								if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_OUT_OF_TRIAL))
+									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");
 								break;
 							case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_RESETTING_TO_START_POINT");
@@ -44,7 +48,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						}
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
-						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time))
+						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command");
 						// Schedule adc conversion results reading and pulse width sending again.
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = current_time + mov_obj_paradigm->send_pw_command_wait_period;
@@ -72,9 +76,10 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						if (! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm())
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! ! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm()");
 						calculate_forward_kinematics_with_averaging(robot_arm);	
-						push_current_arm_position_to_previous(robot_arm);
-						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand))
+						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, mov_obj_status_history))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_robot_arm_position_threshold()");
+						if (! write_to_three_dof_robot_angle_history(robot_angle_history, current_time, robot_arm->servos[BASE_SERVO].current_angle, robot_arm->servos[SHOULDER_SERVO].current_angle, robot_arm->servos[ELBOW_SERVO].current_angle))
+							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_three_dof_robot_angle_history()");
 						if ((*mov_obj_status) == MOV_OBJ_STATUS_DISABLED)  // to be faster using, if instead of switch.
 						{
 							break;
