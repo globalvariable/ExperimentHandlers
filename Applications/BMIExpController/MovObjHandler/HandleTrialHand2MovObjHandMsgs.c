@@ -208,7 +208,7 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 				break;
 			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_CANCEL_RECORDING:	
 				recording_number = msg_item.additional_data.recording_number;
-				if (! write_to_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui, current_time, MOV_OBJ_HAND_2_GUI_MSG_STOP_RECORDING, recording_number))
+				if (! write_to_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui, current_time, MOV_OBJ_HAND_2_GUI_MSG_CANCEL_RECORDING, recording_number))
 					return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "write_to_mov_obj_hand_2_gui_msg_buffer", "! write_to_mov_obj_hand_2_gui_msg_buffer(().");
 				break;
 			default:

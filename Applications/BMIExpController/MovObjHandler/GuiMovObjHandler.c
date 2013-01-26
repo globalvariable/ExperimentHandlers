@@ -178,13 +178,13 @@ static void create_recording_folder_button_func (void)
 	path_len = strlen(path_temp);
 	if (strcmp(&(path_temp[path_len-8]),"EXP_DATA") == 0)
 		return (void)print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "create_recording_folder_button_func", "Selected folder is /EXP_DATA main folder. Select a folder inside this folder.");				
-/*	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path,static_exp_envi_paradigm, static_exp_envi_data))		// record in last format version
+	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_mov_obj_paradigm, static_robot_arm))		// record in last format version
 	{
 		
 	}
 	else
 		print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "create_recording_folder_button_func", " *create_main_directory().");			
-*/}
+}
 
 static void set_directory_btn_select_directory_to_save(void)
 {

@@ -80,15 +80,14 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_robot_arm_position_threshold()");
 						if (! write_to_three_dof_robot_angle_history(robot_angle_history, current_time, robot_arm->servos[BASE_SERVO].current_angle, robot_arm->servos[SHOULDER_SERVO].current_angle, robot_arm->servos[ELBOW_SERVO].current_angle))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_three_dof_robot_angle_history()");
-						if ((*mov_obj_status) == MOV_OBJ_STATUS_DISABLED)  // to be faster using, if instead of switch.
+						if ((*mov_obj_status) != MOV_OBJ_STATUS_DISABLED)  // to be faster using, if instead of switch.
 						{
-							break;
+							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[BASE_SERVO] = robot_arm->servos[BASE_SERVO].current_angle;
+							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[SHOULDER_SERVO] = robot_arm->servos[SHOULDER_SERVO].current_angle;
+							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[ELBOW_SERVO] = robot_arm->servos[ELBOW_SERVO].current_angle;
+							if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE, mov_obj_hand_2_neural_net_msg_add))
+								return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
 						}
-						mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[BASE_SERVO] = robot_arm->servos[BASE_SERVO].current_angle;
-						mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[SHOULDER_SERVO] = robot_arm->servos[SHOULDER_SERVO].current_angle;
-						mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[ELBOW_SERVO] = robot_arm->servos[ELBOW_SERVO].current_angle;
-						if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE, mov_obj_hand_2_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
 
 						break;	
 					default:

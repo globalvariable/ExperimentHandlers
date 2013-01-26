@@ -16,7 +16,7 @@ typedef struct
 
 typedef struct 
 {
-	EllipsoidThreshold			selected_target_reach_threshold;
+	EllipsoidThreshold			selected_target_reach_threshold;  /// this data is retrieved from trialhandler when there is a change in it. so no need to save it for every trial during recording. trial handler saves it.
 	EllipsoidThreshold			point_reach_threshold;
 	EllipsoidThreshold			outer_threshold;
 }
@@ -29,6 +29,8 @@ typedef struct
 	TimeStamp					stay_at_target_duration;	
 	TimeStamp					send_pw_command_wait_period;
 	TimeStamp					receive_position_wait_period;
+	double						spike_2_pulse_width_multiplier;
+	ServoPulseChange			max_pulse_width_change;   // for servo control in handle spike data buff. It determines max servo speed.
 	MovObjThreshold				threshold;
 	RobotSpacePoints				start_info;
 	RobotSpacePoints				target_info;

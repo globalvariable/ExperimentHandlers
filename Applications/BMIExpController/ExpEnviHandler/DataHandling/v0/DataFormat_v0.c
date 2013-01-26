@@ -344,10 +344,10 @@ static int create_data_files(TimeStamp rec_start, char *data_directory_path)
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "create_data_files", "! create_meta_data");
 	
 	if (!create_input_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "create_data_files", "! create_trial_data");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "create_data_files", "! create_input_component_status_data");
 
 	if (!create_output_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "create_data_files", "! create_trial_data");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "create_data_files", "! create_output_component_status_data");
 
 	return 1;
 }
@@ -457,13 +457,13 @@ static int close_output_component_status_data(void)
 static int delete_data_files(char *data_directory_path)
 {
 	if (! delete_meta_data(data_directory_path))
-		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_meta_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_meta_data(data_directory_path)");
 	
 	if (! delete_input_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
 
 	if (! delete_output_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"TrialHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
 
 	return 1;
 }
@@ -475,7 +475,7 @@ static int delete_meta_data(char *data_directory_path)
 	strcpy(temp, data_directory_path);
 	strcat(temp, "/meta");
 	
-	if (remove(temp) != 0)  { printf ("ERROR: TrialHandler: Couldn't delete file: %s\n\n", temp); return 0; }
+	if (remove(temp) != 0)  { printf ("ERROR: ExpEnviHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
 	return 1;	
 }
@@ -487,7 +487,7 @@ static int delete_input_component_status_data(char *data_directory_path)
 	strcpy(temp, data_directory_path);
 	strcat(temp, "/input_comp_status");
 	
-	if (remove(temp) != 0)  { printf ("ERROR: TrialHandler: Couldn't delete file: %s\n\n", temp); return 0; }
+	if (remove(temp) != 0)  { printf ("ERROR: ExpEnviHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
 	return 1;	
 }
@@ -499,7 +499,7 @@ static int delete_output_component_status_data(char *data_directory_path)
 	strcpy(temp, data_directory_path);
 	strcat(temp, "/output_comp_status");
 	
-	if (remove(temp) != 0)  { printf ("ERROR: TrialHandler: Couldn't delete file: %s\n\n", temp); return 0; }
+	if (remove(temp) != 0)  { printf ("ERROR: ExpEnviHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
 	return 1;	
 }

@@ -157,7 +157,7 @@ static void *rt_mov_obj_handler(void *args)
 		// first handle duration status and robot position which determine mov_obj_status. Later on hanle spike outputs of neural net.  it changes the target pulse width value to reset the position to target led during reseting status. 
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_neural_net_to_mov_obj_handler_msg()."); break; }
-		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data, static_robot_arm))  {
+		if (! handle_spike_data_buff(mov_obj_status, curr_system_time, scheduled_spike_data, static_robot_arm, static_mov_obj_paradigm))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_spike_data_buff()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		

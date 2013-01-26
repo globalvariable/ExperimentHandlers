@@ -67,6 +67,9 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
 	mov_obj_paradigm->stay_at_start_duration = 200000000;   
 
+	mov_obj_paradigm->spike_2_pulse_width_multiplier = 2.0;
+	mov_obj_paradigm->max_pulse_width_change = 100;
+
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 1);
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);
 	mov_obj_paradigm->start_info.num_of_positions = 1;
@@ -124,6 +127,7 @@ int main( int argc, char *argv[])
 	robot_angle_history = allocate_three_dof_robot_angle_history(robot_angle_history, 1000);
 	robot_pulse_history = allocate_three_dof_robot_pulse_history(robot_pulse_history, 1000);
 
+	initialize_data_read_write_handlers();
 
 	message_log = allocate_message_log_buffer(message_log, 200);
     	pthread_create( &logging_thread, NULL, logging_thread_function, (void*)message_log);
