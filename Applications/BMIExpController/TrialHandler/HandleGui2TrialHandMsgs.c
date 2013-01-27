@@ -137,103 +137,46 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if (paradigm->current_trial_data.session_idx == 0)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold / minimum session number. Cannot be increase threshold / decrease session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx--;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1));  // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increasing threshold cannot be done during trial");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if (paradigm->current_trial_data.session_idx == 0)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold / minimum session number. Cannot be increase threshold / decrease session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx--;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_x))
+						if (paradigm->current_trial_data.session_idx == 0)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold / minimum session number. Cannot be increase threshold / decrease session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x + ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx--;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y + ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) >= (paradigm->max_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached max threshold. Cannot be increased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z + ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
@@ -245,103 +188,46 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.session_idx +1 )== paradigm->max_num_of_sessions)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold / maximum session number. Cannot be decrease threshold / increase session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx++;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreasing threshold cannot be done during trial");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.session_idx +1 )== paradigm->max_num_of_sessions)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold / maximum session number. Cannot be decrease threshold / increase session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx++;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if ((paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_x))
+						if ((paradigm->current_trial_data.session_idx +1 )== paradigm->max_num_of_sessions)
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->min_target_reach_threshold.r_x;
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold / maximum session number. Cannot be decrease threshold / increase session number more.");
 						}
 						else
 						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->current_trial_data.rewarding_threshold.r_x - ((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x)*paradigm->target_reach_threshold_change_rate);
+							paradigm->current_trial_data.session_idx++;
 						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_y))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->min_target_reach_threshold.r_y;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->current_trial_data.rewarding_threshold.r_y - ((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y)*paradigm->target_reach_threshold_change_rate);
-						}
-						if ((paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate)) <= (paradigm->min_target_reach_threshold.r_z))
-						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached min threshold. Cannot be decreased more.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->min_target_reach_threshold.r_z;
-						}
-						else
-						{
-							print_message(INFO_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreased reaching threshold.");
-							paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->current_trial_data.rewarding_threshold.r_z - ((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z)*paradigm->target_reach_threshold_change_rate);
-						}
+						paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+						paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);

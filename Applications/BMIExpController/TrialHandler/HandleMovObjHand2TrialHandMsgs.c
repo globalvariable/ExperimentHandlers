@@ -135,7 +135,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 					case TRIAL_STATUS_IN_TRIAL:
 						*trial_status = TRIAL_STATUS_IN_REFRACTORY;
 
-						if (! write_trial_data_to_classified_trial_history(classified_history, paradigm->current_trial_data.robot_start_position_idx, paradigm->current_trial_data.robot_target_position_idx, &(paradigm->current_trial_data)))
+						if (! write_trial_data_to_classified_trial_history(classified_history, &(paradigm->current_trial_data)))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_trial_data_to_classified_trial_history()");
 
 						paradigm->current_trial_data.trial_start_time = 0;

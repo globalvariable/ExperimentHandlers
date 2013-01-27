@@ -17,6 +17,7 @@ struct __TrialData
 	unsigned int			target_led_component_list_idx;
 	unsigned int			robot_start_position_idx;
 	unsigned int			robot_target_position_idx;
+	unsigned int			session_idx;
 	double				reward_magnitude;
 	bool				binary_reward; 
 	double				binary_reward_windowed_average; 

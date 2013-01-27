@@ -18,7 +18,7 @@ typedef struct
 	TimeStamp				max_extra_trial_refractory;
 	EllipsoidThreshold			min_target_reach_threshold;
 	EllipsoidThreshold			max_target_reach_threshold;
-	double					target_reach_threshold_change_rate;
+	unsigned int				max_num_of_sessions;
 //	Selected values for a trial:
 	TrialData					current_trial_data;
 } TrialHandParadigmRobotReach;

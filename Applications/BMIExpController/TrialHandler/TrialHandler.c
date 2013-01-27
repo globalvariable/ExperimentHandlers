@@ -34,12 +34,16 @@ int main( int argc, char *argv[])
 	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
 	paradigm->max_target_reach_threshold.r_y = 10; // depth    
 	paradigm->max_target_reach_threshold.r_z = 8; // lateral
-	paradigm->target_reach_threshold_change_rate = 0.02;
+	paradigm->max_num_of_sessions = 10;  
 
-	paradigm->current_trial_data.rewarding_threshold = paradigm->max_target_reach_threshold;
+	paradigm->current_trial_data.session_idx = 0;
+	paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold. 
+	paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1));  // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+	paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
 
-	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions); 
+	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions, paradigm->max_num_of_sessions); 
 
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 	msgs_trial_hand_2_gui = allocate_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui);

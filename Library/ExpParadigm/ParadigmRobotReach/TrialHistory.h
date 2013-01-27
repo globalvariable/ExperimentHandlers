@@ -13,23 +13,26 @@ struct __TrialHistory
 	TrialData				*history;
 	unsigned int 			buff_write_idx;    ///   IT IS USED AS TRIAL NUMBER AS WELL: SO THAT THE TRIAL HANDLING CAPACITY OF THE SYSTEM IS LIMITED BY BUFFER SIZE
 	unsigned int 			buffer_size;		/// IT IS NOT A CIRCULAR BUFFER
+	double				success_ratio;
 };
 
 struct __ClassifiedTrialHistory
 {
 	TrialHistory			*all_trials;
 	TrialHistory			***trial_types;
+	TrialHistory			****trial_types_sessions;   // num_of_sessions * num_of_start_positions * num_of_target_positions
 	unsigned int num_of_start_positions;
 	unsigned int num_of_target_positions;
+	unsigned int num_of_sessions;
 };
 
 
 TrialHistory* allocate_trial_history(TrialHistory* hist, unsigned int buffer_size); 
 TrialHistory* deallocate_trial_history(TrialHistory* hist); 
 
-ClassifiedTrialHistory* allocate_classified_trial_history(ClassifiedTrialHistory* classified_hist, unsigned int buffer_size, unsigned int num_of_start_positions, unsigned int num_of_target_positions);
+ClassifiedTrialHistory* allocate_classified_trial_history(ClassifiedTrialHistory* classified_hist, unsigned int buffer_size, unsigned int num_of_start_positions, unsigned int num_of_target_positions, unsigned int num_of_sessions);
 ClassifiedTrialHistory* deallocate_classified_trial_history(ClassifiedTrialHistory* classified_hist);
-bool write_trial_data_to_classified_trial_history(ClassifiedTrialHistory* classified_history, unsigned int robot_start_position_idx, unsigned int robot_target_position_idx, TrialData *trial_data);
+bool write_trial_data_to_classified_trial_history(ClassifiedTrialHistory* classified_history, TrialData *trial_data);
 
 double get_abs_mean_of_reward_of_previous_trials(TrialHistory* hist, unsigned int num_of_past_trials);
 TimeStamp get_previous_trial_type_trial_length(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx);

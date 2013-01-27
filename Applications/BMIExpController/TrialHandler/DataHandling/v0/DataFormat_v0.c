@@ -296,7 +296,7 @@ static int create_main_meta_file(char *main_directory_path, TrialHandParadigmRob
  	fprintf(fp,"MAX_TARGET_REACH_THRESHOLD->R_X\t%.15f\n", paradigm->max_target_reach_threshold.r_x); 
 	fprintf(fp,"MAX_TARGET_REACH_THRESHOLD->R_Y\t%.15f\n", paradigm->max_target_reach_threshold.r_y); 
 	fprintf(fp,"MAX_TARGET_REACH_THRESHOLD->R_Z\t%.15f\n", paradigm->max_target_reach_threshold.r_z);
-	fprintf(fp,"TARGET_REACH_THRESHOLD_CHANGE_RATE\t%.15f\n", paradigm->target_reach_threshold_change_rate);
+	fprintf(fp,"MAX_NUM_OF_SESSIONS\t%u\n", paradigm->max_num_of_sessions);
 
 	fprintf(fp,"TRIAL_STATUS_TYPES------------------\n");
 	fprintf(fp,"TRIAL_STATUS_NULL\t%u\n", TRIAL_STATUS_NULL); 
@@ -407,6 +407,7 @@ static int close_trial_data(TrialData *trial_data)
 	fprintf(fp,"target_led_component_list_idx\t%u\n", trial_data->target_led_component_list_idx);
 	fprintf(fp,"robot_start_position_idx\t%u\n", trial_data->robot_start_position_idx);
 	fprintf(fp,"robot_target_position_idx\t%u\n", trial_data->robot_target_position_idx);
+	fprintf(fp,"session_idx\t%u\n", trial_data->session_idx);
 	fprintf(fp,"reward_magnitude\t%.15f\n", trial_data->reward_magnitude);
 	fprintf(fp,"binary_reward\t%u\n", trial_data->binary_reward);
 	fprintf(fp,"binary_reward_windowed_average\t%.15f\n", trial_data->binary_reward_windowed_average);
