@@ -50,8 +50,10 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_BROADCAST_CANCEL_RECORDING");
 			return TRUE;	
-
-
+		case GUI_2_TRIAL_HAND_MSG_RELEASE_REWARD:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_RELEASE_REWARD");
+			return TRUE;	
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

@@ -23,6 +23,7 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #define GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING	9 
 #define GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING	10 
 #define GUI_2_TRIAL_HAND_MSG_BROADCAST_CANCEL_RECORDING	11 
+#define GUI_2_TRIAL_HAND_MSG_RELEASE_REWARD				12 
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

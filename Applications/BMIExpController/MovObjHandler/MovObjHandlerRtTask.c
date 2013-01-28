@@ -3,7 +3,6 @@
 static RtTasksData *static_rt_tasks_data = NULL;
 
 static MovObjStatus mov_obj_status = MOV_OBJ_STATUS_DISABLED;   // Only mov_obj handler can change status. 
-static MovObjLocationType current_location = 0;   
 
 static int mov_obj_handler_rt_thread = 0;
 static bool rt_mov_obj_handler_stay_alive = 1;
@@ -152,7 +151,7 @@ static void *rt_mov_obj_handler(void *args)
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_duration(curr_system_time, msgs_mov_obj_dur_hand_2_mov_obj_hand))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_duration()."); break; }
-		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, &mov_obj_status, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, current_location, static_message_log, static_mov_obj_paradigm, static_robot_pulse_history, static_robot_angle_history, static_mov_obj_status_history))  {
+		if (! handle_mov_obj_dur_handler_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, &mov_obj_status, msgs_mov_obj_dur_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_trial_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_neural_net_multi_thread, scheduled_spike_data, static_message_log, static_mov_obj_paradigm, static_robot_pulse_history, static_robot_angle_history, static_mov_obj_status_history))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_mov_obj_dur_handler_to_mov_obj_handler_msg()."); break; }
 		// first handle duration status and robot position which determine mov_obj_status. Later on hanle spike outputs of neural net.  it changes the target pulse width value to reset the position to target led during reseting status. 
 		if (! handle_neural_net_to_mov_obj_handler_msg(static_robot_arm, curr_system_time, msgs_neural_net_2_mov_obj_hand_multi_thread, scheduled_spike_data))  {
