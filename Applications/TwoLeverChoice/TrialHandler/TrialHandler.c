@@ -34,7 +34,7 @@ int main( int argc, char *argv[])
 	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
 	paradigm->max_target_reach_threshold.r_y = 10; // depth    
 	paradigm->max_target_reach_threshold.r_z = 8; // lateral
-	paradigm->max_num_of_sessions = 10;  
+	paradigm->max_num_of_sessions = 1;  
 
 	paradigm->current_trial_data.session_idx = 0;
 	paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold. 

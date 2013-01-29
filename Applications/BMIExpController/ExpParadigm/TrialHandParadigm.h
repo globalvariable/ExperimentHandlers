@@ -2,8 +2,8 @@
 #define TRIAL_HAND_PARADIGM_H
 
 #include "../../../BlueSpike/System/TimeStamp/TimeStamp.h"
-#include "../../Coordinate/Cartesian.h"
-#include "../../Robot/ThreeDofRobot.h"
+#include "../../../Library/Coordinate/Cartesian.h"
+#include "../../../Library/Robot/ThreeDofRobot.h"
 #include "../../../BlueSpike/Library/Thresholding/Thresholding.h"
 #include "TrialData.h"
 

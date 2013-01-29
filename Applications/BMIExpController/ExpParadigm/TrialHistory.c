@@ -111,31 +111,68 @@ ClassifiedTrialHistory* deallocate_classified_trial_history(ClassifiedTrialHisto
 bool write_trial_data_to_classified_trial_history(ClassifiedTrialHistory* classified_history, TrialData *trial_data)
 {
 	TrialHistory *dest_history_data;
-	unsigned int write_idx;
+	TrialData *curr_trial_data;
+	TrialData *prev_trial_data;
 
  	dest_history_data = classified_history->all_trials;
-	write_idx = dest_history_data->buff_write_idx;
-	memcpy(&(dest_history_data->history[write_idx]), trial_data, sizeof(TrialData));
-	if (write_idx == dest_history_data->buffer_size)
-		return print_message(ERROR_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL!!!.");    	
- 	dest_history_data->success_ratio = ((dest_history_data->buff_write_idx*dest_history_data->success_ratio) + ((double)(trial_data->binary_reward))) / (dest_history_data->buff_write_idx + 1);
-	dest_history_data->buff_write_idx++;
+	curr_trial_data = &(dest_history_data->history[dest_history_data->buff_write_idx]);
+	memcpy(curr_trial_data, trial_data, sizeof(TrialData));
+	prev_trial_data = get_previous_trial_history_data_ptr(dest_history_data);
+	curr_trial_data->num_of_trials = prev_trial_data->num_of_trials+1;
+	curr_trial_data->success_ratio = (((double)prev_trial_data->num_of_trials * prev_trial_data->success_ratio) + (double)curr_trial_data->binary_reward) / (double)curr_trial_data->num_of_trials;
+	if (curr_trial_data->trial_incomplete)
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials + 1;
+	else
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials;
+	if ((dest_history_data->buff_write_idx+1) == dest_history_data->buffer_size)
+	{
+		dest_history_data->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL, circular buffer gets to the 0th idx to write.!!.");    	
+	}
+	else
+	{
+		dest_history_data->buff_write_idx++;
+	}
 
  	dest_history_data = classified_history->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx];
-	write_idx = dest_history_data->buff_write_idx;
-	memcpy(&(dest_history_data->history[write_idx]), trial_data, sizeof(TrialData));
-	if (write_idx == dest_history_data->buffer_size)
-		return print_message(ERROR_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->trial_types[m][n]->buffer is FULL!!!.");    	
- 	dest_history_data->success_ratio = ((dest_history_data->buff_write_idx*dest_history_data->success_ratio) + ((double)(trial_data->binary_reward))) / (dest_history_data->buff_write_idx + 1);
-	dest_history_data->buff_write_idx++;
+	curr_trial_data = &(dest_history_data->history[dest_history_data->buff_write_idx]);
+	memcpy(curr_trial_data, trial_data, sizeof(TrialData));
+	prev_trial_data = get_previous_trial_history_data_ptr(dest_history_data);
+	curr_trial_data->num_of_trials = prev_trial_data->num_of_trials+1;
+	curr_trial_data->success_ratio = (((double)prev_trial_data->num_of_trials * prev_trial_data->success_ratio) + (double)curr_trial_data->binary_reward) / (double)curr_trial_data->num_of_trials;
+	if (curr_trial_data->trial_incomplete)
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials + 1;
+	else
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials;
+	if ((dest_history_data->buff_write_idx+1) == dest_history_data->buffer_size)
+	{
+		dest_history_data->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL, circular buffer gets to the 0th idx to write.!!.");    	
+	}
+	else
+	{
+		dest_history_data->buff_write_idx++;
+	}
 
  	dest_history_data = classified_history->trial_types_sessions[trial_data->session_idx][trial_data->robot_start_position_idx][trial_data->robot_target_position_idx];
-	write_idx = dest_history_data->buff_write_idx;
-	memcpy(&(dest_history_data->history[write_idx]), trial_data, sizeof(TrialData));
-	if (write_idx == dest_history_data->buffer_size)
-		return print_message(ERROR_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->trial_types_sessions[k][m][n]->buffer is FULL!!!.");  
- 	dest_history_data->success_ratio = ((dest_history_data->buff_write_idx*dest_history_data->success_ratio) + ((double)(trial_data->binary_reward))) / (dest_history_data->buff_write_idx + 1);
-	dest_history_data->buff_write_idx++;
+	curr_trial_data = &(dest_history_data->history[dest_history_data->buff_write_idx]);
+	memcpy(curr_trial_data, trial_data, sizeof(TrialData));
+	prev_trial_data = get_previous_trial_history_data_ptr(dest_history_data);
+	curr_trial_data->num_of_trials = prev_trial_data->num_of_trials+1;
+	curr_trial_data->success_ratio = (((double)prev_trial_data->num_of_trials * prev_trial_data->success_ratio) + (double)curr_trial_data->binary_reward) / (double)curr_trial_data->num_of_trials;
+	if (curr_trial_data->trial_incomplete)
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials + 1;
+	else
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials;
+	if ((dest_history_data->buff_write_idx+1) == dest_history_data->buffer_size)
+	{
+		dest_history_data->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"ExperimentHandler", "TrialData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL, circular buffer gets to the 0th idx to write.!!.");    	
+	}
+	else
+	{
+		dest_history_data->buff_write_idx++;
+	}
 
 	return TRUE;
 }
@@ -210,3 +247,14 @@ TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory
 
 	return trial_data->trial_length_windowed_average;
 }
+
+TrialData* get_previous_trial_history_data_ptr(TrialHistory* hist)
+{
+	unsigned int idx = hist->buff_write_idx;
+	if (idx == 0)
+		idx = hist->buffer_size - 1;
+	else
+		idx --;
+	return &(hist->history[idx]);
+}
+

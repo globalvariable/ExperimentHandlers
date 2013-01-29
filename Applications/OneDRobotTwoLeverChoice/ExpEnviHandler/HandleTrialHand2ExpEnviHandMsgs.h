@@ -9,7 +9,7 @@
 #include "../../../Library/Messages/TrialHand2ExpEnviHand.h"
 #include "../../../Library/Messages/ExpEnviHand2ExpEnviDurHand.h"
 #include "../../../Library/Messages/ExpEnviHand2Gui.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/ExpEnviHandParadigm.h"
+#include "../ExpParadigm/ExpEnviHandParadigm.h"
 #include "ConfigExpEnviComponentNums.h"
 #include "HandleRS232Buffers.h"
 

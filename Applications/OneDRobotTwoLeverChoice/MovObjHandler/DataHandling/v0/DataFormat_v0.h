@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "../../../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
+#include "../../../ExpParadigm/MovObjHandParadigm.h"
 #include "../../../../../Library/Status/MovObjStatusHistory.h"
 #include "../../../../../Library/Robot/ThreeDofRobotHistory.h"
 

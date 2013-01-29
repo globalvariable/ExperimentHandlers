@@ -17,7 +17,7 @@
 #include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"
 #include "../../../Library/MovObjData/MovObjData.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
+#include "../ExpParadigm/MovObjHandParadigm.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
 #include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
 #include "../../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.h"

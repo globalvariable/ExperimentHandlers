@@ -8,7 +8,7 @@
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
+#include "../ExpParadigm/MovObjHandParadigm.h"
 #include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
 #include "DataHandling/DataHandling.h"
 #include "../../../Library/Status/MovObjStatusHistory.h"

@@ -1,7 +1,7 @@
 #include "HandleExpEnviDurHand2ExpEnviHandMsgs.h"
 
 
-bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TimeStamp current_time, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand)
+bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TimeStamp current_time, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, ExpEnviHandParadigmRobotReach *exp_envi_paradigm)
 {
 	bool has_response;
 	ExpEnviDurHand2ExpEnviHandMsgItem msg_item;
@@ -31,6 +31,19 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						if (has_response)
 						{
 							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "LEFT_LEVER_IDX_IN_EXP_ENVI_DATA RESPONSE");
+							switch (exp_envi_paradigm->target_led_component_indexes_list[exp_envi_paradigm->selected_target_led_component_list_idx])
+							{
+								case  LEFT_LED_IDX_IN_EXP_ENVI_DATA:
+									if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST, 0))
+										return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
+									break;
+								case RIGHT_LED_IDX_IN_EXP_ENVI_DATA:
+									if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, 0))
+										return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
+									break;
+								default:
+									return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "TEXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN - switch (exp_envi_paradigm.target_led_comp_idx) -default");	
+							}
 						} 
 						 break;	
 					case RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA:
@@ -39,6 +52,20 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						if (has_response)
 						{
 							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA RESPONSE");
+							switch (exp_envi_paradigm->target_led_component_indexes_list[exp_envi_paradigm->selected_target_led_component_list_idx])
+							{
+								case  LEFT_LED_IDX_IN_EXP_ENVI_DATA:
+									if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, 0))
+										return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
+
+									break;
+								case RIGHT_LED_IDX_IN_EXP_ENVI_DATA:
+									if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_REWARD_REQUEST, 0))
+										return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
+									break;
+								default:
+									return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "TEXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN - switch (exp_envi_paradigm.target_led_comp_idx) -default");	
+							}
 						} 
 						 break;			
 					default:

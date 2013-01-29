@@ -13,7 +13,7 @@
 #include "../../../Library/Messages/MovObjHand2Gui.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
 #include "../../../Library/Coordinate/Cartesian.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
+#include "../ExpParadigm/MovObjHandParadigm.h"
 #include "../../../../BlueSpike/Library/LogBuffer/MessageLogBuffer.h"
 #include "../../../Library/Status/MovObjStatusHistory.h"
 

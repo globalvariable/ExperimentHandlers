@@ -11,8 +11,8 @@
 #include "../../../Library/Messages/TrialHand2NeuralNet.h"
 #include "../../../Library/Messages/TrialHand2SpikeGen.h"
 #include "../../../Library/Status/TrialStatus.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/TrialHistory.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/TrialHandParadigm.h"
+#include "../ExpParadigm/TrialHistory.h"
+#include "../ExpParadigm/TrialHandParadigm.h"
 #include "../../../Library/Messages/TrialHand2Gui.h"
 #include "../../../Library/Status/TrialStatusHistory.h"
 

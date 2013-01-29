@@ -7,7 +7,7 @@
 #include "../../../Library/Status/MovObjStatus.h"
 #include "../../../Library/Status/MovObjDurStatus.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/MovObjHandParadigm.h"
+#include "../ExpParadigm/MovObjHandParadigm.h"
 #include "../../../Library/Messages/MovObjHand2MovObjDurHand.h"
 #include "../../../Library/Messages/MovObjHand2TrialHand.h"
 #include "ConfigMovObjHandler.h"

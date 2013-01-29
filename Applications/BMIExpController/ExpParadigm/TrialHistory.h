@@ -11,9 +11,8 @@ typedef struct __ClassifiedTrialHistory ClassifiedTrialHistory;
 struct __TrialHistory    
 {
 	TrialData				*history;
-	unsigned int 			buff_write_idx;    ///   IT IS USED AS TRIAL NUMBER AS WELL: SO THAT THE TRIAL HANDLING CAPACITY OF THE SYSTEM IS LIMITED BY BUFFER SIZE
-	unsigned int 			buffer_size;		/// IT IS NOT A CIRCULAR BUFFER
-	double				success_ratio;
+	unsigned int 			buff_write_idx;    
+	unsigned int 			buffer_size;	
 };
 
 struct __ClassifiedTrialHistory
@@ -39,4 +38,5 @@ TimeStamp get_previous_trial_type_trial_length(ClassifiedTrialHistory* hist, uns
 double get_previous_trial_type_remained_distance_to_target(ClassifiedTrialHistory* hist, unsigned int start_position_idx, unsigned int target_position_idx);
 double calculate_and_get_windowed_binary_reward_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size);
 TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size);
+TrialData* get_previous_trial_history_data_ptr(TrialHistory* hist);
 #endif

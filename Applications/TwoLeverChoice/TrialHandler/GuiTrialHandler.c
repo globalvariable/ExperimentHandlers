@@ -44,10 +44,9 @@ static GtkWidget *btn_submit_trial_number;
 static GtkWidget *btn_statistics;
 
 
-static GtkWidget *lbl_num_of_trials;
-static GtkWidget *lbl_num_of_rewarded_trials;
-static GtkWidget *lbl_num_of_trials_of_trial_type;
-static GtkWidget *lbl_num_of_rewarded_trials_of_trial_type;
+static GtkWidget ***lbl_num_of_trials;		// num_of_start_positions * num_of_target_positions.
+static GtkWidget ***lbl_num_of_incomplete;		// num_of_start_positions * num_of_target_positions.
+static GtkWidget ***lbl_success_ratio;
 
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
@@ -87,7 +86,8 @@ static gboolean timeout_callback(gpointer user_data) ;
 bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history)
 {
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
-
+	char temp[100];
+	unsigned int i, j;
 	static_rt_tasks_data = rt_tasks_data;
 
 	static_msgs_gui_2_trial_hand = msgs_gui_2_trial_hand;
@@ -223,17 +223,46 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 1,2, 0, 6);  // column 1-2, row 0-6
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,5);
+	lbl_num_of_trials = g_new(GtkWidget **, trial_hand_paradigm->num_of_robot_start_positions);		
+	lbl_success_ratio = g_new(GtkWidget **, trial_hand_paradigm->num_of_robot_start_positions);	
+	lbl_num_of_incomplete = g_new(GtkWidget **, trial_hand_paradigm->num_of_robot_start_positions);	
+	for (i = 0; i < trial_hand_paradigm->num_of_robot_start_positions; i++)
+	{
+		lbl_num_of_trials[i] = g_new(GtkWidget *, trial_hand_paradigm->num_of_robot_target_positions);		
+		lbl_success_ratio[i] = g_new(GtkWidget *, trial_hand_paradigm->num_of_robot_target_positions);	
+		lbl_num_of_incomplete[i] = g_new(GtkWidget *, trial_hand_paradigm->num_of_robot_target_positions);	
+		for (j = 0; j < trial_hand_paradigm->num_of_robot_target_positions; j++)
+		{
+			hbox = gtk_hbox_new(FALSE, 0);
+     			gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+			sprintf (temp, "Start: %d; Target: %d", i, j);
+			lbl = gtk_label_new(temp);	
+     			gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
-	lbl = gtk_label_new("Num of Trials #: ");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
-	lbl = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
-	lbl_num_of_trials = gtk_label_new("0");
-        gtk_box_pack_start(GTK_BOX(hbox), lbl_num_of_trials, FALSE, FALSE, 0);
+			hbox = gtk_hbox_new(FALSE, 0);
+     			gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+			lbl = gtk_label_new("Num of Trials		:");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
+			lbl_num_of_trials[i][j] = gtk_label_new("0");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_trials[i][j], TRUE, TRUE, 0);
+
+			hbox = gtk_hbox_new(FALSE, 0);
+     			gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+			lbl = gtk_label_new("Num of Incomplete:");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
+			lbl_num_of_incomplete[i][j] = gtk_label_new("0");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_incomplete[i][j], TRUE, TRUE, 0);
+
+			hbox = gtk_hbox_new(FALSE, 0);
+     			gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+			lbl = gtk_label_new("Success Ratio	:");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
+			lbl_success_ratio[i][j] = gtk_label_new("0.0000");
+	     		gtk_box_pack_start(GTK_BOX(hbox),lbl_success_ratio[i][j], TRUE, TRUE, 0);
+
+        		gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
+		}
+	}
 
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,5);
@@ -322,44 +351,8 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
-	lbl = gtk_label_new("Num of Rewarded: ");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
-	lbl = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
-	lbl_num_of_rewarded_trials = gtk_label_new("0");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_rewarded_trials, FALSE, FALSE, 0);
-
-        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), TRUE,TRUE, 5);
-
 	hbox = gtk_hbox_new(TRUE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 5);
-
-	lbl = gtk_label_new("---- Trial Type Statistics ----");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
-	lbl = gtk_label_new("Num of Trials: ");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
-	lbl = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
-	lbl_num_of_trials_of_trial_type = gtk_label_new("0");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_trials_of_trial_type, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
-	lbl = gtk_label_new("Num of Rewarded: ");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
-	lbl = gtk_label_new("");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE, TRUE, 0);
-	lbl_num_of_rewarded_trials_of_trial_type = gtk_label_new("0");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl_num_of_rewarded_trials_of_trial_type, FALSE, FALSE, 0);
-
 
 	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
@@ -462,7 +455,8 @@ static gboolean timeout_callback(gpointer user_data)
 	TrialHand2GuiMsgItem msg_item;
 	static bool recording = FALSE;
 	TrialStatus trial_status;
-	unsigned int recording_number;
+	unsigned int recording_number, i, j;
+	TrialData *trial_data;
 
 	sprintf (temp, "%.2f", paradigm->current_trial_data.rewarding_threshold.r_x);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_x), temp);
@@ -564,8 +558,19 @@ static gboolean timeout_callback(gpointer user_data)
 						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);					
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
-						gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
+						for (i = 0; i < paradigm->num_of_robot_start_positions; i++)
+						{
+							for (j = 0; j < paradigm->num_of_robot_target_positions; j++)
+							{
+								trial_data = get_previous_trial_history_data_ptr(classified_history->trial_types_sessions[0][i][j]);
+								sprintf (temp,"%u",  trial_data->num_of_trials);
+								gtk_label_set_text (GTK_LABEL (lbl_num_of_trials[i][j]), temp);
+								sprintf (temp,"%u", trial_data->num_of_incomplete_trials);
+								gtk_label_set_text (GTK_LABEL (lbl_num_of_incomplete[i][j]), temp);
+								sprintf (temp,"%.4f",  trial_data->success_ratio);
+								gtk_label_set_text (GTK_LABEL (lbl_success_ratio[i][j]), temp);
+							}
+						}
 						if (recording)
 						{
 							gtk_widget_set_sensitive(btn_stop_recording, TRUE);

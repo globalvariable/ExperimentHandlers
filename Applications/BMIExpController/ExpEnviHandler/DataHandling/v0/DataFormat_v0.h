@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "../../../../../../BlueSpike/Library/Misc/Misc.h"
-#include "../../../../../Library/ExpParadigm/ParadigmRobotReach/ExpEnviHandParadigm.h"
+#include "../../../ExpParadigm/ExpEnviHandParadigm.h"
 #include "../../../../../Library/ExpEnviData/ExpEnviData.h"
 #include "../../../../../Library/Status/ExpEnviComponentStatusHistory.h"
 

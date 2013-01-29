@@ -203,7 +203,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 		print_message(ERROR_MSG ,"BMIExpController", "HandleRxTxBuffer", "handle_exp_envi_rx_shm", "! read_exp_envi_tx_buff_shm()."); 
 	exp_envi_rs232_status->all_status = exp_envi_rx_buffer.exp_envi_rx_buff[0];
 //	printf ("%u\n", exp_envi_rs232_status->all_status);
-	if (exp_envi_rs232_status_prev.ir_beam != exp_envi_rs232_status->ir_beam)
+	if (exp_envi_rs232_status_prev.ir_beam != exp_envi_rs232_status->ir_beam)   // when the nose is inside ir beam, exp_envi_rs232_status->ir_beam is 0, else exp_envi_rs232_status->ir_beam is 1 (pic sends it this way)
 	{
 		exp_envi_rs232_status_prev.ir_beam = exp_envi_rs232_status->ir_beam;
 		if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
@@ -239,7 +239,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_input_status_history().");
 		}
 	}
-	if (exp_envi_rs232_status_prev.left_lever != exp_envi_rs232_status->left_lever)
+	if (exp_envi_rs232_status_prev.left_lever != exp_envi_rs232_status->left_lever)   // when there is lever press, exp_envi_rs232_status->left_lever is 0, else exp_envi_rs232_status->left_lever is 1 (pic sends it this way)
 	{
 		exp_envi_rs232_status_prev.left_lever = exp_envi_rs232_status->left_lever;
 		if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, LEFT_LEVER_IDX_IN_EXP_ENVI_DATA, 0))
@@ -275,7 +275,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_input_status_history().");
 		}
 	}
-	if (exp_envi_rs232_status_prev.right_lever != exp_envi_rs232_status->right_lever)
+	if (exp_envi_rs232_status_prev.right_lever != exp_envi_rs232_status->right_lever)  // when there is lever press, exp_envi_rs232_status->left_lever is 0, else exp_envi_rs232_status->left_lever is 1 (pic sends it this way)
 	{
 		exp_envi_rs232_status_prev.right_lever = exp_envi_rs232_status->right_lever;
 		if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA, 0))
@@ -285,7 +285,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 		if (exp_envi_rs232_status->right_lever)
 		{
 			if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA]), &valid))
-							return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "exp_envi_input_low_2_high_event().");
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "exp_envi_input_low_2_high_event().");
 			if (valid)	 
 			{
 				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA, exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA].constraints.min_high_status_duration + current_time))

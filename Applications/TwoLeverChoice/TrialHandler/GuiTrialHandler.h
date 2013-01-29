@@ -6,7 +6,7 @@
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "TrialHandlerRtTask.h"
-#include "../../../Library/ExpParadigm/ParadigmRobotReach/TrialHistory.h"
+#include "../ExpParadigm/TrialHistory.h"
 #include "DataHandling/DataHandling.h"
 #include "../../../Library/Status/TrialStatusHistory.h"
 

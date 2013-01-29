@@ -74,7 +74,6 @@ static void *rt_mov_obj_handler(void *args)
 	RT_TASK *handler;
         RTIME period;
 	unsigned int prev_time, curr_time;
-	unsigned int i;
 	TimeStamp curr_system_time;
 	MovObjHand2MovObjDurHandMsgAdditional mov_obj_hand_2_mov_obj_dur_hand_additional_data;
 
