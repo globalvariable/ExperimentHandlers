@@ -347,9 +347,6 @@ static int create_main_meta_file(char *main_directory_path, MovObjHandParadigmRo
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_x\t%.15f\n", paradigm->threshold.point_reach_threshold.r_x);
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_y\t%.15f\n", paradigm->threshold.point_reach_threshold.r_y);
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_z\t%.15f\n", paradigm->threshold.point_reach_threshold.r_z);
-	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.outer_threshold.r_x\t%.15f\n", paradigm->threshold.outer_threshold.r_x);
-	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.outer_threshold.r_y\t%.15f\n", paradigm->threshold.outer_threshold.r_y);
-	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.outer_threshold.r_z\t%.15f\n", paradigm->threshold.outer_threshold.r_z);
 
 	fprintf(fp,"MovObjHandParadigmRobotReach.start_info.num_of_positions\t%u\n", paradigm->start_info.num_of_positions);
 	for (i = 0; i < paradigm->start_info.num_of_positions; i++)

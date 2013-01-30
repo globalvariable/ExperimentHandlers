@@ -16,9 +16,7 @@ typedef struct
 
 typedef struct 
 {
-	EllipsoidThreshold			selected_target_reach_threshold;  /// this data is retrieved from trialhandler when there is a change in it. so no need to save it for every trial during recording. trial handler saves it.
 	EllipsoidThreshold			point_reach_threshold;
-	EllipsoidThreshold			outer_threshold;
 }
 MovObjThreshold;
 

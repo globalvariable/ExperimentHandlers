@@ -11,7 +11,6 @@
 #include "../../../Library/Messages/TrialHand2Gui.h"
 #include "../../../Library/Status/TrialStatus.h"
 #include "../ExpParadigm/TrialHandParadigm.h"
-#include "../../../../BlueSpike/Library/Misc/Randn.h"
 #include "../ExpParadigm/TrialHistory.h"
 #include "../../../Library/Status/TrialStatusHistory.h"
 

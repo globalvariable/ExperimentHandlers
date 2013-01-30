@@ -112,10 +112,6 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1531;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1444;
 
-	mov_obj_paradigm->threshold.outer_threshold.r_x = 16;  //height
-	mov_obj_paradigm->threshold.outer_threshold.r_y = 46; // depth    ->>>  to provide a circle with radius of ~12 cm at the frontal surface of the cage
-	mov_obj_paradigm->threshold.outer_threshold.r_z = 16; // lateral
-
 	mov_obj_paradigm->threshold.point_reach_threshold.r_x = 1;
 	mov_obj_paradigm->threshold.point_reach_threshold.r_y = 1;
 	mov_obj_paradigm->threshold.point_reach_threshold.r_z = 1;

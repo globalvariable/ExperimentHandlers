@@ -2,7 +2,7 @@
 
 static RtTasksData *static_rt_tasks_data = NULL;
 
-static ExpEnviStatus exp_envi_status = EXP_ENVI_STATUS_NULL;   // Only trial handler can change trial status. 
+static ExpEnviStatus exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE;   // Only trial handler can change trial status. 
 
 static int exp_envi_handler_rt_thread = 0;
 static bool rt_exp_envi_handler_stay_alive = 1;
@@ -35,7 +35,7 @@ bool create_exp_envi_handler_rt_thread(RtTasksData *rt_tasks_data, ExpEnviData *
 {
 	static_rt_tasks_data = rt_tasks_data;
 
-	exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
+	exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE;
 
 	static_exp_envi_data = exp_envi_data;
 

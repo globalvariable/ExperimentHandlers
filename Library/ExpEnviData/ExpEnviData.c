@@ -42,7 +42,7 @@ bool get_input_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviInp
 	}
 	return FALSE;	
 }
-bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration, TimeStamp max_high_status_duration, TimeStamp min_low_status_duration, TimeStamp max_low_status_duration, unsigned int num_of_low_2_high_switch, unsigned int num_of_high_2_low_switch, ExpEnviCompStatus initial_status)
+bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration, TimeStamp max_high_status_duration, TimeStamp min_low_status_duration, TimeStamp max_low_status_duration, unsigned int num_of_low_2_high_switch, unsigned int num_of_high_2_low_switch, ExpEnviCompStatus required_status_to_initiate_switching, bool enabled)
 {
 	unsigned int i;
 	bool comp_type_used;
@@ -64,14 +64,15 @@ bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCo
 	g_free(data->inp_comp_types);
 	data->inp_comp_types = lcl_inp_comp_types;
 	data->inp_comp_types[data->num_of_inp_comps].type = comp_type;
-	data->inp_comp_types[data->num_of_inp_comps].status = EXP_ENVI_COMP_STATUS_IDLE;
+	data->inp_comp_types[data->num_of_inp_comps].status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;
+	data->inp_comp_types[data->num_of_inp_comps].enabled = enabled;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.max_high_status_duration = max_high_status_duration;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.min_high_status_duration = min_high_status_duration;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.max_low_status_duration = max_low_status_duration;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.min_low_status_duration = min_low_status_duration;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.num_of_low_2_high_switch = num_of_low_2_high_switch;
 	data->inp_comp_types[data->num_of_inp_comps].constraints.num_of_high_2_low_switch = num_of_high_2_low_switch;
-	data->inp_comp_types[data->num_of_inp_comps].constraints.initial_status = initial_status;
+	data->inp_comp_types[data->num_of_inp_comps].constraints.required_status_to_initiate_switching = required_status_to_initiate_switching;
 	data->num_of_inp_comps++;
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviData", "add_input_component_type_to_exp_envi_data", temp);	
 	return TRUE;

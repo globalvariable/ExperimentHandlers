@@ -23,11 +23,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 							case MOV_OBJ_STATUS_OUT_OF_TRIAL:
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_OUT_OF_TRIAL");									
 							case MOV_OBJ_STATUS_STAYING_AT_START_POINT:
-								*mov_obj_status = MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL;
-								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED, 0))
-									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
-								if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL))
-									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_STAYING_AT_START_POINT");	
 								break;
 							case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL");									
@@ -35,8 +31,6 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "MOV_OBJ_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *mov_obj_status - MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT");
 							case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 								*mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
-								if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST, 0)) 
-									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
 								if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_OUT_OF_TRIAL))
 									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");
 								break;

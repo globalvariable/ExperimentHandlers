@@ -21,9 +21,9 @@ bool get_exp_envi_comp_status_type_string(ExpEnviCompStatus exp_envi_comp_status
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_COMP_STATUS_HIGH_SUCCESS");
 			return TRUE;	
-		case EXP_ENVI_COMP_STATUS_IDLE:
+		case EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING:
 			if (str != NULL)
-				strcpy(str, "EXP_ENVI_COMP_STATUS_IDLE");
+				strcpy(str, "EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING");
 			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_COMP_STATUS_NULL:

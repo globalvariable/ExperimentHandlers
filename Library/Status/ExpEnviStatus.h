@@ -11,7 +11,7 @@ typedef unsigned int ExpEnviStatus;   // !!!ONLY!!! exp_envi_duration handler ca
 #define	EXP_ENVI_STATUS_MAX_STRING_LENGTH			100
 
 #define	EXP_ENVI_STATUS_NULL							0
-#define	EXP_ENVI_STATUS_OUT_OF_TRIAL				1
+#define	EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE	1
 #define	EXP_ENVI_STATUS_COMPONENTS_AVAILABLE		2
 
 

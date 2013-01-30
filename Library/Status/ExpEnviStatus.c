@@ -5,9 +5,9 @@ bool get_exp_envi_status_type_string(ExpEnviStatus exp_envi_status_type, char *s
 {
 	switch (exp_envi_status_type)
 	{
-		case EXP_ENVI_STATUS_OUT_OF_TRIAL:
+		case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 			if (str != NULL)
-				strcpy(str, "EXP_ENVI_STATUS_OUT_OF_TRIAL");
+				strcpy(str, "EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE");
 			return TRUE;
 		case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
 			if (str != NULL)

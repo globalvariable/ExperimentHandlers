@@ -37,6 +37,14 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_CANCEL_RECORDING");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INPUT_COMPONENTS:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INPUT_COMPONENTS");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_INPUT_COMPONENTS:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_INPUT_COMPONENTS");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

@@ -18,7 +18,7 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_OUT_OF_TRIAL:
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 						*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_AVAILABLE;
 						for (i = 0; i < exp_envi_data->num_of_inp_comps; i++)
 						{
@@ -78,12 +78,12 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_OUT_OF_TRIAL:
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
 					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
-						*exp_envi_status = EXP_ENVI_STATUS_OUT_OF_TRIAL;
+						*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE;
 
 						switch (exp_envi_paradigm->target_led_component_indexes_list[exp_envi_paradigm->selected_target_led_component_list_idx])
 						{
@@ -132,7 +132,7 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_OUT_OF_TRIAL:  // first you should have punished and later on end the trial.
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:  // first you should have punished and later on end the trial.
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	

@@ -18,6 +18,7 @@ typedef double MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				4		// sends it out when the timeout after reaching to target appears
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_CONTROL_ENABLED		5		// sends it out when the timeout after staying at start point appears.
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_MOV_OBJ_INITIAL_DIST_2_TARGET	6		// sends it out when the timeout after staying at start point appears.
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_TARGET				7		// sends it out by the time mov obj reaches the target
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
