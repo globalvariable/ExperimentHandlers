@@ -12,6 +12,10 @@ bool get_exp_envi_dur_hand_2_exp_envi_hand_msg_type_string(ExpEnviDurHand2ExpEnv
 			if (str != NULL)
  				strcpy(str, "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MAX");
 			return TRUE;
+		case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

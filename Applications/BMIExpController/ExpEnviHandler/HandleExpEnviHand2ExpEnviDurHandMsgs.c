@@ -115,12 +115,12 @@ bool handle_exp_envi_handler_to_exp_envi_dur_handler_msg(ExpEnviDurationStatus *
 			case EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MAX_TIMER:	
 				switch (msg_item.comp_num)
 				{
-					case VALVE_IDX_IN_EXP_ENVI_DATA:
-						switch (exp_envi_inputs_max_dur_status[VALVE_IDX_IN_EXP_ENVI_DATA])
+					case IR_BEAM_IDX_IN_EXP_ENVI_DATA:
+						switch (exp_envi_inputs_max_dur_status[IR_BEAM_IDX_IN_EXP_ENVI_DATA])
 						{
 							case EXP_ENVI_INPUTS_MAX_DUR_STATUS_TIMER_ON:
-								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "LEFT_LEVER_IDX_IN_EXP_ENVI_DATA");
-								get_exp_envi_dur_status_type_string(exp_envi_inputs_max_dur_status[LEFT_LEVER_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status);   
+								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "IR_BEAM_IDX_IN_EXP_ENVI_DATA");
+								get_exp_envi_dur_status_type_string(exp_envi_inputs_max_dur_status[IR_BEAM_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status);   
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 							case EXP_ENVI_INPUTS_MAX_DUR_STATUS_TIMER_OFF:
 								inputs_handling_end_time_max[IR_BEAM_IDX_IN_EXP_ENVI_DATA] = msg_item.additional_data;

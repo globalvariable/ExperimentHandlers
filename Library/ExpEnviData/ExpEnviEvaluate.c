@@ -71,7 +71,7 @@ bool time_out_success_for_input_comp(ExpEnviInputCompTypeData *comp_data, bool *
 bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_low_status_timer, bool *setting_required_for_high_status_timer)
 {
 	char str[EXP_ENVI_COMP_STATUS_MAX_STRING_LENGTH];
-	*cancellation_reqiured_for_low_status_timer = FALSE;
+	*cancellation_reqiured_for_low_status_timer = TRUE;
 	*setting_required_for_high_status_timer = FALSE;
 	switch (comp_data->status)
 	{
@@ -81,13 +81,11 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 				comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;	
 				comp_data->low_2_high_switch_success = 0;
 				comp_data->high_2_low_switch_success = 0;	
-				*cancellation_reqiured_for_low_status_timer  = TRUE;
 			}
 			else
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;	// burada status LOW iken low_2_high event gelmiş, dolayısıyla burada switching oluşmuş. input component, disable iken switching yapıyorsa READY_FOR_SWITCHING yap (başa al). ama  STATUS_READY_FOR_SWITCHING iken switching yapıyorsa bunu kabul et (aşağıda "case EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING:" de handle ediliyor.). 
 /// böylece enable_with_NO_status_reset ile enable ederken kaldığı yerden devam edebilir. (mesela robot target yaklaşmakta iken lever disable olur ama lever pressi alır. robot target varınca lever enable olur ve timer  başlar. robot target a ulaştıktan sonra yeterli süre lever basılı kalmışsa ödül gelir .)
-				*cancellation_reqiured_for_low_status_timer = TRUE;
 			}
 			break;			
 		case EXP_ENVI_COMP_STATUS_LOW_SUCCESS:	
@@ -111,9 +109,13 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_HIGH;
 				if (comp_data->enabled)
+				{
 					*setting_required_for_high_status_timer = TRUE;
+				}
 				else
+				{
 					*setting_required_for_high_status_timer = FALSE;
+				}
 			}
 			break;	
 		default:
@@ -126,7 +128,7 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_high_status_timer, bool *setting_required_for_low_status_timer)
 {
 	char str[EXP_ENVI_COMP_STATUS_MAX_STRING_LENGTH];
-	*cancellation_reqiured_for_high_status_timer = FALSE;
+	*cancellation_reqiured_for_high_status_timer = TRUE;
 	*setting_required_for_low_status_timer = FALSE;
 	switch (comp_data->status)
 	{
@@ -140,13 +142,11 @@ bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *
 				comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;	
 				comp_data->low_2_high_switch_success = 0;
 				comp_data->high_2_low_switch_success = 0;	
-				*cancellation_reqiured_for_high_status_timer  = TRUE;
 			}
 			else
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;	// burada status HIGH iken high_2_low event gelmiş, dolayısıyla burada switching oluşmuş. input component, disable iken switching yapıyorsa READY_FOR_SWITCHING yap (başa al). ama  STATUS_READY_FOR_SWITCHING iken switching yapıyorsa bunu kabul et (aşağıda "case EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING:" de handle ediliyor.). 
 /// böylece enable_with_NO_status_reset ile enable ederken kaldığı yerden devam edebilir. (mesela robot target yaklaşmakta iken lever disable olur ama lever pressi kabul eder. robot target varınca lever enable olur ve timer  başlar. robot target a ulaştıktan sonra yeterli süre lever basılı kalmışsa ödül gelir .)
-				*cancellation_reqiured_for_high_status_timer = TRUE;
 			}
 			break;		
 		case EXP_ENVI_COMP_STATUS_HIGH_SUCCESS:	

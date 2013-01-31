@@ -16,7 +16,7 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
-	paradigm->max_trial_length = 3000000000;
+	paradigm->max_trial_length = 10000000000;
 	paradigm->min_trial_refractory = 4000000000;
 	paradigm->max_extra_trial_refractory = 500000000;
 	paradigm->num_of_robot_start_positions = 1;

@@ -6,10 +6,11 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 	bool has_response;
 	ExpEnviDurHand2ExpEnviHandMsgItem msg_item;
 	char str_exp_envi_dur_msg[EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];
+	bool timer_cancellation_required;
 	while (get_next_exp_envi_dur_hand_2_exp_envi_hand_msg_buffer_item(msgs_exp_envi_dur_hand_2_exp_envi_hand, &msg_item))
 	{
-//		get_exp_envi_dur_hand_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_exp_envi_dur_msg);
-//		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", str_exp_envi_dur_msg);
+		get_exp_envi_dur_hand_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_exp_envi_dur_msg);
+		print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", str_exp_envi_dur_msg);
 		switch (msg_item.msg_type)
 		{
 			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN:	
@@ -45,7 +46,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 									return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "TEXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN - switch (exp_envi_paradigm.target_led_comp_idx) -default");	
 							}
 						} 
-						 break;	
+						break;	
 					case RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA:
 						if (! time_out_success_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA]), &has_response))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "min_time_out_for_input_comp().");
@@ -67,28 +68,39 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 									return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "TEXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MIN - switch (exp_envi_paradigm.target_led_comp_idx) -default");	
 							}
 						} 
-						 break;			
+						break;			
 					default:
-						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");	
+						printf ("switch (msg_item.inp_comp_num) = %u\n ", msg_item.comp_num);
+						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.comp_num)");	
 				}
 				break;
 			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_INPUT_TIMEOUT_FOR_MAX:	
 				switch (msg_item.comp_num)
 				{
 					case IR_BEAM_IDX_IN_EXP_ENVI_DATA:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA])))
-							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
+						reset_exp_envi_input_with_status_reset(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &timer_cancellation_required);
+						if (timer_cancellation_required)
+						{
+							// when there is timeout, it is cancelled already. no need to cancel it again.
+						}
 						break;			
 					case LEFT_LEVER_IDX_IN_EXP_ENVI_DATA:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[LEFT_LEVER_IDX_IN_EXP_ENVI_DATA])))
-							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
+						reset_exp_envi_input_with_status_reset(&(exp_envi_data->inp_comp_types[LEFT_LEVER_IDX_IN_EXP_ENVI_DATA]), &timer_cancellation_required);
+						if (timer_cancellation_required)
+						{
+							// when there is timeout, it is cancelled already. no need to cancel it again.
+						}
 						break;	
 					case RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA:
-						if (! time_out_fail_for_input_comp(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA])))
-							return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "time_out_fail_for_input_comp().");
-						break;			
+						reset_exp_envi_input_with_status_reset(&(exp_envi_data->inp_comp_types[RIGHT_LEVER_IDX_IN_EXP_ENVI_DATA]), &timer_cancellation_required);
+						if (timer_cancellation_required)
+						{
+							// when there is timeout, it is cancelled already. no need to cancel it again.
+						}	
+						break;	
 					default:
-						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");
+						printf ("switch (msg_item.inp_comp_num) = %u\n ", msg_item.comp_num);
+						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.comp_num)");
 				}
 				break;
 			case EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT:
@@ -167,7 +179,8 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						}
 						break;	
 					default:
-						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.inp_comp_num)");
+						printf ("switch (msg_item.outp_comp_num) = %u\n ", msg_item.comp_num);
+						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "switch (msg_item.comp_num)");
 				}
 				break;
 			default:

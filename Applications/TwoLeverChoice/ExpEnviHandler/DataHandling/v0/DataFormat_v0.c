@@ -308,7 +308,7 @@ static int create_main_meta_file(char *main_directory_path, ExpEnviHandParadigmR
 	{
 		fprintf(fp,"INPUT_COMPONENT\t%u\n", i); 
 		fprintf(fp,"component_type\t%u\n", exp_envi_data->inp_comp_types[i].type); 
-		fprintf(fp,"initial_status\t%u\n", exp_envi_data->inp_comp_types[i].constraints.initial_status); 
+		fprintf(fp,"required_status_to_initiate_switching\t%u\n", exp_envi_data->inp_comp_types[i].constraints.required_status_to_initiate_switching); 
 		fprintf(fp,"max_high_status_duration\t%llu\n", exp_envi_data->inp_comp_types[i].constraints.max_high_status_duration);  
 		fprintf(fp,"min_high_status_duration\t%llu\n", exp_envi_data->inp_comp_types[i].constraints.min_high_status_duration);  
 		fprintf(fp,"max_low_status_duration\t%llu\n", exp_envi_data->inp_comp_types[i].constraints.max_low_status_duration);  
@@ -330,7 +330,7 @@ static int create_main_meta_file(char *main_directory_path, ExpEnviHandParadigmR
 	fprintf(fp,"EXP_ENVI_COMP_STATUS_LOW_SUCCESS\t%u\n", EXP_ENVI_COMP_STATUS_LOW_SUCCESS); 
 	fprintf(fp,"EXP_ENVI_COMP_STATUS_HIGH\t%u\n", EXP_ENVI_COMP_STATUS_HIGH); 
 	fprintf(fp,"EXP_ENVI_COMP_STATUS_HIGH_SUCCESS\t%u\n", EXP_ENVI_COMP_STATUS_HIGH_SUCCESS); 
-	fprintf(fp,"EXP_ENVI_COMP_STATUS_IDLE\t%u\n", EXP_ENVI_COMP_STATUS_IDLE); 
+	fprintf(fp,"EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING\t%u\n", EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING); 
 
 	fprintf(fp,"----------ExpEnviHandler - End of Main Meta File----------\n");
 	fclose(fp);
