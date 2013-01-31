@@ -11,8 +11,9 @@
 #include "../../../Library/Messages/ExpEnviHand2TrialHand.h"
 #include "ConfigExpEnviComponentNums.h"
 #include "HandleRS232Buffers.h"
+#include "../ExpParadigm/ExpEnviHandParadigm.h"
 
-bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TimeStamp current_time, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand);
+bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, ExpEnviStatus *exp_envi_status, TimeStamp current_time, ExpEnviDurHand2ExpEnviHandMsg *msgs_exp_envi_dur_hand_2_exp_envi_hand, ExpEnviHand2TrialHandMsg *msgs_exp_envi_hand_2_trial_hand, ExpEnviHandParadigmRobotReach *exp_envi_paradigm);
 
 
 
