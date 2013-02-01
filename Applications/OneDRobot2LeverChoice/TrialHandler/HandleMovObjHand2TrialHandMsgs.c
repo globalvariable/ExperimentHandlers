@@ -21,7 +21,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TrialStatus *trial_status, Time
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						return print_message(BUG_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", str_status);
 					case TRIAL_STATUS_IN_TRIAL:
-						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INPUT_COMPONENTS, 0))
+						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INP_COMPS_W_NO_STATUS_RESET, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgss", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:

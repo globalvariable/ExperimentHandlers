@@ -7,8 +7,8 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 	TrialHand2ExpEnviHandMsgItem msg_item;
 	char str_trial_hand_msg[TRIAL_HAND_2_EXP_ENVI_HAND_MSG_STRING_LENGTH];
 	char str_exp_envi_status[EXP_ENVI_STATUS_MAX_STRING_LENGTH];
-	unsigned int i, recording_number;
-	
+	unsigned int recording_number;
+	bool cancellation_required_for_status_timer;
 	while (get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(msgs_trial_hand_2_exp_envi_hand, &msg_item))
 	{
 		get_trial_hand_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_trial_hand_msg);
@@ -18,14 +18,14 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
-						*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_AVAILABLE;
-						for (i = 0; i < exp_envi_data->num_of_inp_comps; i++)
+					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
+						*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE;
+						disable_exp_envi_input_with_status_reset(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]),  &cancellation_required_for_status_timer) ;
+						if (cancellation_required_for_status_timer)
 						{
-							reset_exp_envi_input_comp(&(exp_envi_data->inp_comp_types[i]));
-							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, i, 0))
+							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
-							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, i, 0))
+							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 						}
 
@@ -65,7 +65,7 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL - switch (exp_envi_paradigm.target_led_comp_idx) -default");	
 						}
 						break;
-					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
@@ -78,12 +78,11 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
+					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
-					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
-						*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE;
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 
 						switch (exp_envi_paradigm->target_led_component_indexes_list[exp_envi_paradigm->selected_target_led_component_list_idx])
 						{
@@ -109,14 +108,6 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_OUTPUT_TIMER, LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA, 0))
 									return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 
-						for (i = 0; i < exp_envi_data->num_of_inp_comps; i++)
-						{
-							reset_exp_envi_input_comp(&(exp_envi_data->inp_comp_types[i]));
-							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, i, 0))
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
-							if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, i, 0))
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
-						}
 						break;
 					default:
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);
@@ -127,11 +118,11 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD:	// trial handler should send reward before ending trial.
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:  // first you should have rewarded and later on end the trial.
+					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:  // first you should have rewarded and later on end the trial.
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
-					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 
 						exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_HIGH;
 						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_OUTPUT_TIMER, VALVE_IDX_IN_EXP_ENVI_DATA, exp_envi_data->outp_comp_types[VALVE_IDX_IN_EXP_ENVI_DATA].high_status_duration + current_time))
@@ -146,11 +137,11 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_PUNISHMENT:	
 				switch (*exp_envi_status)
 				{
-					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:  // first you should have punished and later on end the trial.
+					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:  // first you should have punished and later on end the trial.
 						print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);	
 						get_exp_envi_status_type_string(*exp_envi_status, str_exp_envi_status);   
 						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_exp_envi_status);	
-					case EXP_ENVI_STATUS_COMPONENTS_AVAILABLE:
+					case EXP_ENVI_STATUS_COMPONENTS_UNAVAILABLE:
 						exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_HIGH;
 						if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_OUTPUT_TIMER, BUZZER_IDX_IN_EXP_ENVI_DATA, exp_envi_data->outp_comp_types[BUZZER_IDX_IN_EXP_ENVI_DATA].high_status_duration + current_time))
 							return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
@@ -175,6 +166,19 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ex
 				recording_number = msg_item.additional_data;
 				if (! write_to_exp_envi_hand_2_gui_msg_buffer(msgs_exp_envi_hand_2_gui, current_time,  EXP_ENVI_HAND_2_GUI_MSG_CANCEL_RECORDING, recording_number))
 					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "write_to_exp_envi_hand_2_gui_msg_buffer", "! write_to_exp_envi_hand_2_gui_msg_buffer(().");
+				break;
+			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INP_COMPS_W_STATUS_RESET:	
+				*exp_envi_status = EXP_ENVI_STATUS_COMPONENTS_AVAILABLE;
+
+				if (! enable_exp_envi_input_with_status_reset(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &cancellation_required_for_status_timer))
+						return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "! enable_exp_envi_input_with_status_reset).");
+				if (cancellation_required_for_status_timer)
+				{
+					if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+						return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+					if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+						return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");					
+				}
 				break;
 			default:
 				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", str_trial_hand_msg);

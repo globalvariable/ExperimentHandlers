@@ -68,11 +68,11 @@ bool time_out_success_for_input_comp(ExpEnviInputCompTypeData *comp_data, bool *
 	return TRUE;
 }
 
-bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_low_status_timer, bool *setting_required_for_high_status_timer)
+bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_low_status_timers, bool *setting_required_for_high_status_timers)
 {
 	char str[EXP_ENVI_COMP_STATUS_MAX_STRING_LENGTH];
-	*cancellation_reqiured_for_low_status_timer = TRUE;
-	*setting_required_for_high_status_timer = FALSE;
+	*cancellation_reqiured_for_low_status_timers = TRUE;	//  // it is a reminder for the programmer to cancel the previously set low status timers (for min and max timers).
+	*setting_required_for_high_status_timers = FALSE;
 	switch (comp_data->status)
 	{
 		case EXP_ENVI_COMP_STATUS_LOW:	///  could not become successfull to keep it at low long enough
@@ -92,12 +92,12 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 			if (comp_data->enabled)
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_HIGH;
-				*setting_required_for_high_status_timer = TRUE;
+				*setting_required_for_high_status_timers = TRUE;
 			}
 			else
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_HIGH;
-				*setting_required_for_high_status_timer = FALSE;
+				*setting_required_for_high_status_timers = FALSE;
 			}
 			break;	
 		case EXP_ENVI_COMP_STATUS_HIGH:
@@ -110,11 +110,11 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 				comp_data->status = EXP_ENVI_COMP_STATUS_HIGH;
 				if (comp_data->enabled)
 				{
-					*setting_required_for_high_status_timer = TRUE;
+					*setting_required_for_high_status_timers = TRUE;
 				}
 				else
 				{
-					*setting_required_for_high_status_timer = FALSE;
+					*setting_required_for_high_status_timers = FALSE;
 				}
 			}
 			break;	
@@ -125,11 +125,11 @@ bool exp_envi_input_low_2_high_event(ExpEnviInputCompTypeData *comp_data, bool *
 	return TRUE;
 }
 
-bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_high_status_timer, bool *setting_required_for_low_status_timer)
+bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *cancellation_reqiured_for_high_status_timers, bool *setting_required_for_low_status_timers)
 {
 	char str[EXP_ENVI_COMP_STATUS_MAX_STRING_LENGTH];
-	*cancellation_reqiured_for_high_status_timer = TRUE;
-	*setting_required_for_low_status_timer = FALSE;
+	*cancellation_reqiured_for_high_status_timers = TRUE; //  // it is a reminder for the programmer to cancel the previously set high status timers (for min and max timers).
+	*setting_required_for_low_status_timers = FALSE;
 	switch (comp_data->status)
 	{
 		case EXP_ENVI_COMP_STATUS_LOW:	
@@ -153,12 +153,12 @@ bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *
 			if (comp_data->enabled)
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_LOW;
-				*setting_required_for_low_status_timer = TRUE;
+				*setting_required_for_low_status_timers = TRUE;
 			}
 			else
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_LOW;
-				*setting_required_for_low_status_timer = FALSE;
+				*setting_required_for_low_status_timers = FALSE;
 			}
 			break;	
 		case EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING:
@@ -166,9 +166,9 @@ bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *
 			{
 				comp_data->status = EXP_ENVI_COMP_STATUS_LOW;
 				if (comp_data->enabled)
-					*setting_required_for_low_status_timer = TRUE;
+					*setting_required_for_low_status_timers = TRUE;
 				else
-					*setting_required_for_low_status_timer = FALSE;
+					*setting_required_for_low_status_timers = FALSE;
 			}
 			break;	
 		default:
@@ -178,7 +178,7 @@ bool exp_envi_input_high_2_low_event(ExpEnviInputCompTypeData *comp_data, bool *
 	return TRUE;
 }
 
-bool enable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_data, bool *cancellation_required_for_status_timer)   // eğer enable edildiğinde sil baştan low/high veya high/low sıralaması gerekiyorsa. 
+bool enable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_data, bool *cancellation_required_for_status_timers)   // eğer enable edildiğinde sil baştan low/high veya high/low sıralaması gerekiyorsa. 
 {
 	if (comp_data->enabled)
 		return print_message(BUG_MSG ,"ExperimentHandlers", "ExpEnviEvaluate", "enable_exp_envi_input_with_status_reset", "Component is already enabled.");
@@ -186,7 +186,7 @@ bool enable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_data
 	comp_data->low_2_high_switch_success = 0;
 	comp_data->high_2_low_switch_success = 0;	
 	comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;
-	*cancellation_required_for_status_timer = TRUE;   // it is a reminder for the programmer to cancel the previously set timer.
+	*cancellation_required_for_status_timers = TRUE;   // it is a reminder for the programmer to cancel the previously set timer.
 
 	return TRUE;
 }
@@ -227,7 +227,7 @@ bool enable_exp_envi_input_with_no_status_reset(ExpEnviInputCompTypeData *comp_d
 	return TRUE;
 }
 
-bool disable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_data,  bool *cancellation_required_for_status_timer)   // status saving li disable yok.     sadece enable ederken status u reset leyen veya resetlemeyen var. yani status disable edilmeden önceki status korunamaz. fakat disable iken "comp_data->constraints.required_status_to_initiate_switching" e uygun event gelirse bu handle edilir ve saklanır. 
+bool disable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_data,  bool *cancellation_required_for_status_timers)   // status saving li disable yok.     sadece enable ederken status u reset leyen veya resetlemeyen var. yani status disable edilmeden önceki status korunamaz. fakat disable iken "comp_data->constraints.required_status_to_initiate_switching" e uygun event gelirse bu handle edilir ve saklanır. 
 // enable_exp_envi_input_with_no_status_reset()  bu status'u dikkate alır;
 // enable_exp_envi_input_with_status_reset()  bu status'u clear eder(status'u = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING yapar);
 // eğer disable etmeden önceki status bilgisine ihtiyacın varsa bu input component e hiç disable etme. ama exp_envi_status' ta bir status belirle, o status' a göre bunun outputunu handle et.
@@ -238,7 +238,7 @@ bool disable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_dat
 	comp_data->low_2_high_switch_success = 0;
 	comp_data->high_2_low_switch_success = 0;	
 	comp_data->status = EXP_ENVI_COMP_STATUS_READY_FOR_SWITCHING;
-	*cancellation_required_for_status_timer = TRUE;   // it is a reminder for the programmer to cancel the previously set timer.
+	*cancellation_required_for_status_timers = TRUE;   // it is a reminder for the programmer to cancel the previously set timer.
 	return TRUE;
 }
 
