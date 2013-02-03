@@ -150,7 +150,7 @@ static bool connect_to_trial_hand(void )
 			{
 				case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ARE_YOU_ALIVE:
 					msgs_exp_envi_hand_2_trial_hand = allocate_shm_client_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand);
-					sleep(1);
+					usleep(1000);
 					if (msgs_exp_envi_hand_2_trial_hand == NULL)
 						return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "connect_to_trial_hand", "msgs_exp_envi_hand_2_trial_hand == NULL.");	
 					if (!write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, static_rt_tasks_data->current_system_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
