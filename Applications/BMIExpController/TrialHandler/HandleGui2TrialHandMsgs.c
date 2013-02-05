@@ -14,7 +14,9 @@ static TrialHandParadigmRobotReach *paradigm = NULL;
 static ClassifiedTrialHistory* classified_history = NULL;
 static TrialHand2GuiMsg *msgs_trial_hand_2_gui = NULL;
 static TrialStatusHistory *trial_status_history = NULL;
-
+#ifdef	IN_VIVO_MODE
+static TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
+#endif
 
 bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 {
@@ -339,6 +341,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 #endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_START_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
+#endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
 						break;
@@ -356,6 +362,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_START_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+#endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_START_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
 #endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
@@ -395,6 +405,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 #endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_STOP_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
+#endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
 						break;				
@@ -417,6 +431,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_STOP_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+#endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_STOP_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
 #endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
@@ -451,6 +469,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_CANCEL_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 #endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_CANCEL_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
+#endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
 						break;				
@@ -468,6 +490,10 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						trial_hand_to_spike_gen_msg_add.recording_number = recording_number;
 						if (! write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_CANCEL_RECORDING, trial_hand_to_spike_gen_msg_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+#endif
+#ifdef	IN_VIVO_MODE
+						if (! write_to_trial_hand_2_neu_rec_hand_msg_buffer(msgs_trial_hand_2_neu_rec_hand, current_time, TRIAL_HAND_2_NEU_REC_HAND_MSG_CANCEL_RECORDING, recording_number))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neu_rec_hand_msg_buffer()");
 #endif
 						if (! write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
@@ -489,7 +515,7 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 void initialize_gui_to_trial_handler_msg_params(TrialStatus *arg_trial_status, Gui2TrialHandMsg *arg_msgs_gui_2_trial_hand, TrialHand2TrialDurHandMsg* arg_msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *arg_msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *arg_msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *arg_msgs_trial_hand_2_neural_net, TrialHand2SpikeGenMsg *arg_msgs_trial_hand_2_spike_gen, TrialHandParadigmRobotReach *arg_paradigm, ClassifiedTrialHistory* arg_classified_history, TrialHand2GuiMsg *arg_msgs_trial_hand_2_gui, TrialStatusHistory *arg_trial_status_history)
 #endif
 #ifdef	IN_VIVO_MODE
-void initialize_gui_to_trial_handler_msg_params(TrialStatus *arg_trial_status, Gui2TrialHandMsg *arg_msgs_gui_2_trial_hand, TrialHand2TrialDurHandMsg* arg_msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *arg_msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *arg_msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *arg_msgs_trial_hand_2_neural_net, TrialHandParadigmRobotReach *arg_paradigm, ClassifiedTrialHistory* arg_classified_history, TrialHand2GuiMsg *arg_msgs_trial_hand_2_gui, TrialStatusHistory *arg_trial_status_history)
+void initialize_gui_to_trial_handler_msg_params(TrialStatus *arg_trial_status, Gui2TrialHandMsg *arg_msgs_gui_2_trial_hand, TrialHand2TrialDurHandMsg* arg_msgs_trial_hand_2_trial_dur_hand, TrialHand2ExpEnviHandMsg *arg_msgs_trial_hand_2_exp_envi_hand, TrialHand2MovObjHandMsg *arg_msgs_trial_hand_2_mov_obj_hand, TrialHand2NeuralNetMsg *arg_msgs_trial_hand_2_neural_net, TrialHandParadigmRobotReach *arg_paradigm, ClassifiedTrialHistory* arg_classified_history, TrialHand2GuiMsg *arg_msgs_trial_hand_2_gui, TrialStatusHistory *arg_trial_status_history, TrialHand2NeuRecHandMsg *arg_msgs_trial_hand_2_neu_rec_hand)
 #endif
 {
 	trial_status = arg_trial_status;
@@ -505,4 +531,7 @@ void initialize_gui_to_trial_handler_msg_params(TrialStatus *arg_trial_status, G
 	classified_history = arg_classified_history;
 	msgs_trial_hand_2_gui = arg_msgs_trial_hand_2_gui;
 	trial_status_history = arg_trial_status_history;
+#ifdef	IN_VIVO_MODE
+	msgs_trial_hand_2_neu_rec_hand = arg_msgs_trial_hand_2_neu_rec_hand;
+#endif
 }

@@ -105,7 +105,7 @@ static gboolean timeout_callback(gpointer graph)
 					exit(1);
 				}
 				recording = TRUE;	
-				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_mov_obj_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
+				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, static_mov_obj_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
 				{
 					print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "timeout_callback", " *write_to_data_files().");		
 					exit(1);
@@ -145,7 +145,6 @@ static gboolean timeout_callback(gpointer graph)
 					print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "timeout_callback", " *fdelete_all_data_files().");
 					exit(1);
 				}
-				else
 				recording = FALSE;	
 				break;
 			default:
@@ -156,7 +155,7 @@ static gboolean timeout_callback(gpointer graph)
 	{
 		if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, static_mov_obj_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
 		{
-			print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "timeout_callback", " *write_to_data_directory().");		
+			print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "timeout_callback", " *write_to_data_files().");		
 			exit(1);
 		}			
 	}

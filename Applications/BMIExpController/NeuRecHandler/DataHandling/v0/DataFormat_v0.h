@@ -11,6 +11,11 @@
 #include <unistd.h>
 
 #include "../../../../../../BlueSpike/Library/Misc/Misc.h"
+#include "../../../../../../BlueSpike/RecordingData.h"
+#include "../../../../../../BlueSpike/SpikeTimeStamp.h"
+#include "../../../../../../BlueSpike/MicroWireArray.h"
+#include "../../../../../../BlueSpike/TemplateMatchingData.h"
+#include "../../../../../../BlueSpike/DaqCard.h"
 
 int create_main_directory_v0(int num, ...);
 int create_data_directory_v0(int num, ...);

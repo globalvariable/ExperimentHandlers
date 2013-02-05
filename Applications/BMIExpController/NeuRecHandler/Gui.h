@@ -8,7 +8,7 @@
 #include "DataHandling/DataHandling.h"
 
 // Functions
-void create_gui_handler(void);
+void create_gui_handler(GtkWidget *arg_btn_select_directory_to_save);
 
 
 

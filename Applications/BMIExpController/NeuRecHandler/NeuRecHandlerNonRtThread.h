@@ -15,7 +15,7 @@
 #include "../../../Library/Messages/TrialHand2NeuRecHand.h"
 #include "../../../Library/Messages/NeuRecHand2TrialHand.h"
 
-bool create_neu_rec_handler_non_rt_thread(RtTasksData *rt_tasks_data, RecordingData *recording_data, SpikeTimeStamp *spike_time_stamps, TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand);
+bool create_neu_rec_handler_non_rt_thread(RtTasksData *arg_rt_tasks_data, RecordingData *arg_recording_data, SpikeTimeStamp *arg_spike_time_stamps, TrialHand2NeuRecHandMsg *arg_msgs_trial_hand_2_neu_rec_hand, GtkWidget *arg_btn_select_directory_to_save);
 
 
 #endif

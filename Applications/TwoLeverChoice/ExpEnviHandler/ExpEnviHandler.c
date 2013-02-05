@@ -23,7 +23,7 @@ int main( int argc, char *argv[])
 	exp_envi_paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
-	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, 0, 1000000000, 0, 1000000000, 1, 0, EXP_ENVI_COMP_STATUS_LOW, TRUE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
+	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, 0, 1000000000, 0, 1000000000, 0, 1, EXP_ENVI_COMP_STATUS_HIGH, TRUE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_input_component_type_to_exp_envi_data().");  
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
 	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_LEFT_LEVER, 100000000, 1000000000, 100000000, 1000000000, 0, 1, EXP_ENVI_COMP_STATUS_HIGH, TRUE))  /// 100 ms lever press   /// a lever press makes the status low (pic sends 0 for a lever press and sends 1 for lever release. initial status detemines the starting status to start evaluating the low/high cycles.) . 
@@ -36,7 +36,7 @@ int main( int argc, char *argv[])
 	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER, 40000000))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_output_component_type_to_exp_envi_data().");
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
-	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_BUZZER, 50000000))
+	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_BUZZER, 500000000))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_output_component_type_to_exp_envi_data().");
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
 	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_LEFT_TARGET_LED, 15000000000))

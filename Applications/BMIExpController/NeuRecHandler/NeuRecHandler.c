@@ -7,6 +7,7 @@ int main( int argc, char *argv[])
 	RtTasksData *rt_tasks_data = NULL;
 	RecordingData *recording_data = NULL;
 	SpikeTimeStamp *spike_time_stamps = NULL;
+	GtkWidget *btn_select_directory_to_save = NULL;
 
 	TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
 	NeuRecHand2TrialHandMsg *msgs_neu_rec_hand_2_trial_hand = NULL;
@@ -30,11 +31,13 @@ int main( int argc, char *argv[])
 	if (! connect_to_trial_hand(rt_tasks_data, msgs_trial_hand_2_neu_rec_hand, &msgs_neu_rec_hand_2_trial_hand))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "connect_to_trial_hand().");	
 
-	if(! create_neu_rec_handler_non_rt_thread(rt_tasks_data, recording_data, spike_time_stamps, msgs_trial_hand_2_neu_rec_hand))
+  	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+	if(! create_neu_rec_handler_non_rt_thread(rt_tasks_data, recording_data, spike_time_stamps, msgs_trial_hand_2_neu_rec_hand, btn_select_directory_to_save))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "create_neu_rec_handler_non_rt_thread().");
 
 	gtk_init(&argc, &argv);
-	create_gui_handler();
+	create_gui_handler(btn_select_directory_to_save);
 	gtk_main();
 	return 0;
 }	

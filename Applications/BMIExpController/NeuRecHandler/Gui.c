@@ -9,8 +9,10 @@ static void create_recording_folder_button_func (void);
 static void set_directory_btn_select_directory_to_save(void);
 
 
-void create_gui_handler(void)
+void create_gui_handler(GtkWidget *arg_btn_select_directory_to_save)
 {
+	btn_select_directory_to_save = arg_btn_select_directory_to_save;
+
 	GtkWidget *window, *hbox, *vbox, *table;
 
  	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -46,7 +48,6 @@ void create_gui_handler(void)
    	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	      
 
-  	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
         gtk_box_pack_start(GTK_BOX(hbox), btn_select_directory_to_save, TRUE,TRUE,0);
 	set_directory_btn_select_directory_to_save();
 
