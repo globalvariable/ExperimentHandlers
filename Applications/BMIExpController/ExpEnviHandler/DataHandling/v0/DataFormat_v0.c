@@ -125,7 +125,7 @@ int create_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/ExpEnviHandlerRecord/");
+	strcat(data_directory_path, "/ExpEnviHandlerRecord");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) != NULL)
         {
@@ -457,13 +457,13 @@ static int close_output_component_status_data(void)
 static int delete_data_files(char *data_directory_path)
 {
 	if (! delete_meta_data(data_directory_path))
-		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_meta_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files", "! delete_meta_data(data_directory_path)");
 	
 	if (! delete_input_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files", "! delete_input_component_status_data(data_directory_path)");
 
 	if (! delete_output_component_status_data(data_directory_path))
-		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files_v0", "! delete_input_component_status_data(data_directory_path)");
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "DataFormat_v0", "delete_data_files", "! delete_input_component_status_data(data_directory_path)");
 
 	return 1;
 }

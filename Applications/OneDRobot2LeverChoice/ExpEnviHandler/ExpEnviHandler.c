@@ -32,8 +32,9 @@ int main( int argc, char *argv[])
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
 	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER, 100000000, 1000000000, 100000000, 1000000000, 0, 1, EXP_ENVI_COMP_STATUS_HIGH, FALSE))  /// 100 ms lever press /// a lever press makes the status low (pic sends 0 for a lever press and sends 1 for lever release. initial status detemines the starting status to start evaluating the low/high cycles.) . 
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_input_component_type_to_exp_envi_data().");
+
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
-	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER, 40000000))
+	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_VALVE_CENTER, 35000000))
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_output_component_type_to_exp_envi_data().");
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
 	if (! add_output_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_OUTPUT_COMPONENT_BUZZER, 50000000))

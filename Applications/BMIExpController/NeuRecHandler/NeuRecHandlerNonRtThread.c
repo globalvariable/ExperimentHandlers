@@ -49,11 +49,6 @@ void *recording_thread_function( void *dummy )
 						exit(1);
 					}
 					recording = TRUE;	
-					if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, recording_data, spike_time_stamps))	
-					{
-						print_message(ERROR_MSG ,"NeuRecHandler", "Gui", "timeout_callback", " *write_to_data_files().");		
-						exit(1);
-					}							
 					break;
 				case TRIAL_HAND_2_NEU_REC_HAND_MSG_STOP_RECORDING:
 					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, &rt_tasks_data->current_system_time, recording_data, spike_time_stamps))	
