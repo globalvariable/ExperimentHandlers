@@ -64,7 +64,7 @@ void *recording_thread_function( void *dummy )
 					path = &path_temp[7];   // since     uri returns file:///home/....		
 
 					recording_number = msg_item.additional_data;
-					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, rt_tasks_data->current_system_time))	
+					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, &rt_tasks_data->current_system_time, recording_data, spike_time_stamps))	
 					{
 						print_message(ERROR_MSG ,"NeuRecHandler", "Gui", "timeout_callback", "! *fclose_all_data_files().");
 						exit(1);
