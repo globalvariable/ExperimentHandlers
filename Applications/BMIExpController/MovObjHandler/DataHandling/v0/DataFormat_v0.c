@@ -459,8 +459,7 @@ static int create_joint_angle_data(char *data_directory_path)
 		
 	strcpy(temp, data_directory_path);
 	strcat(temp, "/joint_angle");
-	if ((fp = fopen(temp, "w")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
-	fprintf(fp,"----------MovObjHandler - Joint Angle File----------\n");
+	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[JOINT_ANGLE_DATA_FILE_PTR_ARR_IDX] =  fp;
 
@@ -474,8 +473,7 @@ static int create_robot_pulse_data(char *data_directory_path)
 		
 	strcpy(temp, data_directory_path);
 	strcat(temp, "/robot_pulse");
-	if ((fp = fopen(temp, "w")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
-	fprintf(fp,"----------MovObjHandler - Robot Pulse File----------\n");
+	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[ROBOT_PULSE_DATA_FILE_PTR_ARR_IDX] =  fp;
 
@@ -504,7 +502,6 @@ static int close_joint_angle_data(void)
 {
 	FILE *fp = file_ptr_arr[JOINT_ANGLE_DATA_FILE_PTR_ARR_IDX ];
 
-	fprintf(fp,"----------MovObjHandler - End of Joint Angle File----------\n");
 	fclose(fp);
 	return 1;
 }
@@ -513,7 +510,6 @@ static int close_robot_pulse_data(void)
 {
 	FILE *fp = file_ptr_arr[ROBOT_PULSE_DATA_FILE_PTR_ARR_IDX];
 
-	fprintf(fp,"----------MovObjHandler - End of Robot Pulse File----------\n");
 	fclose(fp);
 	return 1;
 }
@@ -603,7 +599,7 @@ static int write_to_joint_angle_data(ThreeDofRobotAngleHistory *robot_angle_hist
 
 	while (get_next_three_dof_robot_angle_history_item(robot_angle_history, &item))
 	{
-		fprintf(fp,"%llu\t%.4f\t%.4f\t%.4f\n", item.time, item.servo_angles[BASE_SERVO], item.servo_angles[SHOULDER_SERVO], item.servo_angles[ELBOW_SERVO]);	 //  4 digit precision shoude be enough. limited for fast writing (not 15 digit precision-double precision)
+		fwrite(&item, sizeof(ThreeDofRobotAngleHistoryItem), 1, fp);
 	}
 
 	return 1;
@@ -616,7 +612,7 @@ static int write_to_robot_pulse_data(ThreeDofRobotPulseHistory *robot_pulse_hist
 
 	while (get_next_three_dof_robot_pulse_history_item(robot_pulse_history, &item))
 	{
-		fprintf(fp,"%llu\t%u\t%u\t%u\n", item.time, item.servo_pulses[BASE_SERVO], item.servo_pulses[SHOULDER_SERVO], item.servo_pulses[ELBOW_SERVO]);	
+		fwrite(&item, sizeof(ThreeDofRobotPulseHistoryItem), 1, fp);
 	}
 
 	return 1;
