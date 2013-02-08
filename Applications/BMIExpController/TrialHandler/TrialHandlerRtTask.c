@@ -29,10 +29,9 @@ static NeuralNet2TrialHandMsg *msgs_neural_net_2_trial_hand = NULL;
 static TrialHand2SpikeGenMsg *msgs_trial_hand_2_spike_gen = NULL;
 static SpikeGen2TrialHandMsg *msgs_spike_gen_2_trial_hand = NULL;
 #endif
-#ifdef	IN_VIVO_MODE
 static NeuRecHand2TrialHandMsg *msgs_neu_rec_hand_2_trial_hand = NULL;
 static TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
-#endif
+
 static int trial_handler_rt_thread = 0;
 static bool rt_trial_handler_stay_alive = 1;
 
@@ -44,9 +43,9 @@ static bool connect_to_neural_net(void);
 #ifdef	SIMULATION_MODE
 static bool connect_to_spike_gen(void);
 #endif
-#ifdef	IN_VIVO_MODE
+
 static bool connect_to_neu_rec_hand(void);
-#endif
+
 
 bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history)
 {
@@ -69,9 +68,7 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 #ifdef	SIMULATION_MODE
 	msgs_spike_gen_2_trial_hand = allocate_shm_server_spike_gen_2_trial_hand_msg_buffer(msgs_spike_gen_2_trial_hand);
 #endif
-#ifdef	IN_VIVO_MODE
 	msgs_neu_rec_hand_2_trial_hand = allocate_shm_server_neu_rec_hand_2_trial_hand_msg_buffer(msgs_neu_rec_hand_2_trial_hand);
-#endif
 	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_neural_net().");	
 
@@ -85,10 +82,9 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 	sleep(1);
 	if (! connect_to_exp_envi_hand())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_exp_envi_hand().");	
-#ifdef	IN_VIVO_MODE
 	if (! connect_to_neu_rec_hand())
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "connect_to_neu_rec_hand().");	
-#endif
+
 	msgs_trial_dur_hand_2_trial_hand = allocate_trial_dur_hand_2_trial_hand_msg_buffer(msgs_trial_dur_hand_2_trial_hand);
 	msgs_trial_hand_2_trial_dur_hand = allocate_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand);
 
@@ -129,7 +125,7 @@ static void *rt_trial_handler(void *args)
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
 #ifdef	SIMULATION_MODE
-	initialize_gui_to_trial_handler_msg_params(&trial_status, static_msgs_gui_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history, static_msgs_trial_hand_2_gui, static_trial_status_history);
+	initialize_gui_to_trial_handler_msg_params(&trial_status, static_msgs_gui_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history, static_msgs_trial_hand_2_gui, static_trial_status_history, msgs_trial_hand_2_neu_rec_hand);
 	initialize_trial_dur_handler_to_trial_handler_msg_params(&trial_status, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, classified_history, static_paradigm, static_msgs_trial_hand_2_gui, static_trial_status_history);
 	initialize_exp_envi_handler_to_trial_handler_msg_params(&trial_status, msgs_exp_envi_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history, static_msgs_trial_hand_2_gui, static_trial_status_history);
 	initialize_mov_obj_handler_to_trial_handler_msg_params(&trial_status, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, msgs_trial_hand_2_spike_gen, static_paradigm, classified_history, static_msgs_trial_hand_2_gui, static_trial_status_history);
@@ -149,9 +145,8 @@ static void *rt_trial_handler(void *args)
 	msgs_spike_gen_2_trial_hand->buff_read_idx = msgs_spike_gen_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 #endif
 	static_msgs_gui_2_trial_hand->buff_read_idx = static_msgs_gui_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
-#ifdef	IN_VIVO_MODE
 	msgs_neu_rec_hand_2_trial_hand->buff_read_idx = msgs_neu_rec_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
-#endif
+
         while (rt_trial_handler_stay_alive) 
 	{
         	rt_task_wait_period();
@@ -321,7 +316,7 @@ static bool connect_to_spike_gen(void)
 	return print_message(BUG_MSG ,"TrialHandler", "MovObjHandlerRtTask", "connect_to_spike_gen", "Wrong hit in the code.");
 }
 #endif
-#ifdef	IN_VIVO_MODE
+
 static bool connect_to_neu_rec_hand(void)
 {
 	NeuRecHand2TrialHandMsgItem msg_item;
@@ -355,4 +350,4 @@ static bool connect_to_neu_rec_hand(void)
 	}
 	return print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "connect_to_neu_rec_hand", "Wrong hit in the code.");
 }
-#endif
+
