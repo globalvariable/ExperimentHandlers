@@ -4,8 +4,6 @@ static unsigned int recording_data_buff_read_start_idx[MAX_NUM_OF_MWA][MAX_NUM_O
 static unsigned int recording_data_buff_read_end_idx[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
 static unsigned int spike_time_stamp_buff_read_start_idx;
 static unsigned int spike_time_stamp_buff_read_end_idx;
-static TimeStamp recording_start_time;
-static TimeStamp recording_end_time;
 
 static FILE *meta_data_file_ptr;
 static FILE *recording_data_file_ptr_arr[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
@@ -70,7 +68,7 @@ int create_data_directory_v0(int num, ...)
 	DIR	*dir_data_directory;	
 	char *path_chooser;
 	char data_directory_path[600];
-	TimeStamp *rec_start;
+	TimeStamp *rec_start, recording_start_time;
 	RecordingData *recording_data;
 	SpikeTimeStamp *spike_time_stamps;
 
@@ -166,7 +164,7 @@ int create_data_directory_v0(int num, ...)
 }
 int fclose_all_data_files_v0(int num, ...)
 {
-	TimeStamp *rec_end;
+	TimeStamp *rec_end, recording_end_time;
 	RecordingData *recording_data;
 	SpikeTimeStamp *spike_time_stamps;
 	unsigned int i, j;

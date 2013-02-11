@@ -161,9 +161,9 @@ static gboolean timeout_callback(gpointer graph)
 	}
 	else
 	{
-				static_mov_obj_status_history->buff_read_idx = static_mov_obj_status_history->buff_write_idx;
-				static_robot_angle_history->buff_read_idx = static_robot_angle_history->buff_write_idx;
-				static_robot_pulse_history->buff_read_idx = static_robot_pulse_history->buff_write_idx;	
+		static_mov_obj_status_history->buff_read_idx = static_mov_obj_status_history->buff_write_idx;
+		static_robot_angle_history->buff_read_idx = static_robot_angle_history->buff_write_idx;
+		static_robot_pulse_history->buff_read_idx = static_robot_pulse_history->buff_write_idx;	
 	}
 	return TRUE;
 } 
