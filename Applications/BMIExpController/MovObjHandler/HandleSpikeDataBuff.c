@@ -9,14 +9,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
 	unsigned int			*read_idx, write_idx, buffer_size;
 
-	unsigned int base_servo_extensor_spike_counter;
-	unsigned int base_servo_flexor_spike_counter;
-	unsigned int shoulder_servo_extensor_spike_counter;
-	unsigned int shoulder_servo_flexor_spike_counter;
-	unsigned int elbow_servo_extensor_spike_counter;
-	unsigned int elbow_servo_flexor_spike_counter;
+	int base_servo_extensor_spike_counter;
+	int base_servo_flexor_spike_counter;
+	int shoulder_servo_extensor_spike_counter;
+	int shoulder_servo_flexor_spike_counter;
+	int elbow_servo_extensor_spike_counter;
+	int elbow_servo_flexor_spike_counter;
 	double spike_2_pulse_width_multiplier;
-	ServoPulseChange pulse_change, max_pulse_change;
+	ServoPulseChange pulse_change;
 
 	read_idx = &(scheduled_spike_data->buff_idx_read);
 	write_idx = scheduled_spike_data->buff_idx_write;	
@@ -96,45 +96,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			}
 
 			spike_2_pulse_width_multiplier = mov_obj_paradigm->spike_2_pulse_width_multiplier ;
-			max_pulse_change = mov_obj_paradigm->max_pulse_width_change;
 
 			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(base_servo_flexor_spike_counter - base_servo_extensor_spike_counter));
-			if (pulse_change < 0)
-			{
-				if (pulse_change < (-max_pulse_change))
-					pulse_change = -max_pulse_change;
-			}
-			else
-			{
-				if (pulse_change > max_pulse_change)
-					pulse_change = max_pulse_change;	
-			}
 			submit_servo_direction_and_speed(&(robot->servos[BASE_SERVO]), pulse_change);
 
 			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(shoulder_servo_flexor_spike_counter - shoulder_servo_extensor_spike_counter));
-			if (pulse_change < 0)
-			{
-				if (pulse_change < (-max_pulse_change))
-					pulse_change = -max_pulse_change;
-			}
-			else
-			{
-				if (pulse_change > max_pulse_change)
-					pulse_change = max_pulse_change;	
-			}
 			submit_servo_direction_and_speed(&(robot->servos[SHOULDER_SERVO]), pulse_change);
 
 			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
-			if (pulse_change < 0)
-			{
-				if (pulse_change < (-max_pulse_change))
-					pulse_change = -max_pulse_change;
-			}
-			else
-			{
-				if (pulse_change > max_pulse_change)
-					pulse_change = max_pulse_change;	
-			}
 			submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), pulse_change);
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:

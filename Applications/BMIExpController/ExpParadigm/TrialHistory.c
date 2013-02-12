@@ -248,6 +248,20 @@ TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory
 	return trial_data->trial_length_windowed_average;
 }
 
+double calculate_and_get_remained_distance_to_target_windowed_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size)
+{
+	unsigned int write_idx_prev; 
+
+	if ( hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx == 0)
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buffer_size - 1;
+	else
+		 write_idx_prev = hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->buff_write_idx - 1;
+
+	trial_data->remained_distance_to_target_windowed_average = ((hist->trial_types[trial_data->robot_start_position_idx][trial_data->robot_target_position_idx]->history[write_idx_prev].remained_distance_to_target_windowed_average * window_size) + trial_data->remained_distance_to_target) / (window_size+1);	
+
+	return trial_data->remained_distance_to_target_windowed_average;
+}
+
 TrialData* get_previous_trial_history_data_ptr(TrialHistory* hist)
 {
 	unsigned int idx = hist->buff_write_idx;

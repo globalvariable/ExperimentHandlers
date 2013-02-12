@@ -123,7 +123,7 @@ int create_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/TrialHandlerRecord");
+	strcat(data_directory_path, "/TrialHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) != NULL)
         {
@@ -222,7 +222,7 @@ int delete_data_directory_v0(int num, ...)   // call it after fclose_all_data_fi
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/TrialHandlerRecord");
+	strcat(data_directory_path, "/TrialHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) == NULL)
         {

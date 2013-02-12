@@ -19,7 +19,7 @@ int main( int argc, char *argv[])
 	paradigm->max_trial_length = 3000000000;
 	paradigm->min_trial_refractory = 4000000000;
 	paradigm->max_extra_trial_refractory = 500000000;
-	paradigm->num_of_robot_start_positions = 1;
+	paradigm->num_of_robot_start_positions = 1;	/// change ClassifiedTrialHistory struct so that it does not have a dimension for num_of_robot_start_positions since reward is related to target, not starting point. remained distance to target when a trial ends is normalized according to the initial distance to target. 
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
 
@@ -34,7 +34,7 @@ int main( int argc, char *argv[])
 	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
 	paradigm->max_target_reach_threshold.r_y = 10; // depth    
 	paradigm->max_target_reach_threshold.r_z = 8; // lateral
-	paradigm->max_num_of_sessions = 10;  
+	paradigm->max_num_of_sessions = 1;  
 
 	paradigm->current_trial_data.session_idx = 0;
 	paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold. 

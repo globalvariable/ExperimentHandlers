@@ -253,7 +253,7 @@ int delete_data_directory_v0(int num, ...)
 	}
 	
 	strcpy(data_directory_path, path_chooser);	
-	strcat(data_directory_path, "/NeuRecHandlerRecord");
+	strcat(data_directory_path, "/NeuRecHandlerRecord/");
 	strcat(data_directory_path, data_directory_name);	
 	if ((dir_data_directory = opendir(data_directory_path)) == NULL)
         {
@@ -382,7 +382,7 @@ static int create_recording_data(char *data_directory_path)
 {
 	char temp[600];
 	FILE *fp;
-	char char_mwa_num[10], char_chan_num[10];
+	char char_mwa_num[20], char_chan_num[20];
 	unsigned int i,j;
 	
 	for (i=0; i < MAX_NUM_OF_MWA; i++)
@@ -578,7 +578,7 @@ static int delete_meta_data(char *data_directory_path)
 static int delete_recording_data(char *data_directory_path)
 {
 	char temp[600];
-	char char_mwa_num[10], char_chan_num[10];
+	char char_mwa_num[20], char_chan_num[20];
 	unsigned int i,j;
 	
 	for (i=0; i < MAX_NUM_OF_MWA; i++)

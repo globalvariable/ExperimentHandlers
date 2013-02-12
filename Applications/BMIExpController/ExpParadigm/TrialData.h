@@ -23,6 +23,7 @@ struct __TrialData
 	TimeStamp			trial_length;
 	TimeStamp			trial_length_windowed_average; 
 	double				remained_distance_to_target;
+	double				remained_distance_to_target_windowed_average;
 	double				initial_distance_to_target;
 	EllipsoidThreshold		rewarding_threshold;
 	unsigned int			gui_selected_target_position_idx;

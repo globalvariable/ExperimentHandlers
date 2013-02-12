@@ -1,8 +1,10 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
 #define AVERAGING_WINDOW 5
-#define ALPHA 20.0
-#define BETA 0.5
+#define ALPHA 50.0
+#define BETA 200.0
+#define MU 50.0
+#define TARGET_THRESHOLD 1.0
 
 
 static TrialStatus *trial_status = NULL;
@@ -31,8 +33,10 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
 	double remained_distance_to_target;
 	double reward;
-	double R_n, tau;
-	TimeStamp t_avg, trial_length, refractory;
+	double remained_distance_to_target_windowed_average;
+	double D;
+	double target_threshold;
+	TimeStamp trial_length, refractory;
 
 	while (get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(msgs_mov_obj_hand_2_trial_hand, &msg_item))
 	{
@@ -50,28 +54,31 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						trial_length = current_time - paradigm->current_trial_data.trial_start_time;
 						paradigm->current_trial_data.trial_end_time = current_time;
 						paradigm->current_trial_data.trial_length = trial_length;
-						paradigm->current_trial_data.remained_distance_to_target = remained_distance_to_target;
+						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
 						paradigm->current_trial_data.binary_reward = TRUE;
 
-						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
-						t_avg = calculate_and_get_trial_length_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
-
-						tau = ((double)t_avg - (double)trial_length) / (double)t_avg;
-
-						if (tau < 0)
-							reward = (1 - R_n) - exp (-ALPHA*(1 - R_n)) * (1 - exp(-BETA*fabs(tau)));
+						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
+						if (remained_distance_to_target_windowed_average >= paradigm->current_trial_data.remained_distance_to_target)
+							D = 1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
 						else
-							reward = (1 - R_n) + exp (-ALPHA*(1 - R_n)) * (1 - exp(-BETA*fabs(tau)));
+							D = -(1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						
+						target_threshold = (TARGET_THRESHOLD / paradigm->current_trial_data.initial_distance_to_target) - 1.0; 
+
+						if (target_threshold >= paradigm->current_trial_data.remained_distance_to_target)
+							reward = D + exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						else
+							reward = D - exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
 
 						paradigm->current_trial_data.reward_magnitude = reward;
 
 						printf ("reward --- : %.8f\n", reward);
-						printf ("trial_length --- : %.8f seconds\n", trial_length/1000000000.0);
-						printf ("trial_length_avg --- : %.8f\n", t_avg/1000000000.0);
-						printf ("tau --- : %.8f\n", tau);
-						printf ("binary_reward_avg --- : %.8f\n", R_n);
+						printf ("D --- : %.8f\n", D);
+						printf ("pow(remained_distance_to_target_windowed_average-remained_distance_to_target, 2.0): %.8f\n", pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
 						printf ("distance to target --- : %.8f\n", remained_distance_to_target);
 						printf ("initial distance to target --- : %.8f\n", paradigm->current_trial_data.initial_distance_to_target);
+						printf ("paradigm->current_trial_data.remained_distance_to_target --- : %.8f\n", paradigm->current_trial_data.remained_distance_to_target);
+						printf ("remained_distance_to_target_windowed_average --- : %.8f\n", remained_distance_to_target_windowed_average);
 
 						trial_hand_to_neural_net_msg_add.reward = reward;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial
@@ -103,25 +110,29 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						trial_length = current_time - paradigm->current_trial_data.trial_start_time;
 						paradigm->current_trial_data.trial_end_time = current_time;
 						paradigm->current_trial_data.trial_length = trial_length;
-						paradigm->current_trial_data.remained_distance_to_target = remained_distance_to_target;
-						paradigm->current_trial_data.binary_reward = FALSE;
+						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
+						paradigm->current_trial_data.binary_reward = TRUE;
 
-						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
-						t_avg = calculate_and_get_trial_length_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
+						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
+						if (remained_distance_to_target_windowed_average >= paradigm->current_trial_data.remained_distance_to_target)
+							D = 1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
+						else
+							D = -(1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						
+						target_threshold = (TARGET_THRESHOLD / paradigm->current_trial_data.initial_distance_to_target) - 1.0; 
 
-						tau = ((double)t_avg - (double)trial_length) / (double)t_avg;
-
-						reward = - 1.0; 
-
-						paradigm->current_trial_data.reward_magnitude = reward;
+						if (target_threshold >= paradigm->current_trial_data.remained_distance_to_target)
+							reward = D + exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						else
+							reward = D - exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
 
 						printf ("reward --- : %.8f\n", reward);
-						printf ("trial_length --- : %.8f seconds\n", trial_length/1000000000.0);
-						printf ("trial_length_avg --- : %.8f\n", t_avg/1000000000.0);
-						printf ("tau --- : %.8f\n", tau);
-						printf ("binary_reward_avg --- : %.8f\n", R_n);
+						printf ("D --- : %.8f\n", D);
+						printf ("pow(remained_distance_to_target_windowed_average-remained_distance_to_target, 2.0): %.8f\n", pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
 						printf ("distance to target --- : %.8f\n", remained_distance_to_target);
 						printf ("initial distance to target --- : %.8f\n", paradigm->current_trial_data.initial_distance_to_target);
+						printf ("paradigm->current_trial_data.remained_distance_to_target --- : %.8f\n", paradigm->current_trial_data.remained_distance_to_target);
+						printf ("remained_distance_to_target_windowed_average --- : %.8f\n", remained_distance_to_target_windowed_average);
 
 						trial_hand_to_neural_net_msg_add.reward = reward;
 						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_PUNISHMENT_GIVEN, trial_hand_to_neural_net_msg_add))  // to tell unsuccesful trial

@@ -31,12 +31,13 @@ int main( int argc, char *argv[])
 	if (! connect_to_trial_hand(rt_tasks_data, msgs_trial_hand_2_neu_rec_hand, &msgs_neu_rec_hand_2_trial_hand))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "connect_to_trial_hand().");	
 
+	gtk_init(&argc, &argv);
   	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
 	if(! create_neu_rec_handler_non_rt_thread(rt_tasks_data, recording_data, spike_time_stamps, msgs_trial_hand_2_neu_rec_hand, btn_select_directory_to_save))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "create_neu_rec_handler_non_rt_thread().");
 
-	gtk_init(&argc, &argv);
+///	gtk_init(&argc, &argv);   call it before gtk_file_chooser_button_new() above;
 	create_gui_handler(btn_select_directory_to_save);
 	gtk_main();
 	return 0;

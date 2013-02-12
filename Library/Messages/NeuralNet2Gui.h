@@ -6,15 +6,21 @@
 typedef struct __NeuralNet2GuiMsg NeuralNet2GuiMsg;
 typedef struct __NeuralNet2GuiMsgItem NeuralNet2GuiMsgItem;
 typedef unsigned int NeuralNet2GuiMsgType;
-typedef unsigned int NeuralNet2GuiMsgAdditional;
+
+typedef union 
+{
+	unsigned int recording_number;
+	double reward;
+} NeuralNet2GuiMsgAdditional;
 
 
-#define NEURAL_NET_2_GUI_MSG_STRING_LENGTH		50
+#define NEURAL_NET_2_GUI_MSG_STRING_LENGTH		70
 
-#define NEURAL_NET_2_GUI_MSG_NULL					0
-#define NEURAL_NET_2_GUI_MSG_START_RECORDING	1
-#define NEURAL_NET_2_GUI_MSG_STOP_RECORDING		2
-#define NEURAL_NET_2_GUI_MSG_CANCEL_RECORDING	3
+#define NEURAL_NET_2_GUI_MSG_NULL						0
+#define NEURAL_NET_2_GUI_MSG_START_RECORDING			1
+#define NEURAL_NET_2_GUI_MSG_STOP_RECORDING			2
+#define NEURAL_NET_2_GUI_MSG_CANCEL_RECORDING			3
+#define NEURAL_NET_2_GUI_MSG_UPDATE_SYNAPTIC_WEIGHTS	4
 
 #include <stdbool.h>
 #include <gtk/gtk.h>
