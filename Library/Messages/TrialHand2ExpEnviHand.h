@@ -23,6 +23,7 @@ typedef unsigned int TrialHand2ExpEnviHandMsgAdditional;
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INP_COMPS_W_NO_STATUS_RESET	9    		
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_INP_COMPS_W_STATUS_RESET	10    		
 #define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_INPUT_COMPONENTS			11    		
+#define TRIAL_HAND_2_EXP_ENVI_HAND_MSG_GET_READY_TO_TRIAL_START			12    		
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

@@ -1,9 +1,9 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
 #define AVERAGING_WINDOW 5
-#define ALPHA 50.0
-#define BETA 200.0
-#define MU 50.0
+#define ALPHA 60.0
+#define BETA 270.0
+#define MU 12.0
 #define TARGET_THRESHOLD 1.0
 
 
