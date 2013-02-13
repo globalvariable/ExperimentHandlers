@@ -16,7 +16,8 @@ typedef struct
 	TimeStamp				max_trial_length;			
 	TimeStamp				min_trial_refractory;	
 	TimeStamp				max_extra_trial_refractory;
-	TimeStamp				get_ready_to_trial_start_length;			
+	TimeStamp				min_get_ready_to_trial_start_length;	
+	TimeStamp				max_extra_get_ready_to_trial_start_length;	
 	EllipsoidThreshold			min_target_reach_threshold;
 	EllipsoidThreshold			max_target_reach_threshold;
 	unsigned int				max_num_of_sessions;

@@ -17,9 +17,10 @@ int main( int argc, char *argv[])
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 10000000000;
-	paradigm->min_trial_refractory = 4000000000;
+	paradigm->min_trial_refractory = 2500000000;
 	paradigm->max_extra_trial_refractory = 500000000;
-	paradigm->get_ready_to_trial_start_length = 500000000;
+	paradigm->min_get_ready_to_trial_start_length = 300000000;
+	paradigm->max_extra_get_ready_to_trial_start_length = 200000000;
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
