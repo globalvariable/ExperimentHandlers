@@ -7,7 +7,7 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 	TrialHand2MovObjHandMsgItem msg_item;
 	char str_trial_hand_msg[TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	char str_mov_obj_status[MOV_OBJ_STATUS_MAX_STRING_LENGTH];
-
+	double speed;
 	unsigned int recording_number;
 
 	while (get_next_trial_hand_2_mov_obj_hand_msg_buffer_item(msgs_trial_hand_2_mov_obj_hand, &msg_item))
@@ -23,9 +23,12 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 					case MOV_OBJ_STATUS_OUT_OF_TRIAL:
 						*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT;
 						mov_obj_paradigm->target_info.selected_position_idx = msg_item.additional_data.robot_target_position_idx;  
-						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);	
+						speed = ((SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX - SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN)* get_rand_number()) + SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN;
+						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], speed);
+						speed = ((SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX - SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN)* get_rand_number()) + SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN;
+						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], speed);
+						speed = ((SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX - SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN)* get_rand_number()) + SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MIN;
+						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->target_info.robot_pulse_widths[mov_obj_paradigm->target_info.selected_position_idx].pulse[ELBOW_SERVO], speed);	
 						if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");			
 						if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT))
@@ -79,9 +82,9 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 					case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 						*mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
 						mov_obj_paradigm->start_info.selected_position_idx = msg_item.additional_data.robot_start_position_idx;  
-						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
+						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
+						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
+						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
 						break;   // do nothing
 					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
 						print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);	
@@ -99,9 +102,9 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 					case MOV_OBJ_STATUS_DISABLED:
 						*mov_obj_status = MOV_OBJ_STATUS_OUT_OF_TRIAL;
 						mov_obj_paradigm->start_info.selected_position_idx = msg_item.additional_data.robot_start_position_idx;  
-						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
-						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
+						submit_servo_target(&(robot_arm->servos[BASE_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
+						submit_servo_target(&(robot_arm->servos[SHOULDER_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
+						submit_servo_target(&(robot_arm->servos[ELBOW_SERVO]), mov_obj_paradigm->start_info.robot_pulse_widths[mov_obj_paradigm->start_info.selected_position_idx].pulse[ELBOW_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET_MAX);
 						if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_OUT_OF_TRIAL))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_hand_to_mov_obj_handler_msg", "! write_to_mov_obj_status_history()");		
 						break;

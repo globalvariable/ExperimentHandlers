@@ -11,6 +11,8 @@ static ClassifiedTrialHistory* classified_history = NULL;
 
 static TrialStatusHistory *static_trial_status_history = NULL;
 
+static bool stop_continuous_recording_request = FALSE;
+
 static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
 static GtkWidget *btn_disable_trials;
@@ -55,6 +57,8 @@ static GtkWidget *lbl_trial_status;
 static GtkWidget *btn_start_recording;
 static GtkWidget *btn_stop_recording;
 static GtkWidget *btn_cancel_recording;
+
+static GtkWidget *lbl_recording_status;
 
 static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
@@ -409,6 +413,12 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	btn_cancel_recording = gtk_button_new_with_label("CANCEL");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_cancel_recording, TRUE, TRUE, 0);
 
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	lbl_recording_status = gtk_label_new("RECORDING IDLE");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_recording_status, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(lbl_recording_status, 300, 30);	
 
 	g_signal_connect(G_OBJECT(btn_reset_connections), "clicked", G_CALLBACK(reset_connections_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
@@ -445,7 +455,8 @@ static gboolean timeout_callback(gpointer user_data)
 	char *path_temp, *path;
 	char temp[TRIAL_HAND_2_GUI_MSG_STRING_LENGTH];
 	TrialHand2GuiMsgItem msg_item;
-	static bool recording = FALSE;
+	static bool recording = FALSE, first_start_recording_msg = TRUE;
+	static bool continuous_recording = FALSE;
 	TrialStatus trial_status;
 	unsigned int recording_number;
 
@@ -463,19 +474,19 @@ static gboolean timeout_callback(gpointer user_data)
 		switch (msg_item.msg_type)
 		{
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK:
-
+				if (first_start_recording_msg)
+				{
+					first_start_recording_msg = FALSE;
+					continuous_recording = TRUE;
+					gtk_widget_set_sensitive(btn_start_recording, FALSE);
+					gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+				}
+				recording = TRUE;	
 				path_temp = NULL; path = NULL;
 				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 				path = &path_temp[7];   // since     uri returns file:///home/....	
 				recording_number = msg_item.additional_data;
-				if ((*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
-				{
-					recording = TRUE;	
-					gtk_widget_set_sensitive(btn_start_recording, FALSE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, TRUE);
-				}
-				else
+				if (! (*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *create_data_directory().");	
 					exit(1);
@@ -485,6 +496,9 @@ static gboolean timeout_callback(gpointer user_data)
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *write_to_data_files().");		
 					exit(1);
 				}	
+				sprintf (temp, "RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				gtk_widget_set_sensitive(btn_cancel_recording, TRUE);
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK:
 				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, static_trial_status_history))	// this function handles history buffers
@@ -493,17 +507,27 @@ static gboolean timeout_callback(gpointer user_data)
 					exit(1);
 				}	
 				recording_number = msg_item.additional_data;
-				if ((*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_rt_tasks_data->current_system_time, &(classified_history->all_trials->history[recording_number])))	
-				{
-					recording = FALSE;	
-					gtk_widget_set_sensitive(btn_start_recording, TRUE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, FALSE);		
-				}
-				else
+				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_rt_tasks_data->current_system_time, &(classified_history->all_trials->history[recording_number])))	
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *fclose_all_data_files().");
 					exit(1);
+				}
+				sprintf (temp, "FINISHED RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				recording = FALSE;	
+				gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+				if (stop_continuous_recording_request)
+				{
+					first_start_recording_msg = TRUE;
+					continuous_recording = FALSE;
+					stop_continuous_recording_request = FALSE;
+					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+					gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				}
+				else	// it comes here when there is continous recording.
+				{
+					if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
+						return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");			
 				}
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK:
@@ -519,18 +543,20 @@ static gboolean timeout_callback(gpointer user_data)
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "! *fclose_all_data_files().");
 					exit(1);
 				}
-				if ((*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
-				{
-					recording = FALSE;	
-					gtk_widget_set_sensitive(btn_start_recording, TRUE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
-				}
-				else
+				if (! (*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *fdelete_all_data_files().");
 					exit(1);
 				}
+				sprintf (temp, "DELETED DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				recording = FALSE;	
+				stop_continuous_recording_request = FALSE;
+				continuous_recording = FALSE;
+				first_start_recording_msg = TRUE;
+				gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+				gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 				break;
 			case TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE:
 				trial_status = msg_item.additional_data;
@@ -539,39 +565,29 @@ static gboolean timeout_callback(gpointer user_data)
 				switch (trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						gtk_widget_set_sensitive(btn_start_recording, FALSE);
-						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
 						gtk_widget_set_sensitive(btn_start_recording, FALSE);
-						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
 						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);					
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
 						sprintf (temp, "%u", classified_history->all_trials->buff_write_idx);
 						gtk_label_set_text (GTK_LABEL (lbl_num_of_trials), temp);
-						if (recording)
+						if ( continuous_recording)
 						{
-							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+							sleep(1);
+							if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
 						}
 						else
 						{
 							gtk_widget_set_sensitive(btn_start_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if (recording)
-						{
-							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
-						}
-						else
+						if (! continuous_recording)
 						{
 							gtk_widget_set_sensitive(btn_start_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						}
 						break;
 					default:
@@ -738,14 +754,12 @@ static void create_recording_folder_button_func (void)
 static void start_recording_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");	
+		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");
 }
 static void stop_recording_button_func (void)
 {
-	if (classified_history->all_trials->buff_write_idx == 0)
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "stop_recording_button_func ", "classified_history->all_trials->buff_write_idx == 0, no trial started so far.");	
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+	stop_continuous_recording_request = TRUE;
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);
 }
 static void cancel_recording_button_func (void)
 {
