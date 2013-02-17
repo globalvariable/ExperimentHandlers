@@ -19,7 +19,8 @@ int main( int argc, char *argv[])
 	paradigm->max_trial_length = 10000000000;
 	paradigm->min_trial_refractory = 2500000000;
 	paradigm->max_extra_trial_refractory = 500000000;
-	paradigm->min_get_ready_to_trial_start_length = 300000000;
+//	paradigm->min_get_ready_to_trial_start_length = 300000000;
+	paradigm->min_get_ready_to_trial_start_length = 0;
 	paradigm->max_extra_get_ready_to_trial_start_length = 200000000;
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;

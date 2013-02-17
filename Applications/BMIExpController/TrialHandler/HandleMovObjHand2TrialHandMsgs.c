@@ -1,11 +1,9 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-#define AVERAGING_WINDOW 5
-#define ALPHA 60.0
+#define AVERAGING_WINDOW 1
+#define ALPHA 80.0
 #define BETA 270.0
-#define MU 12.0
-#define TARGET_THRESHOLD 1.0
-
+#define MU 8.0
 
 static TrialStatus *trial_status = NULL;
 static MovObjHand2TrialHandMsg *msgs_mov_obj_hand_2_trial_hand = NULL;
@@ -32,10 +30,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 #endif
 	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
 	double remained_distance_to_target;
-	double reward;
+	double reward, R_n;
 	double remained_distance_to_target_windowed_average;
-	double D;
-	double target_threshold;
 	TimeStamp trial_length, refractory;
 
 	while (get_next_mov_obj_hand_2_trial_hand_msg_buffer_item(msgs_mov_obj_hand_2_trial_hand, &msg_item))
@@ -55,26 +51,16 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						paradigm->current_trial_data.trial_end_time = current_time;
 						paradigm->current_trial_data.trial_length = trial_length;
 						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
-						paradigm->current_trial_data.binary_reward = TRUE;
 
 						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
-						if (remained_distance_to_target_windowed_average >= paradigm->current_trial_data.remained_distance_to_target)
-							D = 1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
-						else
-							D = -(1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0)));
-						
-						target_threshold = (TARGET_THRESHOLD / paradigm->current_trial_data.initial_distance_to_target) - 1.0; 
 
-						if (target_threshold >= paradigm->current_trial_data.remained_distance_to_target)
-							reward = D + exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
-						else
-							reward = D - exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						paradigm->current_trial_data.binary_reward = TRUE;
+						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+						reward = 1 - R_n;
 
 						paradigm->current_trial_data.reward_magnitude = reward;
 
 						printf ("reward --- : %.8f\n", reward);
-						printf ("D --- : %.8f\n", D);
-						printf ("pow(remained_distance_to_target_windowed_average-remained_distance_to_target, 2.0): %.8f\n", pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
 						printf ("distance to target --- : %.8f\n", remained_distance_to_target);
 						printf ("initial distance to target --- : %.8f\n", paradigm->current_trial_data.initial_distance_to_target);
 						printf ("paradigm->current_trial_data.remained_distance_to_target --- : %.8f\n", paradigm->current_trial_data.remained_distance_to_target);
@@ -111,24 +97,23 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						paradigm->current_trial_data.trial_end_time = current_time;
 						paradigm->current_trial_data.trial_length = trial_length;
 						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
-						paradigm->current_trial_data.binary_reward = TRUE;
 
 						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
-						if (remained_distance_to_target_windowed_average >= paradigm->current_trial_data.remained_distance_to_target)
-							D = 1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
+						if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.05))
+						{
+							paradigm->current_trial_data.binary_reward = FALSE;
+							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+							reward = 1.0;
+						}
 						else
-							D = -(1-exp(-ALPHA*pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0)));
-						
-						target_threshold = (TARGET_THRESHOLD / paradigm->current_trial_data.initial_distance_to_target) - 1.0; 
-
-						if (target_threshold >= paradigm->current_trial_data.remained_distance_to_target)
-							reward = D + exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
-						else
-							reward = D - exp(-BETA*pow(D, 2.0)) * (1-exp(-MU*pow(target_threshold - paradigm->current_trial_data.remained_distance_to_target, 2.0)));
+						{
+							paradigm->current_trial_data.binary_reward = FALSE;
+							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+							reward = -1.0;
+						}
 
 						printf ("reward --- : %.8f\n", reward);
-						printf ("D --- : %.8f\n", D);
-						printf ("pow(remained_distance_to_target_windowed_average-remained_distance_to_target, 2.0): %.8f\n", pow(remained_distance_to_target_windowed_average-paradigm->current_trial_data.remained_distance_to_target, 2.0));
+						printf ("R_n --- : %.8f\n", reward);
 						printf ("distance to target --- : %.8f\n", remained_distance_to_target);
 						printf ("initial distance to target --- : %.8f\n", paradigm->current_trial_data.initial_distance_to_target);
 						printf ("paradigm->current_trial_data.remained_distance_to_target --- : %.8f\n", paradigm->current_trial_data.remained_distance_to_target);
