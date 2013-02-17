@@ -34,6 +34,8 @@ typedef struct
 	RobotSpacePoints				target_info;
 	ThreeDofRobotCartesianLimit	cartesian_space_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
 	ServoAngularLimit				polar_space_limits[THREE_DOF_ROBOT_NUM_OF_SERVOS];
+	double						servo_pw_change_rate_for_position_reset_min;
+	double						servo_pw_change_rate_for_position_reset_max;
 } MovObjHandParadigmRobotReach;
 
 bool submit_cartesian_robotic_space_borders(ThreeDofRobot *robot_arm, MovObjHandParadigmRobotReach *paradigm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max);

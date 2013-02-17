@@ -27,6 +27,9 @@ static GtkWidget *lbl_threshold_r_x;
 static GtkWidget *lbl_threshold_r_y;
 static GtkWidget *lbl_threshold_r_z;
 
+static GtkWidget *entry_max_lever_press_interval;
+static GtkWidget *btn_submit_max_lever_press_interval;
+
 //Stats
 static GtkWidget *entry_trial_number;
 static GtkWidget *lbl_trial_length;
@@ -61,6 +64,8 @@ static void quit_trials_button_func (void);
 static void auto_target_select_mode_on_off_button_func(void);
 static void select_target_button_func (void);
 static void release_reward_button_func (void);
+
+static void submit_max_lever_press_interval_button_func (void);
 
 static void submit_trial_number_button_func (void);
 
@@ -200,6 +205,19 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	lbl = gtk_label_new("");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE,0);
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_submit_max_lever_press_interval = gtk_button_new_with_label("Lever Press Interval");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_max_lever_press_interval, FALSE, FALSE, 0);
+
+	entry_max_lever_press_interval = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_max_lever_press_interval, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_max_lever_press_interval, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_max_lever_press_interval), "700");
+	lbl = gtk_label_new("ms");	
+     	gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
 
 	////////   SECOND COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -408,6 +426,8 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	g_signal_connect(G_OBJECT(btn_select_target), "clicked", G_CALLBACK(select_target_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_release_reward), "clicked", G_CALLBACK(release_reward_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_submit_max_lever_press_interval), "clicked", G_CALLBACK(submit_max_lever_press_interval_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_submit_trial_number), "clicked", G_CALLBACK(submit_trial_number_button_func), NULL);
 
@@ -774,4 +794,10 @@ static void release_reward_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_RELEASE_REWARD, 0))
 		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");	
+}
+
+static void submit_max_lever_press_interval_button_func (void)
+{
+	paradigm->max_lever_press_interval = (TimeStamp)(1000000.0 * atof(gtk_entry_get_text(GTK_ENTRY(entry_max_lever_press_interval))));
+
 }

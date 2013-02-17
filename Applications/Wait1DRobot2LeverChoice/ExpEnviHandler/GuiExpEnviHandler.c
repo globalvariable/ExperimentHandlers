@@ -12,8 +12,13 @@ static ExpEnviHandParadigmRobotReach *static_exp_envi_paradigm = NULL;
 
 static ExpEnviData *static_exp_envi_data = NULL;
 
+static GtkWidget *entry_lever_press_duration;
+static GtkWidget *btn_submit_lever_press_duration;
+
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
+
+static void submit_lever_press_duration_button_func (void);
 
 static void create_recording_folder_button_func (void);
 
@@ -25,7 +30,7 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 {
 	static_rt_tasks_data = rt_tasks_data;
 
-	GtkWidget *frame, *frame_label, *hbox, *table, *vbox;
+	GtkWidget *frame, *frame_label, *hbox, *table, *vbox, *lbl;
 
 	static_msgs_gui_2_exp_envi_hand = msgs_gui_2_exp_envi_hand;
 	static_msgs_exp_envi_hand_2_gui = msgs_exp_envi_hand_2_gui;
@@ -54,6 +59,16 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
+	btn_submit_lever_press_duration = gtk_button_new_with_label("Lever Press Duration");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_lever_press_duration, FALSE, FALSE, 0);
+
+	entry_lever_press_duration = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_lever_press_duration, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_lever_press_duration, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_lever_press_duration), "300");
+	lbl = gtk_label_new("ms");	
+     	gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 2,3, 0, 6);  // column 2-3, row 0-6
@@ -75,6 +90,8 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+	g_signal_connect(G_OBJECT(btn_submit_lever_press_duration), "clicked", G_CALLBACK(submit_lever_press_duration_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
@@ -211,3 +228,22 @@ static void set_directory_btn_select_directory_to_save(void)
 	}  	 
 }
 
+static void submit_lever_press_duration_button_func (void)
+{
+	TimeStamp lever_press_duration;
+	unsigned int idx;
+
+	lever_press_duration = (TimeStamp)(1000000.0 * atof(gtk_entry_get_text(GTK_ENTRY(entry_lever_press_duration))));
+
+	if (! get_input_component_type_idx_in_exp_envi_data(static_exp_envi_data, EXP_ENVI_INPUT_COMPONENT_LEFT_LEVER, &idx))
+		return (void)print_message(ERROR_MSG ,"ExpEnviHandler", "GuiExpEnviHandler", "submit_lever_press_duration_button_func", "! get_input_component_type_idx_in_exp_envi_data()");
+
+	static_exp_envi_data->inp_comp_types[idx].constraints.min_low_status_duration = lever_press_duration;
+
+	if (! get_input_component_type_idx_in_exp_envi_data(static_exp_envi_data, EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER, &idx))
+		return (void)print_message(ERROR_MSG ,"ExpEnviHandler", "GuiExpEnviHandler", "submit_lever_press_duration_button_func", "! get_input_component_type_idx_in_exp_envi_data()");
+
+	static_exp_envi_data->inp_comp_types[idx].constraints.min_low_status_duration = lever_press_duration;
+
+	return;
+}

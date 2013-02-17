@@ -12,8 +12,14 @@ static MovObjStatusHistory* static_mov_obj_status_history = NULL;
 static ThreeDofRobotAngleHistory *static_robot_angle_history = NULL;
 static ThreeDofRobotPulseHistory *static_robot_pulse_history = NULL;
 
+static GtkWidget *entry_servo_pw_change_rate_for_position_reset_min;
+static GtkWidget *entry_servo_pw_change_rate_for_position_reset_max;
+static GtkWidget *btn_submit_servo_pw_change_rate_for_position_reset;
+
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
+
+static void submit_servo_pw_change_rate_for_position_reset_button_func (void);
 
 static void create_recording_folder_button_func (void);
 
@@ -23,7 +29,7 @@ static gboolean timeout_callback(gpointer graph);
 
 bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2MovObjHandMsg *msgs_gui_2_mov_obj_hand, MovObjHand2GuiMsg *msgs_mov_obj_hand_2_gui, ThreeDofRobot *robot_arm, MovObjHandParadigmRobotReach *mov_obj_paradigm, MovObjStatusHistory* mov_obj_status_history, ThreeDofRobotAngleHistory *robot_angle_history, ThreeDofRobotPulseHistory *robot_pulse_history)
 {
-	GtkWidget *frame, *frame_label, *hbox, *table, *vbox;
+	GtkWidget *frame, *frame_label, *hbox, *table, *vbox, *lbl;
 
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -54,6 +60,26 @@ bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
+	btn_submit_servo_pw_change_rate_for_position_reset = gtk_button_new_with_label("Servo Reset Ratio");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_servo_pw_change_rate_for_position_reset, FALSE, FALSE, 0);
+
+	lbl = gtk_label_new("min");	
+     	gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+
+	entry_servo_pw_change_rate_for_position_reset_min = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_servo_pw_change_rate_for_position_reset_min, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_servo_pw_change_rate_for_position_reset_min, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_servo_pw_change_rate_for_position_reset_min), "0.05");
+
+	lbl = gtk_label_new("max");	
+     	gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+
+	entry_servo_pw_change_rate_for_position_reset_max = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_servo_pw_change_rate_for_position_reset_max, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_servo_pw_change_rate_for_position_reset_max, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_servo_pw_change_rate_for_position_reset_max), "0.06");
+
+
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 2,3, 0, 6);  // column 2-3, row 0-6
@@ -75,6 +101,8 @@ bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui
 	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+	g_signal_connect(G_OBJECT(btn_submit_servo_pw_change_rate_for_position_reset), "clicked", G_CALLBACK(submit_servo_pw_change_rate_for_position_reset_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
@@ -211,4 +239,19 @@ static void set_directory_btn_select_directory_to_save(void)
 		}
 		fclose(fp); 		
 	}  	 
+}
+
+static void submit_servo_pw_change_rate_for_position_reset_button_func (void)
+{	
+	double min, max;
+
+	min = atof(gtk_entry_get_text(GTK_ENTRY(entry_servo_pw_change_rate_for_position_reset_min)));
+	max = atof(gtk_entry_get_text(GTK_ENTRY(entry_servo_pw_change_rate_for_position_reset_max)));
+
+	if (min > max)
+		return (void)print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "submit_servo_pw_change_rate_for_position_reset_button_func", "(min > max).");	
+
+	static_mov_obj_paradigm->servo_pw_change_rate_for_position_reset_min = min;
+	static_mov_obj_paradigm->servo_pw_change_rate_for_position_reset_max = max;
+
 }

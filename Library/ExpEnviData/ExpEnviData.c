@@ -77,6 +77,24 @@ bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCo
 	print_message(INFO_MSG ,"ExperimentHandlers", "ExpEnviData", "add_input_component_type_to_exp_envi_data", temp);	
 	return TRUE;
 }
+
+bool submit_new_time_params_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration, TimeStamp max_high_status_duration, TimeStamp min_low_status_duration, TimeStamp max_low_status_duration)
+{
+	unsigned int idx;
+	if (! get_input_component_type_idx_in_exp_envi_data(data, comp_type, &idx))
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ExpEnviData", "submit_new_time_params_for_input_component_type", "! get_input_component_type_idx_in_exp_envi_data()");	
+
+	if ((min_high_status_duration + 100000000) >= max_high_status_duration)  // should be 100msec diff to be robust
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ExpEnviData", "submit_new_time_params_for_input_component_type", "Inconvenient min_high_status_duration & max_high_status_duration");	
+	if ((min_low_status_duration + 100000000) >= max_low_status_duration)  // should be 100msec diff to be robust
+		return print_message(ERROR_MSG ,"ExperimentHandlers", "ExpEnviData", "submit_new_time_params_for_input_component_type", "Inconvenient min_low_status_duration & max_low_status_duration");	
+
+	data->inp_comp_types[idx].constraints.max_high_status_duration = max_high_status_duration;
+	data->inp_comp_types[idx].constraints.min_high_status_duration = min_high_status_duration;
+	data->inp_comp_types[idx].constraints.max_low_status_duration = max_low_status_duration;
+	data->inp_comp_types[idx].constraints.min_low_status_duration = min_low_status_duration;
+	return TRUE;
+}
 bool is_input_component_type_used(ExpEnviData* data, ExpEnviInputCompType comp_type, bool *used)
 {
 	unsigned int i;
