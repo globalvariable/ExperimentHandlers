@@ -51,6 +51,7 @@ typedef struct
 void init_three_dof_robot_arm(ThreeDofRobot *robot_arm);
 void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, double length_ulna, double height_ulna);
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
+void evaluate_three_dof_robot_arm_pw_command_width_degree_limitation(ThreeDofRobot *robot_arm, double degree_limitation);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 void submit_static_variables_for_forward_kinematics_with_three_sample_averaging(double servo_angle_base, double servo_angle_shoulder, double servo_angle_elbow);
 void calculate_forward_kinematics_with_averaging(ThreeDofRobot *robot_arm);

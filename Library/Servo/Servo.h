@@ -35,6 +35,7 @@ typedef struct
 	ServoPosition			position_0_degree;
 	ServoPosition			position_90_degree;
 	double				radian_per_pos_quanta;
+	double				pw_per_degree;
 } ServoRange;
 
 typedef struct 
@@ -63,6 +64,7 @@ void init_servo_pulse(ServoData *servo_data, ServoPulse pulse_width);
 void submit_servo_target(ServoData *servo_data, ServoPulse target_pulse_width, double change_rate);
 void submit_servo_direction_and_speed(ServoData *servo_data,  ServoPulseChange amount);
 void evaluate_servo_pw_command(ServoData *servo_data);
+void evaluate_servo_pw_command_with_limitation(ServoData *servo_data, double degree_limitation);
 void get_servo_pw_val_bytes(ServoData *servo_data, unsigned char *low_byte, unsigned char *high_byte);
 void get_servo_position_val(ServoData *servo_data, ServoPosition *servo_position);
 void write_servo_position_val(ServoData *servo_data, unsigned char low_byte, unsigned char high_byte);

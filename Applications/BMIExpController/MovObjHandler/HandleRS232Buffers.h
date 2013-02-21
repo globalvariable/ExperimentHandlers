@@ -12,7 +12,7 @@
 
 bool init_rs232_buffers(ThreeDofRobot *robot_arm, SEM **exp_envi_rx_buff_sem, SEM **exp_envi_tx_buff_sem, ExpEnviRxShm **exp_envi_rx_buff_shm, ExpEnviTxShm **exp_envi_tx_buff_shm, TimeStamp current_time);
 bool handle_exp_envi_tx_shm_and_send_rs232_adc_command(TimeStamp current_time);
-bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history);
+bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history, double max_servo_angle_change);
 bool handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm(void);
 
 

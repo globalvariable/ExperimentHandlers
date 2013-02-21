@@ -86,7 +86,7 @@ bool handle_exp_envi_tx_shm_and_send_rs232_adc_command(TimeStamp current_time)
 	return TRUE;
 }
 
-bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history)
+bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history, double max_servo_angle_change)
 {
 	unsigned int i;
 	ExpEnviTxShm exp_envi_tx_buffer;
@@ -113,7 +113,7 @@ bool handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 
 	if ( check_three_dof_robot_security_limits(static_robot_arm))
 	{
-		evaluate_three_dof_robot_arm_pw_command(static_robot_arm);
+		evaluate_three_dof_robot_arm_pw_command_width_degree_limitation(static_robot_arm, max_servo_angle_change );
 		if (! write_to_three_dof_robot_pulse_history(robot_pulse_history, current_time, static_robot_arm->servos[BASE_SERVO].pulse_current, static_robot_arm->servos[SHOULDER_SERVO].pulse_current, static_robot_arm->servos[ELBOW_SERVO].pulse_current))
 			return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command", "! write_to_three_dof_robot_pulse_history()."); 
 		for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)

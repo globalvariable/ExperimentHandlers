@@ -1,6 +1,7 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-#define AVERAGING_WINDOW 1
+#define REWARD_AVERAGING_WINDOW 1
+#define DISTANCE_AVERAGING_WINDOW 1
 #define ALPHA 80.0
 #define BETA 270.0
 #define MU 8.0
@@ -52,10 +53,10 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						paradigm->current_trial_data.trial_length = trial_length;
 						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
 
-						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
+						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), DISTANCE_AVERAGING_WINDOW);
 
 						paradigm->current_trial_data.binary_reward = TRUE;
-						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
 						reward = 1 - R_n;
 
 						paradigm->current_trial_data.reward_magnitude = reward;
@@ -98,17 +99,17 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						paradigm->current_trial_data.trial_length = trial_length;
 						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
 
-						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);
+						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), DISTANCE_AVERAGING_WINDOW);
 						if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.05))
 						{
 							paradigm->current_trial_data.binary_reward = FALSE;
-							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
 							reward = 1.0;
 						}
 						else
 						{
 							paradigm->current_trial_data.binary_reward = FALSE;
-							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), AVERAGING_WINDOW);	
+							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
 							reward = -1.0;
 						}
 

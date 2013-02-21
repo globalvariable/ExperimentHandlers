@@ -15,7 +15,7 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 	int shoulder_servo_flexor_spike_counter;
 	int elbow_servo_extensor_spike_counter;
 	int elbow_servo_flexor_spike_counter;
-	double spike_2_pulse_width_multiplier;
+	double spike_2_servo_degree_multiplier;
 	ServoPulseChange pulse_change;
 
 	read_idx = &(scheduled_spike_data->buff_idx_read);
@@ -95,15 +95,15 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				}
 			}
 
-			spike_2_pulse_width_multiplier = mov_obj_paradigm->spike_2_pulse_width_multiplier ;
+			spike_2_servo_degree_multiplier = mov_obj_paradigm->spike_2_servo_degree_multiplier; 
 
-			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(base_servo_flexor_spike_counter - base_servo_extensor_spike_counter));
+			pulse_change = (ServoPulseChange)(robot->servos[BASE_SERVO].range.pw_per_degree * spike_2_servo_degree_multiplier * (base_servo_flexor_spike_counter - base_servo_extensor_spike_counter));
 			submit_servo_direction_and_speed(&(robot->servos[BASE_SERVO]), pulse_change);
 
-			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(shoulder_servo_flexor_spike_counter - shoulder_servo_extensor_spike_counter));
+			pulse_change = (ServoPulseChange)(robot->servos[SHOULDER_SERVO].range.pw_per_degree * spike_2_servo_degree_multiplier *(shoulder_servo_flexor_spike_counter - shoulder_servo_extensor_spike_counter));
 			submit_servo_direction_and_speed(&(robot->servos[SHOULDER_SERVO]), pulse_change);
 
-			pulse_change = (ServoPulseChange)(spike_2_pulse_width_multiplier*(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
+			pulse_change = (ServoPulseChange)(robot->servos[ELBOW_SERVO].range.pw_per_degree * spike_2_servo_degree_multiplier *(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
 			submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), pulse_change);
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:

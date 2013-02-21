@@ -40,14 +40,15 @@ void submit_servo_direction_and_speed(ServoData *servo_data,  ServoPulseChange a
 void evaluate_servo_pw_command(ServoData *servo_data)
 {
 	pthread_mutex_lock(&(servo_data->mutex));
-	servo_data->pulse_current += servo_data->pulse_change;
+
 	if (servo_data->pulse_change == 0)	// it is evaluating submit_servo_direction_and_speed
 	{
-		servo_data->pulse_current = servo_data->pulse_target;
+		servo_data->pulse_current = servo_data->pulse_target;  // pulse_current is the pulse width which is sent to servo in previous period.
 		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
 	}
 	else if (servo_data->pulse_change > 0)  // target pulse width given and it reaches that pulse width with servo_data->pulse_change with the servo pulsing frequency period.
 	{
+		servo_data->pulse_current += servo_data->pulse_change;
 		if (servo_data->pulse_current > servo_data->pulse_target)
 		{
 			servo_data->pulse_current = servo_data->pulse_target;
@@ -56,6 +57,54 @@ void evaluate_servo_pw_command(ServoData *servo_data)
 	}
 	else if (servo_data->pulse_change < 0) 
 	{
+		servo_data->pulse_current += servo_data->pulse_change;
+		if (servo_data->pulse_current < servo_data->pulse_target)
+		{
+			servo_data->pulse_current = servo_data->pulse_target;
+		}
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);		
+	}
+	pthread_mutex_unlock(&(servo_data->mutex));	
+}
+
+void evaluate_servo_pw_command_with_limitation(ServoData *servo_data, double degree_limitation)
+{
+	double degree_change;
+	pthread_mutex_lock(&(servo_data->mutex));
+
+	if (servo_data->pulse_change == 0)	// it is evaluating submit_servo_direction_and_speed
+	{
+		if (servo_data->pulse_target > servo_data->pulse_current)
+		{
+			degree_change = ((double)(servo_data->pulse_target - servo_data->pulse_current)) / servo_data->range.pw_per_degree;
+			if (degree_change > degree_limitation)
+			{
+				servo_data->pulse_target = servo_data->pulse_current + ((ServoPulse)(servo_data->range.pw_per_degree * degree_limitation));
+			}
+		}
+		else
+		{
+			degree_change = ((double)(servo_data->pulse_current - servo_data->pulse_target)) / servo_data->range.pw_per_degree;
+			if (degree_change > degree_limitation)
+			{
+				servo_data->pulse_target = servo_data->pulse_current - ((ServoPulse)(servo_data->range.pw_per_degree * degree_limitation));
+			}
+		}
+		servo_data->pulse_current = servo_data->pulse_target;	// pulse_current is the pulse width which is sent to servo in previous period.
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
+	}
+	else if (servo_data->pulse_change > 0)  // target pulse width given and it reaches that pulse width with servo_data->pulse_change with the servo pulsing frequency period.
+	{
+		servo_data->pulse_current += servo_data->pulse_change;
+		if (servo_data->pulse_current > servo_data->pulse_target)
+		{
+			servo_data->pulse_current = servo_data->pulse_target;
+		}
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
+	}
+	else if (servo_data->pulse_change < 0) 
+	{
+		servo_data->pulse_current += servo_data->pulse_change;
 		if (servo_data->pulse_current < servo_data->pulse_target)
 		{
 			servo_data->pulse_current = servo_data->pulse_target;
@@ -96,6 +145,7 @@ void write_servo_pw_adc_ranges(ServoData *servo_data, ServoPulse zero_degree_pul
 	servo_data->range.position_0_degree = zero_degree_adc_val;
 	servo_data->range.position_90_degree = ninety_degree_adc_val;
 	servo_data->range.radian_per_pos_quanta = M_PI_2 / (servo_data->range.position_90_degree - servo_data->range.position_0_degree);
+	servo_data->range.pw_per_degree = (servo_data->range.pulse_width_90_degree - servo_data->range.pulse_width_0_degree)/90.0;
 	pthread_mutex_unlock(&(servo_data->mutex));	
 }
 

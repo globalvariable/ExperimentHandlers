@@ -29,8 +29,8 @@ typedef struct
 	TimeStamp					stay_at_target_duration;	
 	TimeStamp					send_pw_command_wait_period;
 	TimeStamp					receive_position_wait_period;
-	double						spike_2_pulse_width_multiplier;
-	ServoPulseChange			max_pulse_width_change;   // for servo control in handle spike data buff. It determines max servo speed.
+	double						spike_2_servo_degree_multiplier;
+	double						max_servo_angle_change;  // (in terms of degree)   // for servo control in handle spike data buff. It determines max servo speed.
 	MovObjThreshold				threshold;
 	RobotSpacePoints				start_info;
 	RobotSpacePoints				target_info;

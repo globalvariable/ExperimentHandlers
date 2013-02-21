@@ -17,7 +17,7 @@ int main( int argc, char *argv[])
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 3000000000;
-	paradigm->min_trial_refractory = 4000000000;
+	paradigm->min_trial_refractory = 2000000000;
 	paradigm->max_extra_trial_refractory = 500000000;
 	paradigm->num_of_robot_start_positions = 1;	/// change ClassifiedTrialHistory struct so that it does not have a dimension for num_of_robot_start_positions since reward is related to target, not starting point. remained distance to target when a trial ends is normalized according to the initial distance to target. 
 	paradigm->num_of_robot_target_positions = 2;

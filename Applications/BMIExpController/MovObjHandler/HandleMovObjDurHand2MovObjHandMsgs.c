@@ -48,7 +48,7 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						}
 						break;	
 					case MOV_OBJ_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
-						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history))
+						if (! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, mov_obj_paradigm->max_servo_angle_change ))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_exp_envi_tx_shm_and_send_rs232_pulse_width_command");
 						// Schedule adc conversion results reading and pulse width sending again.
 						mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = current_time + mov_obj_paradigm->send_pw_command_wait_period;
