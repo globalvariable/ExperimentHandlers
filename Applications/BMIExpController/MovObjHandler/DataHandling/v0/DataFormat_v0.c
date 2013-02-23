@@ -342,8 +342,8 @@ static int create_main_meta_file(char *main_directory_path, MovObjHandParadigmRo
 	fprintf(fp,"MovObjHandParadigmRobotReach.stay_at_target_duration\t%llu\n", paradigm->stay_at_target_duration);
 	fprintf(fp,"MovObjHandParadigmRobotReach.send_pw_command_wait_period\t%llu\n", paradigm->send_pw_command_wait_period);
 	fprintf(fp,"MovObjHandParadigmRobotReach.send_pw_command_wait_period\t%llu\n", paradigm->send_pw_command_wait_period);
-	fprintf(fp,"MovObjHandParadigmRobotReach.spike_2_pulse_width_multiplier\t%.15f\n", paradigm->spike_2_pulse_width_multiplier);
-	fprintf(fp,"MovObjHandParadigmRobotReach.max_pulse_width_change\t%d\n", paradigm->max_pulse_width_change);
+	fprintf(fp,"MovObjHandParadigmRobotReach.spike_2_servo_degree_multiplier\t%.15f\n", paradigm->spike_2_servo_degree_multiplier);
+	fprintf(fp,"MovObjHandParadigmRobotReach.max_servo_angle_change\t%.15f\n", paradigm->max_servo_angle_change);
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_x\t%.15f\n", paradigm->threshold.point_reach_threshold.r_x);
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_y\t%.15f\n", paradigm->threshold.point_reach_threshold.r_y);
 	fprintf(fp,"MovObjHandParadigmRobotReach.threshold.point_reach_threshold.r_z\t%.15f\n", paradigm->threshold.point_reach_threshold.r_z);
