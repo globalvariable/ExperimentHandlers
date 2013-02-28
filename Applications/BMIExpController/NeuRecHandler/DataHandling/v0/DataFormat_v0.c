@@ -328,7 +328,7 @@ static int create_main_meta_file(char *main_directory_path)
 	fprintf(fp,"LOWEST_VOLTAGE_MV\t%f\tMILLIVOLTS\n",LOWEST_VOLTAGE_MV);
 	fprintf(fp,"HIGHEST_VOLTAGE_MV\t%f\tMILLIVOLTS\n",HIGHEST_VOLTAGE_MV);	
 	fprintf(fp,"DAQ_0_MODEL\t%s\n",DAQ_0_MODEL);	
-	fprintf(fp,"typedef double RecordingDataSample;\n");
+	fprintf(fp,"typedef float RecordingDataSample;\n");
 	fprintf(fp,"sizeof(RecordingDataSample)\t%lu\n", sizeof(RecordingDataSample));	
 	fprintf(fp,"typedef struct __SpikeTimeStampItem\n");
 	fprintf(fp,"{\n");

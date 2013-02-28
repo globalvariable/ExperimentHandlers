@@ -17,11 +17,11 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "rt_tasks_data == NULL.");
 
    	recording_data = rtai_malloc(SHM_NUM_KERNEL_SPIKE_RECORDING_DATA, 0);
-	if (rt_tasks_data == NULL) 
+	if (recording_data == NULL) 
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "recording_data == NULL.");
 
    	spike_time_stamps = rtai_malloc(SHM_NUM_KERNEL_SPIKE_SPIKE_TIME_STAMP, 0);
-	if (rt_tasks_data == NULL) 
+	if (spike_time_stamps == NULL) 
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "spike_time_stamps == NULL.");
 
 	initialize_data_read_write_handlers();
