@@ -395,6 +395,22 @@ static int create_main_meta_file(char *main_directory_path, MovObjHandParadigmRo
 	fprintf(fp,"MOV_OBJ_STATUS_RESETTING_TO_START_POINT\t%u\n", MOV_OBJ_STATUS_RESETTING_TO_START_POINT); 
 	fprintf(fp,"MOV_OBJ_STATUS_DISABLED	\t%u\n", MOV_OBJ_STATUS_DISABLED); 
 
+	fprintf(fp,"struct __ThreeDofRobotAngleHistoryItem\n");
+	fprintf(fp,"{\n");
+	fprintf(fp,"\tTimeStamp 		time;\n");
+	fprintf(fp,"\tServoAngle		servo_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];\n");
+	fprintf(fp,"};\n");
+	fprintf(fp,"sizeof(ThreeDofRobotAngleHistoryItem)\t%lu\n", sizeof(ThreeDofRobotAngleHistoryItem));	
+	fprintf(fp,"typedef double ServoAngle;\n");	
+
+	fprintf(fp,"struct __ThreeDofRobotPulseHistoryItem\n");
+	fprintf(fp,"{\n");
+	fprintf(fp,"\tTimeStamp 		time;\n");
+	fprintf(fp,"\tServoPulse		servo_pulses[THREE_DOF_ROBOT_NUM_OF_SERVOS];\n");
+	fprintf(fp,"};\n");
+	fprintf(fp,"sizeof(ThreeDofRobotPulseHistoryItem)\t%lu\n", sizeof(ThreeDofRobotPulseHistoryItem));	
+	fprintf(fp,"typedef unsigned short int ServoPulse;\n");	
+
 	fprintf(fp,"----------MovObjHandler - End of Main Meta File----------\n");
 	fclose(fp);
 	return 1;
@@ -458,7 +474,7 @@ static int create_joint_angle_data(char *data_directory_path)
 	FILE *fp;
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/joint_angle");
+	strcat(temp, "/joint_angle.bin");
 	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[JOINT_ANGLE_DATA_FILE_PTR_ARR_IDX] =  fp;
@@ -472,7 +488,7 @@ static int create_robot_pulse_data(char *data_directory_path)
 	FILE *fp;
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/robot_pulse");
+	strcat(temp, "/robot_pulse.bin");
 	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[ROBOT_PULSE_DATA_FILE_PTR_ARR_IDX] =  fp;
@@ -560,7 +576,7 @@ static int delete_joint_angle_data(char *data_directory_path)
 	char temp[600];
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/joint_angle");
+	strcat(temp, "/joint_angle.bin");
 	
 	if (remove(temp) != 0)  { printf ("ERROR: MovObjHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
@@ -572,7 +588,7 @@ static int delete_robot_pulse_data(char *data_directory_path)
 	char temp[600];
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/robot_pulse");
+	strcat(temp, "/robot_pulse.bin");
 	
 	if (remove(temp) != 0)  { printf ("ERROR: MovObjHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 

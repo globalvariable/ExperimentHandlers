@@ -392,6 +392,22 @@ static int create_main_meta_file(char *main_directory_path, MovObjHandParadigmRo
 	fprintf(fp,"MOV_OBJ_STATUS_RESETTING_TO_START_POINT\t%u\n", MOV_OBJ_STATUS_RESETTING_TO_START_POINT); 
 	fprintf(fp,"MOV_OBJ_STATUS_DISABLED	\t%u\n", MOV_OBJ_STATUS_DISABLED); 
 
+	fprintf(fp,"struct __ThreeDofRobotAngleHistoryItem\n");
+	fprintf(fp,"{\n");
+	fprintf(fp,"\tTimeStamp 		time;\n");
+	fprintf(fp,"\tServoAngle		servo_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];\n");
+	fprintf(fp,"};\n");
+	fprintf(fp,"sizeof(ThreeDofRobotAngleHistoryItem)\t%lu\n", sizeof(ThreeDofRobotAngleHistoryItem));	
+	fprintf(fp,"typedef double ServoAngle;\n");	
+
+	fprintf(fp,"struct __ThreeDofRobotPulseHistoryItem\n");
+	fprintf(fp,"{\n");
+	fprintf(fp,"\tTimeStamp 		time;\n");
+	fprintf(fp,"\tServoPulse		servo_pulses[THREE_DOF_ROBOT_NUM_OF_SERVOS];\n");
+	fprintf(fp,"};\n");
+	fprintf(fp,"sizeof(ThreeDofRobotPulseHistoryItem)\t%lu\n", sizeof(ThreeDofRobotPulseHistoryItem));	
+	fprintf(fp,"typedef unsigned short int ServoPulse;\n");	
+
 	fprintf(fp,"----------MovObjHandler - End of Main Meta File----------\n");
 	fclose(fp);
 	return 1;
@@ -455,9 +471,8 @@ static int create_joint_angle_data(char *data_directory_path)
 	FILE *fp;
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/joint_angle");
-	if ((fp = fopen(temp, "w")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
-	fprintf(fp,"----------MovObjHandler - Joint Angle File----------\n");
+	strcat(temp, "/joint_angle.bin");
+	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[JOINT_ANGLE_DATA_FILE_PTR_ARR_IDX] =  fp;
 
@@ -470,9 +485,8 @@ static int create_robot_pulse_data(char *data_directory_path)
 	FILE *fp;
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/robot_pulse");
-	if ((fp = fopen(temp, "w")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
-	fprintf(fp,"----------MovObjHandler - Robot Pulse File----------\n");
+	strcat(temp, "/robot_pulse.bin");
+	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: MovObjHandler: Couldn't create file: %s\n\n", temp); return 0; }
 
 	file_ptr_arr[ROBOT_PULSE_DATA_FILE_PTR_ARR_IDX] =  fp;
 
@@ -501,7 +515,6 @@ static int close_joint_angle_data(void)
 {
 	FILE *fp = file_ptr_arr[JOINT_ANGLE_DATA_FILE_PTR_ARR_IDX ];
 
-	fprintf(fp,"----------MovObjHandler - End of Joint Angle File----------\n");
 	fclose(fp);
 	return 1;
 }
@@ -510,7 +523,6 @@ static int close_robot_pulse_data(void)
 {
 	FILE *fp = file_ptr_arr[ROBOT_PULSE_DATA_FILE_PTR_ARR_IDX];
 
-	fprintf(fp,"----------MovObjHandler - End of Robot Pulse File----------\n");
 	fclose(fp);
 	return 1;
 }
@@ -561,7 +573,7 @@ static int delete_joint_angle_data(char *data_directory_path)
 	char temp[600];
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/joint_angle");
+	strcat(temp, "/joint_angle.bin");
 	
 	if (remove(temp) != 0)  { printf ("ERROR: MovObjHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
@@ -573,7 +585,7 @@ static int delete_robot_pulse_data(char *data_directory_path)
 	char temp[600];
 		
 	strcpy(temp, data_directory_path);
-	strcat(temp, "/robot_pulse");
+	strcat(temp, "/robot_pulse.bin");
 	
 	if (remove(temp) != 0)  { printf ("ERROR: MovObjHandler: Couldn't delete file: %s\n\n", temp); return 0; }
 
@@ -600,7 +612,7 @@ static int write_to_joint_angle_data(ThreeDofRobotAngleHistory *robot_angle_hist
 
 	while (get_next_three_dof_robot_angle_history_item(robot_angle_history, &item))
 	{
-		fprintf(fp,"%llu\t%.4f\t%.4f\t%.4f\n", item.time, item.servo_angles[BASE_SERVO], item.servo_angles[SHOULDER_SERVO], item.servo_angles[ELBOW_SERVO]);	 //  4 digit precision shoude be enough. limited for fast writing (not 15 digit precision-double precision)
+		fwrite(&item, sizeof(ThreeDofRobotAngleHistoryItem), 1, fp);
 	}
 
 	return 1;
@@ -613,7 +625,7 @@ static int write_to_robot_pulse_data(ThreeDofRobotPulseHistory *robot_pulse_hist
 
 	while (get_next_three_dof_robot_pulse_history_item(robot_pulse_history, &item))
 	{
-		fprintf(fp,"%llu\t%u\t%u\t%u\n", item.time, item.servo_pulses[BASE_SERVO], item.servo_pulses[SHOULDER_SERVO], item.servo_pulses[ELBOW_SERVO]);	
+		fwrite(&item, sizeof(ThreeDofRobotPulseHistoryItem), 1, fp);
 	}
 
 	return 1;

@@ -9,6 +9,11 @@
 #include "../ExpParadigm/TrialHistory.h"
 #include "DataHandling/DataHandling.h"
 #include "../../../Library/Status/TrialStatusHistory.h"
+#include "../../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph.h"
+#include "../../../../BlueSpike/SpikeTimeStamp.h"
+#include "../../../../BlueSpike/System/ShmSemNum/ShmSemNum.h"
+#include "../../../../BlueSpike/TemplateMatchingData.h"
+
 
 bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history);
 

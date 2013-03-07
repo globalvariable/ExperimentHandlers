@@ -1,5 +1,9 @@
 #include "GuiTrialHandler.h"
 
+#define MAX_NUM_OF_UNIT_PER_CHAN_TO_HANDLE MAX_NUM_OF_UNIT_PER_CHAN
+#define NUM_OF_STATUS_MARKERS		3
+#define BUFFER_FOLLOWUP_LATENCY	1000000000ULL	
+
 static RtTasksData *static_rt_tasks_data = NULL;
 
 static Gui2TrialHandMsg *static_msgs_gui_2_trial_hand = NULL;  
@@ -10,6 +14,8 @@ static TrialHandParadigmRobotReach *paradigm = NULL;
 static ClassifiedTrialHistory* classified_history = NULL;
 
 static TrialStatusHistory *static_trial_status_history = NULL;
+
+static bool stop_continuous_recording_request = FALSE;
 
 static GtkWidget *btn_reset_connections;
 static GtkWidget *btn_enable_trials;
@@ -56,6 +62,8 @@ static GtkWidget *btn_start_recording;
 static GtkWidget *btn_stop_recording;
 static GtkWidget *btn_cancel_recording;
 
+static GtkWidget *lbl_recording_status;
+
 static void reset_connections_button_func (void);
 static void enable_trials_button_func (void);
 static void disable_trials_button_func (void);
@@ -79,6 +87,19 @@ static void cancel_recording_button_func (void);
 
 static void set_directory_btn_select_directory_to_save(void);
 
+static Network *blue_spike_network = NULL;
+static NetworkSpikePatternGraphScroll *blue_spike_spike_pattern_graph = NULL;
+static SpikeData **blue_spike_spike_data_for_graph = NULL;   // for visualization
+static SpikeTimeStamp 	*sorted_spike_time_stamp = NULL;    /// spike time stamps from biological neurons // sorted according to unit, not according to spike time.
+static TrialStatusEvents	*trial_status_events = NULL;   // to show status changed in graphs
+static unsigned int blue_spike_buff_read_idx;
+static unsigned int *blue_spike_buff_write_idx;
+
+static GtkWidget *btn_pause;
+static bool spike_pattern_graph_resume_request = FALSE;
+
+static void pause_button_func(void);
+
 static gboolean timeout_callback(gpointer user_data) ;
 
 bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *trial_hand_paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history)
@@ -86,6 +107,7 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	GtkWidget *frame, *frame_label, *hbox, *lbl, *table, *vbox;
 	char temp[100];
 	unsigned int i, j;
+
 
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -416,6 +438,12 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	btn_cancel_recording = gtk_button_new_with_label("CANCEL");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_cancel_recording, TRUE, TRUE, 0);
 
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	lbl_recording_status = gtk_label_new("RECORDING IDLE");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl_recording_status, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(lbl_recording_status, 300, 30);	
 
 	g_signal_connect(G_OBJECT(btn_reset_connections), "clicked", G_CALLBACK(reset_connections_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_enable_trials), "clicked", G_CALLBACK(enable_trials_button_func), NULL);
@@ -443,7 +471,48 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 	gtk_widget_set_sensitive(btn_stop_recording, FALSE);	
 	gtk_widget_set_sensitive(btn_cancel_recording, FALSE);	
 
-	g_timeout_add(100, timeout_callback, NULL);		
+        frame = gtk_frame_new ("");
+        frame_label = gtk_label_new ("     BlueSpike Spikes    ");      
+   
+        gtk_notebook_append_page (GTK_NOTEBOOK (tabs), frame, frame_label);  
+
+ 	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_container_add (GTK_CONTAINER (frame), hbox);
+
+	vbox = gtk_vbox_new(TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(hbox),vbox, TRUE,TRUE,0);
+
+  	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, TRUE,TRUE,0);
+
+	btn_pause = gtk_button_new_with_label("P");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_pause, FALSE, FALSE, 0);
+
+	blue_spike_network = allocate_network(blue_spike_network);
+	for (i=0; i < MAX_NUM_OF_MWA; i++)
+	{
+		for (j = 0; j < MAX_NUM_OF_CHAN_PER_MWA; j++)
+		{
+			if (!add_neuron_nodes_to_layer(blue_spike_network, MAX_NUM_OF_UNIT_PER_CHAN_TO_HANDLE ,i, FALSE)) 
+				return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "create_trial_handler_tab", " !add_neuron_nodes_to_layer.");	
+		}
+	}
+	blue_spike_spike_data_for_graph = g_new0(SpikeData*, 1);
+	blue_spike_spike_data_for_graph[0] = allocate_spike_data(blue_spike_spike_data_for_graph[0], get_num_of_neurons_in_network(blue_spike_network)*3*500 ); // 3 seconds buffer assuming
+
+	trial_status_events = allocate_trial_status_events_buffer(trial_status_events, 100, 3000000);  //  3 ms latency
+
+	blue_spike_spike_pattern_graph = allocate_network_spike_pattern_graph_scroll(blue_spike_network, hbox, blue_spike_spike_pattern_graph, 3000, 1000000, 900, 1000, BUFFER_FOLLOWUP_LATENCY, blue_spike_spike_data_for_graph,  NUM_OF_STATUS_MARKERS, trial_status_events, 1);    // 3 seconds, 1000 samples/sec, 100 ms latency
+
+	sorted_spike_time_stamp = rtai_malloc(SHM_NUM_KERNEL_SPIKE_SPIKE_TIME_STAMP, 0);
+	if (sorted_spike_time_stamp == NULL) 
+		return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "create_trial_handler_tab", "sorted_spike_time_stamp == NULL.");	
+	blue_spike_buff_write_idx = &(sorted_spike_time_stamp->buff_idx_write);
+	blue_spike_buff_read_idx = *blue_spike_buff_write_idx;
+
+	g_signal_connect(G_OBJECT(btn_pause), "clicked", G_CALLBACK(pause_button_func), NULL);
+
+	g_timeout_add(50, timeout_callback, NULL);		
 
 	return TRUE;
 }
@@ -453,10 +522,13 @@ static gboolean timeout_callback(gpointer user_data)
 	char *path_temp, *path;
 	char temp[TRIAL_HAND_2_GUI_MSG_STRING_LENGTH];
 	TrialHand2GuiMsgItem msg_item;
-	static bool recording = FALSE;
+	static bool recording = FALSE, first_start_recording_msg = TRUE;
+	static bool continuous_recording = FALSE;
 	TrialStatus trial_status;
-	unsigned int recording_number, i, j;
+	unsigned int recording_number, i, j, end_idx;
 	TrialData *trial_data;
+	TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add;
+	SpikeTimeStampItem *spike_time_stamp_item; 
 
 	sprintf (temp, "%.2f", paradigm->current_trial_data.rewarding_threshold.r_x);
 	gtk_label_set_text (GTK_LABEL (lbl_threshold_r_x), temp);
@@ -472,19 +544,19 @@ static gboolean timeout_callback(gpointer user_data)
 		switch (msg_item.msg_type)
 		{
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK:
-
+				if (first_start_recording_msg)
+				{
+					first_start_recording_msg = FALSE;
+					continuous_recording = TRUE;
+					gtk_widget_set_sensitive(btn_start_recording, FALSE);
+					gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+				}
+				recording = TRUE;	
 				path_temp = NULL; path = NULL;
 				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 				path = &path_temp[7];   // since     uri returns file:///home/....	
 				recording_number = msg_item.additional_data;
-				if ((*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
-				{
-					recording = TRUE;	
-					gtk_widget_set_sensitive(btn_start_recording, FALSE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, TRUE);
-				}
-				else
+				if (! (*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *create_data_directory().");	
 					exit(1);
@@ -494,6 +566,9 @@ static gboolean timeout_callback(gpointer user_data)
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *write_to_data_files().");		
 					exit(1);
 				}	
+				sprintf (temp, "RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				gtk_widget_set_sensitive(btn_cancel_recording, TRUE);
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK:
 				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, static_trial_status_history))	// this function handles history buffers
@@ -502,17 +577,27 @@ static gboolean timeout_callback(gpointer user_data)
 					exit(1);
 				}	
 				recording_number = msg_item.additional_data;
-				if ((*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_rt_tasks_data->current_system_time, &(classified_history->all_trials->history[recording_number])))	
-				{
-					recording = FALSE;	
-					gtk_widget_set_sensitive(btn_start_recording, TRUE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, FALSE);		
-				}
-				else
+				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_rt_tasks_data->current_system_time, &(classified_history->all_trials->history[recording_number])))	
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *fclose_all_data_files().");
 					exit(1);
+				}
+				sprintf (temp, "FINISHED RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				recording = FALSE;	
+				gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+				if (stop_continuous_recording_request)
+				{
+					first_start_recording_msg = TRUE;
+					continuous_recording = FALSE;
+					stop_continuous_recording_request = FALSE;
+					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+					gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				}
+				else	// it comes here when there is continous recording.
+				{
+					if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
+						return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");			
 				}
 				break;
 			case TRIAL_HAND_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK:
@@ -528,18 +613,20 @@ static gboolean timeout_callback(gpointer user_data)
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "! *fclose_all_data_files().");
 					exit(1);
 				}
-				if ((*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
-				{
-					recording = FALSE;	
-					gtk_widget_set_sensitive(btn_start_recording, TRUE);
-					gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-					gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
-				}
-				else
+				if (! (*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
 				{
 					print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " *fdelete_all_data_files().");
 					exit(1);
 				}
+				sprintf (temp, "DELETED DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);
+				recording = FALSE;	
+				stop_continuous_recording_request = FALSE;
+				continuous_recording = FALSE;
+				first_start_recording_msg = TRUE;
+				gtk_widget_set_sensitive(btn_start_recording, TRUE);
+				gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+				gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 				break;
 			case TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE:
 				trial_status = msg_item.additional_data;
@@ -548,16 +635,16 @@ static gboolean timeout_callback(gpointer user_data)
 				switch (trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						gtk_widget_set_sensitive(btn_start_recording, FALSE);
-						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
-						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						break;
 					case TRIAL_STATUS_IN_TRIAL:
+						trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_TRIAL;
+						schedule_trial_status_event(trial_status_events, msg_item.msg_time, trial_status_change_msg_add) ; 
 						gtk_widget_set_sensitive(btn_start_recording, FALSE);
-						gtk_widget_set_sensitive(btn_stop_recording, FALSE);
 						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);					
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
+						trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
+						schedule_trial_status_event(trial_status_events, msg_item.msg_time, trial_status_change_msg_add) ; 
 						for (i = 0; i < paradigm->num_of_robot_start_positions; i++)
 						{
 							for (j = 0; j < paradigm->num_of_robot_target_positions; j++)
@@ -571,30 +658,28 @@ static gboolean timeout_callback(gpointer user_data)
 								gtk_label_set_text (GTK_LABEL (lbl_success_ratio[i][j]), temp);
 							}
 						}
-						if (recording)
+						if ( continuous_recording)
 						{
-							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+							sleep(1);
+							if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
 						}
 						else
 						{
 							gtk_widget_set_sensitive(btn_start_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if (recording)
-						{
-							gtk_widget_set_sensitive(btn_stop_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
-						}
-						else
+						trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_START_TRIAL_AVAILABLE;
+						schedule_trial_status_event(trial_status_events, msg_item.msg_time, trial_status_change_msg_add) ; 
+						if (! continuous_recording)
 						{
 							gtk_widget_set_sensitive(btn_start_recording, TRUE);
-							gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
 						}
 						break;
 					case  TRIAL_STATUS_GET_READY_TO_START:	
+						gtk_widget_set_sensitive(btn_start_recording, FALSE);
+						gtk_widget_set_sensitive(btn_cancel_recording, FALSE);	
 						break;
 					default:
 						return print_message(BUG_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", "switch (trial_status) - default");
@@ -616,6 +701,32 @@ static gboolean timeout_callback(gpointer user_data)
 	{
 		static_trial_status_history->buff_read_idx = static_trial_status_history->buff_write_idx;	
 	}
+	end_idx = *blue_spike_buff_write_idx;
+	while (blue_spike_buff_read_idx != end_idx)
+	{
+		spike_time_stamp_item = &(sorted_spike_time_stamp->spike_time_stamp_buff[blue_spike_buff_read_idx]);
+		write_to_spike_data(blue_spike_spike_data_for_graph[0], spike_time_stamp_item->mwa_or_layer, spike_time_stamp_item->channel_or_neuron_group, spike_time_stamp_item->unit_or_neuron, spike_time_stamp_item->peak_time);	
+		if ((blue_spike_buff_read_idx+1) == SPIKE_TIME_STAMP_BUFF_SIZE)
+			blue_spike_buff_read_idx = 0;
+		else
+			blue_spike_buff_read_idx++;
+	}
+	if (spike_pattern_graph_resume_request)
+	{
+		spike_pattern_graph_resume_request = FALSE;
+		if (! determine_spike_pattern_graph_scroll_start_time_and_read_indexes(blue_spike_spike_pattern_graph, static_rt_tasks_data->current_system_time))
+		{
+			print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " ! determine_spike_pattern_graph_scroll_start_time_and_read_indexes().");		
+			exit(1);
+		}	
+		clear_network_spike_pattern_graph_w_scroll(blue_spike_network, blue_spike_spike_pattern_graph);
+		blue_spike_spike_pattern_graph->locally_paused = FALSE;
+	}
+	if (! handle_spike_pattern_graph_scrolling_and_plotting(blue_spike_spike_pattern_graph, blue_spike_network, static_rt_tasks_data->current_system_time))
+	{
+		print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "timeout_callback", " ! handle_spike_pattern_graph_scrolling_and_plotting().");		
+		exit(1);
+	}		
 	return TRUE;
 }
 
@@ -748,14 +859,12 @@ static void create_recording_folder_button_func (void)
 static void start_recording_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING, 0))
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");	
+		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "start_recording_button_func ", "! write_to_gui_2_trial_hand_msg_buffer().");
 }
 static void stop_recording_button_func (void)
 {
-	if (classified_history->all_trials->buff_write_idx == 0)
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "stop_recording_button_func ", "classified_history->all_trials->buff_write_idx == 0, no trial started so far.");	
-	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_BROADCAST_STOP_RECORDING, 0))
-		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "enable_trials_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+	stop_continuous_recording_request = TRUE;
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);
 }
 static void cancel_recording_button_func (void)
 {
@@ -801,3 +910,18 @@ static void submit_max_lever_press_interval_button_func (void)
 	paradigm->max_lever_press_interval = (TimeStamp)(1000000.0 * atof(gtk_entry_get_text(GTK_ENTRY(entry_max_lever_press_interval))));
 
 }
+
+static void pause_button_func(void)
+{
+	if (blue_spike_spike_pattern_graph->locally_paused)
+	{
+		spike_pattern_graph_resume_request = TRUE;
+		gtk_button_set_label (GTK_BUTTON(btn_pause),"R");  
+	}
+	else
+	{
+		blue_spike_spike_pattern_graph->local_pause_request = TRUE;
+		gtk_button_set_label (GTK_BUTTON(btn_pause),"P");		
+	}  
+}
+

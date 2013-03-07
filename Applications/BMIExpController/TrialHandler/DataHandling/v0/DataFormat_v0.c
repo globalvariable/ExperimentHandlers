@@ -304,6 +304,7 @@ static int create_main_meta_file(char *main_directory_path, TrialHandParadigmRob
 	fprintf(fp,"TRIAL_STATUS_IN_TRIAL\t%u\n", TRIAL_STATUS_IN_TRIAL); 
 	fprintf(fp,"TRIAL_STATUS_IN_REFRACTORY\t%u\n", TRIAL_STATUS_IN_REFRACTORY); 
 	fprintf(fp,"TRIAL_STATUS_START_TRIAL_AVAILABLE\t%u\n", TRIAL_STATUS_START_TRIAL_AVAILABLE); 
+	fprintf(fp,"TRIAL_STATUS_GET_READY_TO_START\t%u\n", TRIAL_STATUS_GET_READY_TO_START); 
 	fprintf(fp,"----------TrialHandler - End of Main Meta File----------\n");
 	fclose(fp);
 	return 1;

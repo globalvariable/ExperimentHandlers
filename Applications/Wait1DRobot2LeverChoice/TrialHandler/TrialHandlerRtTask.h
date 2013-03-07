@@ -15,6 +15,8 @@
 #include "../../../Library/Messages/MovObjHand2TrialHand.h"
 #include "../../../Library/Messages/TrialHand2ExpEnviHand.h"
 #include "../../../Library/Messages/TrialHand2MovObjHand.h"
+#include "../../../Library/Messages/NeuRecHand2TrialHand.h"
+#include "../../../Library/Messages/TrialHand2NeuRecHand.h"
 #include "../../../../BlueSpike/Library/Misc/Misc.h"
 #include "../../../../BlueSpike/System/RtTasksData/RtTasksData.h"
 #include "../../../../BlueSpike/Library/RtTaskStats/RtTaskStats.h"

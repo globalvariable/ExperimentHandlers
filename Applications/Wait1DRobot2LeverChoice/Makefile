@@ -10,11 +10,11 @@ LXRT_LDFLAGS = $(shell rtai-config --lxrt-ldflags)
 MATH_FLAGS = -lm
 GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 
-all: TrialHandler/TrialHandler ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler 
+all: TrialHandler/TrialHandler ExpEnviHandler/ExpEnviHandler MovObjHandler/MovObjHandler NeuRecHandler/NeuRecHandler 
 ############## TRIAL_HANDLER ############## 
 
-TrialHandler/TrialHandler: TrialHandler/TrialHandler.c TrialHandler/Gui.o TrialHandler/GuiTrialHandler.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2TrialHand.o TrialHandler/TrialHandlerRtTask.o TrialHandler/TrialDurationHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o TrialHandler/HandleGui2TrialHandMsgs.o ../../Library/Status/TrialStatus.o ../../Library/Messages/TrialDurHand2TrialHand.o ../../Library/Messages/TrialHand2TrialDurHand.o TrialHandler/HandleTrialDurHand2TrialHandMsgs.o TrialHandler/HandleTrialHand2TrialDurHandMsgs.o TrialHandler/HandleExpEnviHand2TrialHandMsgs.o TrialHandler/HandleMovObjHand2TrialHandMsgs.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Status/TrialDurStatus.o ../../../BlueSpike/Library/Misc/Randn.o TrialHandler/HandleTrialHandDur.o ExpParadigm/TrialHistory.o TrialHandler/DataHandling/DataHandling.o TrialHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2Gui.o ../../Library/Status/TrialStatusHistory.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< TrialHandler/Gui.o TrialHandler/GuiTrialHandler.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2TrialHand.o TrialHandler/TrialHandlerRtTask.o TrialHandler/TrialDurationHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o TrialHandler/HandleGui2TrialHandMsgs.o ../../Library/Status/TrialStatus.o ../../Library/Messages/TrialDurHand2TrialHand.o ../../Library/Messages/TrialHand2TrialDurHand.o TrialHandler/HandleTrialDurHand2TrialHandMsgs.o TrialHandler/HandleTrialHand2TrialDurHandMsgs.o TrialHandler/HandleExpEnviHand2TrialHandMsgs.o TrialHandler/HandleMovObjHand2TrialHandMsgs.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Status/TrialDurStatus.o ../../../BlueSpike/Library/Misc/Randn.o TrialHandler/HandleTrialHandDur.o ExpParadigm/TrialHistory.o TrialHandler/DataHandling/DataHandling.o TrialHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2Gui.o ../../Library/Status/TrialStatusHistory.o ### TrialHandler
+TrialHandler/TrialHandler: TrialHandler/TrialHandler.c TrialHandler/Gui.o TrialHandler/GuiTrialHandler.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2TrialHand.o TrialHandler/TrialHandlerRtTask.o TrialHandler/TrialDurationHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o TrialHandler/HandleGui2TrialHandMsgs.o ../../Library/Status/TrialStatus.o ../../Library/Messages/TrialDurHand2TrialHand.o ../../Library/Messages/TrialHand2TrialDurHand.o TrialHandler/HandleTrialDurHand2TrialHandMsgs.o TrialHandler/HandleTrialHand2TrialDurHandMsgs.o TrialHandler/HandleExpEnviHand2TrialHandMsgs.o TrialHandler/HandleMovObjHand2TrialHandMsgs.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Status/TrialDurStatus.o ../../../BlueSpike/Library/Misc/Randn.o TrialHandler/HandleTrialHandDur.o ExpParadigm/TrialHistory.o TrialHandler/DataHandling/DataHandling.o TrialHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2Gui.o ../../Library/Status/TrialStatusHistory.o ../../Library/Messages/TrialHand2NeuRecHand.o ../../Library/Messages/NeuRecHand2TrialHand.o ../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph.o ../../../IzNeuronSimulators/Library/Network/Network.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../../IzNeuronSimulators/Library/Graphs/StatusMarker.o ../../../IzNeuronSimulators/Library/Event/Event.o ../../../IzNeuronSimulators/Library/Axon/Axon.o ../../../IzNeuronSimulators/Library/Neuron/Neuron.o ../../../IzNeuronSimulators/Library/ParkerSochacki/ParkerSochacki.o ../../../IzNeuronSimulators/Library/Eligibility/Eligibility.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< TrialHandler/Gui.o TrialHandler/GuiTrialHandler.o ../../../BlueSpike/Library/Misc/Misc.o ../../Library/Messages/Gui2TrialHand.o TrialHandler/TrialHandlerRtTask.o TrialHandler/TrialDurationHandlerRtTask.o ../../../BlueSpike/Library/RtTaskStats/RtTaskStats.o TrialHandler/HandleGui2TrialHandMsgs.o ../../Library/Status/TrialStatus.o ../../Library/Messages/TrialDurHand2TrialHand.o ../../Library/Messages/TrialHand2TrialDurHand.o TrialHandler/HandleTrialDurHand2TrialHandMsgs.o TrialHandler/HandleTrialHand2TrialDurHandMsgs.o TrialHandler/HandleExpEnviHand2TrialHandMsgs.o TrialHandler/HandleMovObjHand2TrialHandMsgs.o ../../Library/Messages/ExpEnviHand2TrialHand.o ../../Library/Messages/MovObjHand2TrialHand.o ../../Library/Messages/TrialHand2MovObjHand.o ../../Library/Messages/TrialHand2ExpEnviHand.o ../../Library/Status/TrialDurStatus.o ../../../BlueSpike/Library/Misc/Randn.o TrialHandler/HandleTrialHandDur.o ExpParadigm/TrialHistory.o TrialHandler/DataHandling/DataHandling.o TrialHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2Gui.o ../../Library/Status/TrialStatusHistory.o ../../Library/Messages/TrialHand2NeuRecHand.o ../../Library/Messages/NeuRecHand2TrialHand.o ../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph.o ../../../IzNeuronSimulators/Library/Network/Network.o ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o ../../../IzNeuronSimulators/Library/Graphs/StatusMarker.o ../../../IzNeuronSimulators/Library/Event/Event.o ../../../IzNeuronSimulators/Library/Axon/Axon.o ../../../IzNeuronSimulators/Library/Neuron/Neuron.o ../../../IzNeuronSimulators/Library/ParkerSochacki/ParkerSochacki.o ../../../IzNeuronSimulators/Library/Eligibility/Eligibility.o ### TrialHandler
 
 TrialHandler/Gui.o: TrialHandler/Gui.c 
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### TrialHandler/Gui
@@ -70,6 +70,9 @@ TrialHandler/HandleMovObjHand2TrialHandMsgs.o: TrialHandler/HandleMovObjHand2Tri
 ../../Library/Messages/TrialHand2TrialDurHand.o: ../../Library/Messages/TrialHand2TrialDurHand.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/TrialHand2TrialDurHand
 
+../../Library/Messages/NeuRecHand2TrialHand.o: ../../Library/Messages/NeuRecHand2TrialHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/NeuRecHand2TrialHand
+
 ../../Library/Status/TrialStatus.o: ../../Library/Status/TrialStatus.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Status/TrialStatus.o
 
@@ -93,6 +96,33 @@ TrialHandler/DataHandling/DataHandling.o: TrialHandler/DataHandling/DataHandling
 
 TrialHandler/DataHandling/v0/DataFormat_v0.o: TrialHandler/DataHandling/v0/DataFormat_v0.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### TrialHandler/DataHandling/v0/DataFormat_v0
+
+../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph.o: ../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)  		###	../../../IzNeuronSimulators/Library/Graphs/SpikePatternGraph
+
+../../../IzNeuronSimulators/Library/Network/Network.o: ../../../IzNeuronSimulators/Library/Network/Network.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../IzNeuronSimulators/Library/Network/Network
+
+../../../IzNeuronSimulators/Library/SpikeData/SpikeData.o: ../../../IzNeuronSimulators/Library/SpikeData/SpikeData.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../../IzNeuronSimulatorsLibrary/SpikeData/SpikeData
+
+../../../IzNeuronSimulators/Library/Graphs/StatusMarker.o: ../../../IzNeuronSimulators/Library/Graphs/StatusMarker.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/Graphs/StatusMarker
+
+../../../IzNeuronSimulators/Library/Event/Event.o: ../../../IzNeuronSimulators/Library/Event/Event.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/Event/Event
+
+../../../IzNeuronSimulators/Library/Axon/Axon.o: ../../../IzNeuronSimulators/Library/Axon/Axon.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/Axon/Axon
+
+../../../IzNeuronSimulators/Library/Neuron/Neuron.o: ../../../IzNeuronSimulators/Library/Neuron/Neuron.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/Neuron/Neuron
+
+../../../IzNeuronSimulators/Library/ParkerSochacki/ParkerSochacki.o: ../../../IzNeuronSimulators/Library/ParkerSochacki/ParkerSochacki.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/ParkerSochacki/ParkerSochacki
+
+../../../IzNeuronSimulators/Library/Eligibility/Eligibility.o: ../../../IzNeuronSimulators/Library/Eligibility/Eligibility.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)		###	../../../IzNeuronSimulators/Library/Eligibility/Eligibility
 
 ############## EXP_ENVI_HANDLER ############## 
 
@@ -267,9 +297,28 @@ MovObjHandler/DataHandling/v0/DataFormat_v0.o: MovObjHandler/DataHandling/v0/Dat
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### MovObjHandler/DataHandling/v0/DataFormat_v0
 
 
+############## NEU_REC_HANDLER ############## 
+
+NeuRecHandler/NeuRecHandler: NeuRecHandler/NeuRecHandler.c NeuRecHandler/Gui.o ../../../BlueSpike/Library/Misc/Misc.o NeuRecHandler/NeuRecHandlerNonRtThread.o NeuRecHandler/DataHandling/DataHandling.o NeuRecHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2NeuRecHand.o ../../Library/Messages/NeuRecHand2TrialHand.o 
+	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< NeuRecHandler/Gui.o ../../../BlueSpike/Library/Misc/Misc.o NeuRecHandler/NeuRecHandlerNonRtThread.o NeuRecHandler/DataHandling/DataHandling.o NeuRecHandler/DataHandling/v0/DataFormat_v0.o ../../Library/Messages/TrialHand2NeuRecHand.o ../../Library/Messages/NeuRecHand2TrialHand.o ### NeuRecHandler
+
+NeuRecHandler/Gui.o: NeuRecHandler/Gui.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### NeuRecHandler/Gui
+
+NeuRecHandler/NeuRecHandlerNonRtThread.o: NeuRecHandler/NeuRecHandlerNonRtThread.c 
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### NeuRecHandler/NeuRecHandlerNonRtThread
+
+../../Library/Messages/TrialHand2NeuRecHand.o: ../../Library/Messages/TrialHand2NeuRecHand.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Messages/TrialHand2NeuRecHand
+
+NeuRecHandler/DataHandling/DataHandling.o: NeuRecHandler/DataHandling/DataHandling.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### NeuRecHandler/DataHandling/DataHandling
+
+NeuRecHandler/DataHandling/v0/DataFormat_v0.o: NeuRecHandler/DataHandling/v0/DataFormat_v0.c
+	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### NeuRecHandler/DataHandling/v0/DataFormat_v0
 
 clean:
-	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o ../../Library/RS232/*.o ../../Library/ExpEnviData/*.o ../../Library/MovObjData/*.o ../../Library/Servo/*.o ../../Library/Robot/*.o ../../../BlueSpike/Library/Thresholding/*.o ../../Library/RS232/*.o ../../../BlueSpike/Library/LogBuffer/*.o ExpParadigm/*.o ../../Library/Coordinate/*.o TrialHandler/DataHandling/*.o TrialHandler/DataHandling/v0/*.o ExpEnviHandler/DataHandling/*.o ExpEnviHandler/DataHandling/v0/*.o MovObjHandler/DataHandling/*.o MovObjHandler/DataHandling/v0/*.o
+	rm -f TrialHandler/TrialHandler TrialHandler/*.o ExpEnviHandler/ExpEnviHandler ExpEnviHandler/*.o MovObjHandler/MovObjHandler MovObjHandler/*.o ../../../BlueSpike/Library/Misc/*.o ../../Library/Messages/*.o ../../Library/TrialsData/*.o ../../Library/Combos/*.o ../../../BlueSpike/Library/RtTaskStats/*.o ../../Library/Status/*.o ../../Library/RS232/*.o ../../Library/ExpEnviData/*.o ../../Library/MovObjData/*.o ../../Library/Servo/*.o ../../Library/Robot/*.o ../../../BlueSpike/Library/Thresholding/*.o ../../Library/RS232/*.o ../../../BlueSpike/Library/LogBuffer/*.o ExpParadigm/*.o ../../Library/Coordinate/*.o TrialHandler/DataHandling/*.o TrialHandler/DataHandling/v0/*.o ExpEnviHandler/DataHandling/*.o ExpEnviHandler/DataHandling/v0/*.o MovObjHandler/DataHandling/*.o MovObjHandler/DataHandling/v0/*.o NeuRecHandler/NeuRecHandler NeuRecHandler/*.o NeuRecHandler/DataHandling/*.o NeuRecHandler/DataHandling/v0/*.o ../../../IzNeuronSimulators/Library/Graphs/*.o ../../../IzNeuronSimulators/Library/Network/*.o ../../../IzNeuronSimulators/Library/SpikeData/*.o ../../../IzNeuronSimulators/Library/Graphs/*.o ../../../IzNeuronSimulators/Library/Event/*.o ../../../IzNeuronSimulators/Library/Axon/*.o ../../../IzNeuronSimulators/Library/Neuron/*.o ../../../IzNeuronSimulators/Library/ParkerSochacki/*.o ../../../IzNeuronSimulators/Library/Eligibility/*.o
 
 .PHONY: clean
 
