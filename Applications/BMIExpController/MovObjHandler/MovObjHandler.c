@@ -33,6 +33,7 @@ int main( int argc, char *argv[])
 	MovObjStatusHistory* mov_obj_status_history = NULL;
 	ThreeDofRobotAngleHistory *robot_angle_history = NULL;
 	ThreeDofRobotPulseHistory *robot_pulse_history = NULL;
+	unsigned int i;
 
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
@@ -70,17 +71,6 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->spike_2_servo_degree_multiplier = 1.0;
 	mov_obj_paradigm->max_servo_angle_change = 3.0;
 
-	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 1);
-	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);
-	mov_obj_paradigm->start_info.num_of_positions = 1;
-
-	mov_obj_paradigm->start_info.cart_coordinates[0].height = 18.2 ;
-	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 14.3;
-	mov_obj_paradigm->start_info.cart_coordinates[0].lateral = 0.0;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1430;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
-
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
 	mov_obj_paradigm->target_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 2);
 	mov_obj_paradigm->target_info.num_of_positions = 2;
@@ -111,6 +101,26 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1215;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1531;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1444;
+
+	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 16);
+	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 16);
+	mov_obj_paradigm->start_info.num_of_positions = 10;
+
+//	POSITIONS ACCORDING TO MIDLINE 
+/*	mov_obj_paradigm->start_info.cart_coordinates[0].height = 18.2 ;
+	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 14.3;		
+	mov_obj_paradigm->start_info.cart_coordinates[0].lateral = 0.0;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1430;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
+*/
+
+	for (i = 0; i < mov_obj_paradigm->start_info.num_of_positions; i++)
+	{
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[BASE_SERVO] = mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO]  - (ServoPulse)((((i+1) * (mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] - mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO])) / ((double)(mov_obj_paradigm->start_info.num_of_positions + 1))));
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[SHOULDER_SERVO] = 1531;
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[ELBOW_SERVO] = 1444;		
+	}
 
 	mov_obj_paradigm->threshold.outer_threshold.r_x = 16;  //height
 	mov_obj_paradigm->threshold.outer_threshold.r_y = 46; // depth    ->>>  to provide a circle with radius of ~12 cm at the frontal surface of the cage

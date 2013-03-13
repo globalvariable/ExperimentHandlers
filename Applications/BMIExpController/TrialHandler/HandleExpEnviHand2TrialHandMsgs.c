@@ -44,13 +44,15 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TimeStamp current_time)
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
 						*trial_status = TRIAL_STATUS_IN_TRIAL;
 						paradigm->current_trial_data.trial_start_time = current_time;
-						if (paradigm->current_trial_data.auto_target_select_mode_on)
+
+// selection of target position is done when a trial ends.
+/*						if (paradigm->current_trial_data.auto_target_select_mode_on)
 							paradigm->current_trial_data.robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
 						else
 							paradigm->current_trial_data.robot_target_position_idx = paradigm->current_trial_data.gui_selected_target_position_idx;
 
 						paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.robot_target_position_idx;
-
+*/
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->max_trial_length))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL, paradigm->current_trial_data.target_led_component_list_idx))

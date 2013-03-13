@@ -30,6 +30,9 @@ static GtkWidget *lbl_threshold_r_z;
 static GtkWidget *btn_increase_threshold;
 static GtkWidget *btn_decrease_threshold;
 
+static GtkWidget *btn_increase_robot_start_idx;
+static GtkWidget *btn_decrease_robot_start_idx;
+
 //Stats
 static GtkWidget *entry_trial_number;
 static GtkWidget *lbl_trial_length;
@@ -70,6 +73,9 @@ static void select_target_button_func (void);
 
 static void increase_threshold_button_func (void);
 static void decrease_threshold_button_func (void);
+
+static void increase_robot_start_idx_button_func (void);
+static void decrease_robot_start_idx_button_func (void);
 
 static void submit_trial_number_button_func (void);
 
@@ -209,6 +215,18 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	btn_decrease_threshold = gtk_button_new_with_label("Decrease Threshold");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_decrease_threshold, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_increase_robot_start_idx = gtk_button_new_with_label("Increase Robot Start Idx");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_increase_robot_start_idx, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_decrease_robot_start_idx = gtk_button_new_with_label("Decrease Robot Start Idx");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_decrease_robot_start_idx, TRUE, TRUE, 0);
 
 	////////   SECOND COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -430,6 +448,9 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	g_signal_connect(G_OBJECT(btn_increase_threshold), "clicked", G_CALLBACK(increase_threshold_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_decrease_threshold), "clicked", G_CALLBACK(decrease_threshold_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_increase_robot_start_idx), "clicked", G_CALLBACK(increase_robot_start_idx_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_decrease_robot_start_idx), "clicked", G_CALLBACK(decrease_robot_start_idx_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_submit_trial_number), "clicked", G_CALLBACK(submit_trial_number_button_func), NULL);
 
@@ -679,6 +700,18 @@ static void decrease_threshold_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_DECREASE_THRESHOLD, 0))
 		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "decrease_threshold_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
+}
+
+static void increase_robot_start_idx_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_INCREASE_ROBOT_START_POSITION_IDX, 0))
+		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "increase_robot_start_idx_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
+}
+
+static void decrease_robot_start_idx_button_func (void)
+{
+	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_DECREASE_ROBOT_START_POSITION_IDX, 0))
+		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "decrease_robot_start_idx_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
 }
 
 static void submit_trial_number_button_func (void)

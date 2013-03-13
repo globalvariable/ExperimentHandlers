@@ -16,10 +16,10 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
-	paradigm->max_trial_length = 4500000000;
+	paradigm->max_trial_length = 5000000000;
 	paradigm->min_trial_refractory = 2000000000;
 	paradigm->max_extra_trial_refractory = 500000000;
-	paradigm->num_of_robot_start_positions = 1;	/// change ClassifiedTrialHistory struct so that it does not have a dimension for num_of_robot_start_positions since reward is related to target, not starting point. remained distance to target when a trial ends is normalized according to the initial distance to target. 
+	paradigm->num_of_robot_start_positions = 10;	/// change ClassifiedTrialHistory struct so that it does not have a dimension for num_of_robot_start_positions since reward is related to target, not starting point. remained distance to target when a trial ends is normalized according to the initial distance to target. 
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
 
@@ -27,9 +27,9 @@ int main( int argc, char *argv[])
 	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
-	paradigm->min_target_reach_threshold.r_x = 1;  //height
-	paradigm->min_target_reach_threshold.r_y = 1; // depth
-	paradigm->min_target_reach_threshold.r_z = 1; // lateral
+	paradigm->min_target_reach_threshold.r_x = 1.5;  //height
+	paradigm->min_target_reach_threshold.r_y = 1.5; // depth
+	paradigm->min_target_reach_threshold.r_z = 1.5; // lateral
 
 	paradigm->max_target_reach_threshold.r_x = 8;  //height   //  heigh be laterali non overlapping seç. aksi takdirde sıçan her iki target için ödül alabilir. dolayısıyla targetlara dikkat etmeden sadece trial başlatır ve guide led ve target led leri izlemez. 
 	paradigm->max_target_reach_threshold.r_y = 10; // depth    
@@ -40,6 +40,8 @@ int main( int argc, char *argv[])
 	paradigm->current_trial_data.rewarding_threshold.r_x = paradigm->max_target_reach_threshold.r_x - (((paradigm->max_target_reach_threshold.r_x - paradigm->min_target_reach_threshold.r_x) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold. 
 	paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1));  // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 	paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
+
+	paradigm->current_trial_data.robot_start_position_idx = 0;
 
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
 
