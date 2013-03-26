@@ -1,6 +1,6 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-#define REWARD_AVERAGING_WINDOW 1
+#define REWARD_AVERAGING_WINDOW 2
 #define DISTANCE_AVERAGING_WINDOW 1
 #define ALPHA 80.0
 #define BETA 270.0

@@ -29,7 +29,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}	
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -43,7 +50,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}		
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -63,7 +77,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}	  	
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -111,7 +132,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}		
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -125,7 +153,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}		
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -139,7 +174,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}	
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)
@@ -153,7 +195,14 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 			{
 				item = &(scheduled_spike_data->buff[*read_idx]);
 				if (item->peak_time < previous_system_time)
-					return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    	
+				{
+					print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "item->peak_time < previous_system_time.");    
+					if ((*read_idx + 1) == buffer_size)
+						*read_idx = 0;
+					else
+						(*read_idx)++;
+					continue;
+				}		
 				if (item->peak_time >= current_time)	
 					break;
 				if ((*read_idx + 1) == buffer_size)

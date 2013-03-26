@@ -66,7 +66,7 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->stay_at_target_duration = 200000000;
 	mov_obj_paradigm->send_pw_command_wait_period = 25000000;
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
-	mov_obj_paradigm->stay_at_start_duration = 200000000;   
+	mov_obj_paradigm->stay_at_start_duration = 400000000;   
 
 	mov_obj_paradigm->spike_2_servo_degree_multiplier = 1.0;
 	mov_obj_paradigm->max_servo_angle_change = 3.0;
