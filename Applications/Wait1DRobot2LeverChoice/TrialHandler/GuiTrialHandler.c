@@ -29,6 +29,8 @@ static GtkWidget *btn_release_reward;
 
 static GtkWidget *btn_auto_target_select_mode_on_off;
 
+static GtkWidget *btn_catch_trial_mode_on_off;
+
 static GtkWidget *lbl_threshold_r_x;
 static GtkWidget *lbl_threshold_r_y;
 static GtkWidget *lbl_threshold_r_z;
@@ -70,6 +72,7 @@ static void disable_trials_button_func (void);
 static void quit_trials_button_func (void);
 
 static void auto_target_select_mode_on_off_button_func(void);
+static void catch_trial_mode_on_off_button_func(void);
 static void select_target_button_func (void);
 static void release_reward_button_func (void);
 
@@ -175,6 +178,14 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
         gtk_box_pack_start(GTK_BOX(hbox), entry_select_target, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(entry_select_target, 50, 25);
 	gtk_entry_set_text(GTK_ENTRY(entry_select_target), "0");
+
+       gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_catch_trial_mode_on_off = gtk_button_new_with_label("Catch Trial: OFF");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_catch_trial_mode_on_off , TRUE, TRUE, 0);
 
        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
 
@@ -452,6 +463,8 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	g_signal_connect(G_OBJECT(btn_auto_target_select_mode_on_off), "clicked", G_CALLBACK(auto_target_select_mode_on_off_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_select_target), "clicked", G_CALLBACK(select_target_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_catch_trial_mode_on_off), "clicked", G_CALLBACK(catch_trial_mode_on_off_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_release_reward), "clicked", G_CALLBACK(release_reward_button_func), NULL);
 
@@ -774,6 +787,23 @@ static void auto_target_select_mode_on_off_button_func(void)
 		gtk_button_set_label (GTK_BUTTON (btn_auto_target_select_mode_on_off),"Target Select: AUTO");		
 	}	
 }
+
+static void catch_trial_mode_on_off_button_func(void)
+{
+	if (paradigm->current_trial_data.catch_trial_mode_on)
+	{
+		if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_OFF, 0))
+			return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "catch_trial_mode_on_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");
+		gtk_button_set_label (GTK_BUTTON (btn_catch_trial_mode_on_off),"Catch Trial: OFF");		
+	}
+	else
+	{
+		if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_ON, 0))
+			return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "catch_trial_mode_on_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");	
+		gtk_button_set_label (GTK_BUTTON (btn_catch_trial_mode_on_off),"Catch Trial: ON");		
+	}	
+}
+
 
 static void select_target_button_func (void)
 {

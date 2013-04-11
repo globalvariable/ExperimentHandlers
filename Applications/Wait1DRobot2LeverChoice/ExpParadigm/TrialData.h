@@ -27,6 +27,7 @@ struct __TrialData
 	EllipsoidThreshold		rewarding_threshold;
 	unsigned int			gui_selected_target_position_idx;
 	bool				auto_target_select_mode_on;
+	bool				catch_trial_mode_on;
 	double				success_ratio;
 	unsigned int			num_of_trials;    // so far, up to this trial
 	bool				trial_incomplete;

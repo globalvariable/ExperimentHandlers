@@ -62,6 +62,14 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_DECREASE_ROBOT_START_POSITION_IDX");
 			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_ON:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_ON");
+			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_OFF:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_OFF");
+			return TRUE;
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

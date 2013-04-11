@@ -186,6 +186,48 @@ bool handle_gui_to_trial_handler_msg(TrialStatus *trial_status, TimeStamp curren
 						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
 				}
 				break;
+			case GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_OFF:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->current_trial_data.catch_trial_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						paradigm->current_trial_data.catch_trial_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->current_trial_data.catch_trial_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->current_trial_data.catch_trial_mode_on = FALSE;
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
+			case GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_ON:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->current_trial_data.catch_trial_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						paradigm->current_trial_data.catch_trial_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->current_trial_data.catch_trial_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->current_trial_data.catch_trial_mode_on = TRUE;
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
 			case GUI_2_TRIAL_HAND_MSG_BROADCAST_START_RECORDING:
 				switch (*trial_status)
 				{

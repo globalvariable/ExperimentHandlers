@@ -29,11 +29,16 @@ bool handle_exp_envi_handler_to_trial_handler_msg(TrialStatus *trial_status, Tim
 						*trial_status = TRIAL_STATUS_GET_READY_TO_START;
 						paradigm->current_trial_data.trial_start_time = current_time;
 						if (paradigm->current_trial_data.auto_target_select_mode_on)
-							paradigm->current_trial_data.robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+							paradigm->current_trial_data.target_led_component_list_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   
 						else
-							paradigm->current_trial_data.robot_target_position_idx = paradigm->current_trial_data.gui_selected_target_position_idx;
+							paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.gui_selected_target_position_idx;
 
-						paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.robot_target_position_idx;
+						if (paradigm->current_trial_data.catch_trial_mode_on)
+							paradigm->current_trial_data.robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   
+						else
+							paradigm->current_trial_data.robot_target_position_idx = paradigm->current_trial_data.target_led_component_list_idx;
+
+						
 
 						get_ready_duration = current_time + paradigm->min_get_ready_to_trial_start_length + ((TimeStamp)(get_rand_number() * (double)paradigm->max_extra_get_ready_to_trial_start_length));
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, get_ready_duration))

@@ -68,7 +68,7 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
 	mov_obj_paradigm->stay_at_start_duration = 400000000;   
 
-	mov_obj_paradigm->spike_2_servo_degree_multiplier = 1.0;
+	mov_obj_paradigm->spike_2_servo_degree_multiplier = 2.5;
 	mov_obj_paradigm->max_servo_angle_change = 3.0;
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
@@ -126,9 +126,9 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->threshold.outer_threshold.r_y = 46; // depth    ->>>  to provide a circle with radius of ~12 cm at the frontal surface of the cage
 	mov_obj_paradigm->threshold.outer_threshold.r_z = 16; // lateral
 
-	mov_obj_paradigm->threshold.point_reach_threshold.r_x = 1;
-	mov_obj_paradigm->threshold.point_reach_threshold.r_y = 1;
-	mov_obj_paradigm->threshold.point_reach_threshold.r_z = 1;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_x = 1.5;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_y = 1.5;
+	mov_obj_paradigm->threshold.point_reach_threshold.r_z = 1.5;
 
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);
