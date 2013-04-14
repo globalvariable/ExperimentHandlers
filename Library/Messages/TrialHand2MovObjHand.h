@@ -45,6 +45,7 @@ union __TrialHand2MovObjHandMsgAdditional
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_START_RECORDING			8
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_STOP_RECORDING				9
 #define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_CANCEL_RECORDING			10		// sent to cancel current recording
+#define TRIAL_HAND_2_MOV_OBJ_HAND_MSG_LEVER_PRESS_TIMEOUT		11
 
 struct __TrialHand2MovObjHandMsgItem
 {

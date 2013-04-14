@@ -53,6 +53,14 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_GET_READY_TO_TRIAL_START");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_LEVERS:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_LEVERS");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_LEVERS_W_STATUS_RESET:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_LEVERS_W_STATUS_RESET");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

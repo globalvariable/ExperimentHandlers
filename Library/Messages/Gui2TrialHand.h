@@ -28,6 +28,8 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #define GUI_2_TRIAL_HAND_MSG_DECREASE_ROBOT_START_POSITION_IDX	14
 #define GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_ON					15
 #define GUI_2_TRIAL_HAND_MSG_CATCH_TRIAL_MODE_OFF					16
+#define GUI_2_TRIAL_HAND_MSG_LEVER_PRESS_MODE_ON					17
+#define GUI_2_TRIAL_HAND_MSG_LEVER_PRESS_MODE_OFF					18
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

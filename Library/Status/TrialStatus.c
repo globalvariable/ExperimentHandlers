@@ -25,6 +25,10 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str)   //
 			if (str != NULL)
 				strcpy(str, "TRIAL_STATUS_GET_READY_TO_START");
 			return TRUE;
+		case TRIAL_STATUS_WAIT_FOR_LEVER_PRESS:
+			if (str != NULL)
+				strcpy(str, "TRIAL_STATUS_WAIT_FOR_LEVER_PRESS");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_STATUS_NULL:
 			if (str != NULL)

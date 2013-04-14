@@ -40,7 +40,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT;
 				punishment = distance_btwn_two_points(&(robot->tip_position), &(paradigm->target_info.cart_coordinates[paradigm->target_info.selected_position_idx]));
 				printf ("Distance to target = %f\n", punishment);		
-				if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, punishment)) 
+				if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_OUT_OF_ROBOT_SPACE, punishment)) 
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");	
 				submit_servo_target(&(robot->servos[BASE_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
@@ -54,7 +54,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				*mov_obj_status = MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT;
 				punishment = distance_btwn_two_points(&(robot->tip_position), &(paradigm->target_info.cart_coordinates[paradigm->target_info.selected_position_idx]));
 				printf ("Distance to target = %f\n", punishment);		
-				if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, punishment)) 
+				if (! write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, current_time,  MOV_OBJ_HAND_2_TRIAL_HAND_MSG_OUT_OF_ROBOT_SPACE, punishment)) 
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");	
 				submit_servo_target(&(robot->servos[BASE_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[BASE_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);
 				submit_servo_target(&(robot->servos[SHOULDER_SERVO]), paradigm->target_info.robot_pulse_widths[paradigm->target_info.selected_position_idx].pulse[SHOULDER_SERVO], SERVO_PW_CHANGE_RATE_FOR_POSITION_RESET);

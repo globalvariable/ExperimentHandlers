@@ -45,6 +45,10 @@ bool get_trial_hand_2_mov_obj_hand_msg_type_string(TrialHand2MovObjHandMsgType m
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_MOV_OBJ_HAND_MSG_CANCEL_RECORDING");
 			return TRUE;
+		case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_LEVER_PRESS_TIMEOUT:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_MOV_OBJ_HAND_MSG_LEVER_PRESS_TIMEOUT");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_NULL:
 			if (str != NULL)
