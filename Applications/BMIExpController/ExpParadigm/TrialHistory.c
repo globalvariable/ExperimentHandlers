@@ -234,6 +234,20 @@ double calculate_and_get_windowed_binary_reward_average(ClassifiedTrialHistory* 
 	return trial_data->binary_reward_windowed_average;
 }
 
+double calculate_and_get_windowed_binary_reward_average_all_trials(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size)
+{
+	unsigned int write_idx_prev; 
+
+	if (hist->all_trials->buff_write_idx == 0)
+		 write_idx_prev = hist->all_trials->buffer_size - 1;
+	else
+		 write_idx_prev = hist->all_trials->buff_write_idx - 1;	
+
+	trial_data->binary_reward_windowed_average = ((hist->all_trials->history[write_idx_prev].binary_reward_windowed_average * window_size) + ((double)trial_data->binary_reward)) / ((double)(window_size+1));
+
+	return trial_data->binary_reward_windowed_average;
+}
+
 TimeStamp calculate_and_get_trial_length_windowed_average(ClassifiedTrialHistory* hist, TrialData *trial_data, unsigned int window_size)
 {
 	unsigned int write_idx_prev; 

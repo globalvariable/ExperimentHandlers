@@ -43,9 +43,11 @@ int main( int argc, char *argv[])
 	paradigm->current_trial_data.rewarding_threshold.r_y = paradigm->max_target_reach_threshold.r_y - (((paradigm->max_target_reach_threshold.r_y - paradigm->min_target_reach_threshold.r_y) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1));  // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 	paradigm->current_trial_data.rewarding_threshold.r_z = paradigm->max_target_reach_threshold.r_z - (((paradigm->max_target_reach_threshold.r_z - paradigm->min_target_reach_threshold.r_z) / paradigm->max_num_of_sessions) * (paradigm->current_trial_data.session_idx + 1)); // if max_num_of_sessions is 10, then the 9th threshold (array indexes in C starts from 0) should be equal to minimum threshold.
 
-	paradigm->current_trial_data.robot_start_position_idx = 0;
 
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
+	paradigm->current_trial_data.lever_press_mode_on = TRUE; 
+
+	paradigm->current_trial_data.reward_magnitude = 1;
 
 	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions, paradigm->max_num_of_sessions); 
 

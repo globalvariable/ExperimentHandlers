@@ -47,7 +47,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						break;   // do nothing
 					case TRIAL_STATUS_IN_TRIAL:
-						*trial_status = TRIAL_STATUS_WAIT_FOR_LEVER_PRESS;
+						
 						remained_distance_to_target = msg_item.additional_data;
 						trial_length = current_time - paradigm->current_trial_data.trial_start_time;
 						paradigm->current_trial_data.trial_end_time = current_time;
@@ -57,7 +57,7 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), DISTANCE_AVERAGING_WINDOW);
 
 						paradigm->current_trial_data.binary_reward = TRUE;
-						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
+						R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
 						reward = 1 - R_n;
 
 						paradigm->current_trial_data.reward_magnitude = reward;
@@ -74,13 +74,63 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 
 						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_LEVERS_W_STATUS_RESET, 0))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgss", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgs", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->max_lever_press_interval))
-							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgs", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
+						if (paradigm->current_trial_data.lever_press_mode_on)
+						{
+							*trial_status = TRIAL_STATUS_WAIT_FOR_LEVER_PRESS;
+							if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_LEVERS_W_STATUS_RESET, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgss", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+							if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgs", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
+							if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->max_lever_press_interval))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgs", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
+						}
+						else
+						{
+							*trial_status = TRIAL_STATUS_IN_REFRACTORY;
 
+							if (! write_trial_data_to_classified_trial_history(classified_history, &(paradigm->current_trial_data)))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_trial_data_to_classified_trial_history()");
+
+							paradigm->current_trial_data.trial_start_time = 0;
+							paradigm->current_trial_data.trial_end_time = 0;
+							paradigm->current_trial_data.trial_length = 0;
+
+	// BELOW LINE IS SET BY THE USER.
+	//						paradigm->current_trial_data.robot_start_position_idx = (unsigned int)(paradigm->num_of_robot_start_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+
+							if (paradigm->current_trial_data.auto_target_select_mode_on)
+								paradigm->current_trial_data.robot_target_position_idx = (unsigned int)(paradigm->num_of_robot_target_positions * get_rand_number());   ///  Bunu trial bittiginde yap.
+							else
+								paradigm->current_trial_data.robot_target_position_idx = paradigm->current_trial_data.gui_selected_target_position_idx;
+
+							paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.robot_target_position_idx;
+
+						
+							if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_DISABLE_DURATION_HANDLING, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
+							refractory = current_time + paradigm->min_trial_refractory + ((TimeStamp)(get_rand_number() * (double)paradigm->max_extra_trial_refractory));
+							if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, refractory))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
+							if ((paradigm->current_trial_data.robot_target_position_idx) == 0)   /// LEFT TARGET
+							{
+								trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx; 
+							}
+							else		// RIGHT TARGET
+							{
+								trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->num_of_robot_start_positions - 1 - paradigm->current_trial_data.robot_start_position_idx;
+							}
+		
+							if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_TRIAL, trial_hand_2_mov_obj_hand_add))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_mov_obj_hand_msg_buffer()");
+							if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+							if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD, 0))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						}
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
 						break;   // do nothing
@@ -105,19 +155,27 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						paradigm->current_trial_data.remained_distance_to_target = (remained_distance_to_target/ paradigm->current_trial_data.initial_distance_to_target) - 1.0;  // here is -1.0 due to the averaging by  calculate_and_get_remained_distance_to_target_windowed_average(). for the first trial paradigm->current_trial_data.remained_distance_to_target will be zero. NORMALIZATION AROUND ZERO
 
 						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), DISTANCE_AVERAGING_WINDOW);
-						if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.05))
+						if (remained_distance_to_target > paradigm->current_trial_data.initial_distance_to_target)
 						{
 							paradigm->current_trial_data.binary_reward = FALSE;
-							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-							reward = 1.0;
+							R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
+							reward = -(1 - R_n);
 						}
 						else
 						{
-							paradigm->current_trial_data.binary_reward = FALSE;
-							R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-							reward = -1.0;
+							if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.05))
+							{
+								paradigm->current_trial_data.binary_reward = FALSE;
+								R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
+								reward = (1 - R_n);
+							}
+							else
+							{
+								paradigm->current_trial_data.binary_reward = FALSE;
+								R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
+								reward = -(1 - R_n);
+							}
 						}
-
 						printf ("reward --- : %.8f\n", reward);
 						printf ("R_n --- : %.8f\n", reward);
 						printf ("distance to target --- : %.8f\n", remained_distance_to_target);
@@ -137,6 +195,11 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 */
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
+
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
 						break;   // do nothing
@@ -163,8 +226,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						remained_distance_to_target_windowed_average = calculate_and_get_remained_distance_to_target_windowed_average(classified_history, &(paradigm->current_trial_data), DISTANCE_AVERAGING_WINDOW);
 
 						paradigm->current_trial_data.binary_reward = FALSE;
-						R_n = calculate_and_get_windowed_binary_reward_average(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-						reward = -1.0;
+						R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
+						reward = -(1 - R_n);
 
 						printf ("reward --- : %.8f\n", reward);
 						printf ("R_n --- : %.8f\n", reward);
@@ -185,6 +248,10 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 */
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
+						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
 						break;   // do nothing

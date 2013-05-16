@@ -32,6 +32,7 @@ struct __TrialData
 	unsigned int			num_of_trials;    // so far, up to this trial
 	bool				trial_incomplete;
 	unsigned int			num_of_incomplete_trials;  // so far, up to this trial
+	bool				lever_press_mode_on;
 };
 
 

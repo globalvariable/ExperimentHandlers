@@ -49,7 +49,15 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 
 						paradigm->current_trial_data.target_led_component_list_idx = paradigm->current_trial_data.robot_target_position_idx;
 
-						trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
+						if ((paradigm->current_trial_data.robot_target_position_idx) == 0)   /// LEFT TARGET
+						{
+							trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx; 
+						}
+						else		// RIGHT TARGET
+						{
+							trial_hand_2_mov_obj_hand_add.robot_start_position_idx = paradigm->num_of_robot_start_positions - 1 - paradigm->current_trial_data.robot_start_position_idx;
+						}
+
 						if (!write_to_trial_hand_2_mov_obj_hand_msg_buffer(msgs_trial_hand_2_mov_obj_hand, current_time, TRIAL_HAND_2_MOV_OBJ_HAND_MSG_TRIALS_ENABLED, trial_hand_2_mov_obj_hand_add))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
 						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
@@ -590,6 +598,54 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 			case GUI_2_TRIAL_HAND_MSG_RELEASE_REWARD:
 				if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD, 0))
 					return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+				break;
+			case GUI_2_TRIAL_HAND_MSG_TURN_LEVER_PRESS_MODE_ON:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->current_trial_data.lever_press_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "TURN_LEVER_PRESS_MODE_ON cannot be done during TRIAL_STATUS_IN_TRIAL");
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->current_trial_data.lever_press_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->current_trial_data.lever_press_mode_on = TRUE;
+						break;
+					case TRIAL_STATUS_WAIT_FOR_LEVER_PRESS:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "TURN_LEVER_PRESS_MODE_ON cannot be done during TRIAL_STATUS_WAIT_FOR_LEVER_PRESS");
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
+				break;
+			case GUI_2_TRIAL_HAND_MSG_TURN_LEVER_PRESS_MODE_OFF:
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						paradigm->current_trial_data.lever_press_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_IN_TRIAL:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "TURN_LEVER_PRESS_MODE_OFF cannot be done during TRIAL_STATUS_IN_TRIAL");
+						break;
+					case TRIAL_STATUS_IN_REFRACTORY:
+						paradigm->current_trial_data.lever_press_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						paradigm->current_trial_data.lever_press_mode_on = FALSE;
+						break;
+					case TRIAL_STATUS_WAIT_FOR_LEVER_PRESS:
+						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "TURN_LEVER_PRESS_MODE_OFF cannot be done during TRIAL_STATUS_WAIT_FOR_LEVER_PRESS");
+						break;
+					default:
+						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_status);
+				}
 				break;
 			default:
 				return print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);	

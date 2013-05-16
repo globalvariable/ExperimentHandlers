@@ -68,7 +68,7 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
 	mov_obj_paradigm->stay_at_start_duration = 500000000;   
 
-	mov_obj_paradigm->spike_2_servo_degree_multiplier = 3.0;
+	mov_obj_paradigm->spike_2_servo_degree_multiplier = 2.0;
 	mov_obj_paradigm->max_servo_angle_change = 4.0;
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
