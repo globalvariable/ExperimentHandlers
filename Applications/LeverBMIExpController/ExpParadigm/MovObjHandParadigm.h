@@ -30,6 +30,7 @@ typedef struct
 	TimeStamp					send_pw_command_wait_period;
 	TimeStamp					receive_position_wait_period;
 	double						spike_2_servo_degree_multiplier;
+	unsigned int 					spike_2_servo_degree_handling_period_multiplier;  //  send_pw_command_wait_period * this value = spike count handling. 
 	double						max_servo_angle_change;  // (in terms of degree)   // for servo control in handle spike data buff. It determines max servo speed.
 	MovObjThreshold				threshold;
 	RobotSpacePoints				start_info;

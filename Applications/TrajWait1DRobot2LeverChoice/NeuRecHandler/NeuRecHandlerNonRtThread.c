@@ -7,7 +7,7 @@ static TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
 static GtkWidget *btn_select_directory_to_save = NULL;
 
 static pthread_t recording_thread;
-void *recording_thread_function( void *dummy );
+static void *recording_thread_function( void *dummy );
 
 bool create_neu_rec_handler_non_rt_thread(RtTasksData *arg_rt_tasks_data, RecordingData *arg_recording_data, SpikeTimeStamp *arg_spike_time_stamps, TrialHand2NeuRecHandMsg *arg_msgs_trial_hand_2_neu_rec_hand, GtkWidget *arg_btn_select_directory_to_save)
 {
@@ -24,7 +24,7 @@ bool create_neu_rec_handler_non_rt_thread(RtTasksData *arg_rt_tasks_data, Record
 }
 
 
-void *recording_thread_function( void *dummy )
+static void *recording_thread_function( void *dummy )
 {
 	TrialHand2NeuRecHandMsgItem msg_item;
 	char *path_temp, *path;

@@ -47,6 +47,8 @@ int main( int argc, char *argv[])
 
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
 
+	paradigm->current_trial_data.lever_press_mode_on = TRUE; 
+
 	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions, paradigm->max_num_of_sessions); 
 
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);

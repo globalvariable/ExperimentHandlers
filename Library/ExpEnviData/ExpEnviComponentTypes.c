@@ -17,6 +17,10 @@ bool get_exp_envi_input_component_type_string(ExpEnviInputCompType component_typ
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER");
 			return TRUE;	
+		case EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR:
+			if (str != NULL)
+				strcpy(str, "EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR");
+			return TRUE;
 /////////////////////////		
 		default:
  			strcpy(str, "EXP_ENVI_INPUT_COMPONENT_INVALID");

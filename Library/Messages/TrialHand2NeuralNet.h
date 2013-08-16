@@ -43,6 +43,7 @@ union __TrialHand2NeuralNetMsgAdditional
 #define TRIAL_HAND_2_NEURAL_NET_MSG_START_RECORDING					6
 #define TRIAL_HAND_2_NEURAL_NET_MSG_STOP_RECORDING					7
 #define TRIAL_HAND_2_NEURAL_NET_MSG_CANCEL_RECORDING					8   // sent to cancel current recording
+#define TRIAL_HAND_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING			9   // sent to cancel current recording
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

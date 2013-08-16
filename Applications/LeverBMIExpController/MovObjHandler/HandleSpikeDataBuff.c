@@ -2,6 +2,7 @@
 
 static TimeStamp previous_system_time = 0;
 
+static unsigned int period_counter = 0;
 
 bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time, SpikeData *scheduled_spike_data, ThreeDofRobot *robot, MovObjHandParadigmRobotReach *mov_obj_paradigm)
 {
@@ -44,6 +45,8 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				else
 					(*read_idx)++;
 			}    
+			period_counter = 0;
+			previous_system_time = current_time;
 			break;
 		case MOV_OBJ_STATUS_STAYING_AT_START_POINT:
 			while ((*read_idx) != write_idx)		
@@ -65,8 +68,19 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				else
 					(*read_idx)++;
 			}    
+			period_counter = 0;
+			previous_system_time = current_time;
 			break;
 		case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL:
+			if (period_counter != mov_obj_paradigm->spike_2_servo_degree_handling_period_multiplier) 
+			{
+				period_counter++;
+				pulse_change = 0;
+				submit_servo_direction_and_speed(&(robot->servos[BASE_SERVO]), pulse_change);
+				submit_servo_direction_and_speed(&(robot->servos[SHOULDER_SERVO]), pulse_change);
+				submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), pulse_change);
+				break;
+			}
 			base_servo_extensor_spike_counter = 0;
 			base_servo_flexor_spike_counter = 0;
 			shoulder_servo_extensor_spike_counter = 0;
@@ -126,6 +140,9 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 
 			pulse_change = (ServoPulseChange)(robot->servos[ELBOW_SERVO].range.pw_per_degree * spike_2_servo_degree_multiplier *(elbow_servo_flexor_spike_counter - elbow_servo_extensor_spike_counter));
 			submit_servo_direction_and_speed(&(robot->servos[ELBOW_SERVO]), pulse_change);
+
+			period_counter = 0;
+			previous_system_time = current_time;    ///  IMPORTANT
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
 			while ((*read_idx) != write_idx)		
@@ -146,7 +163,9 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					*read_idx = 0;
 				else
 					(*read_idx)++;
-			}    
+			}   
+			period_counter = 0;
+			previous_system_time = current_time; 
 			break; 
 		case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 			while ((*read_idx) != write_idx)		
@@ -168,6 +187,8 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				else
 					(*read_idx)++;
 			}    
+			period_counter = 0;
+			previous_system_time = current_time;
 			break; 
 		case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:
 			while ((*read_idx) != write_idx)		
@@ -188,7 +209,9 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					*read_idx = 0;
 				else
 					(*read_idx)++;
-			}    
+			} 
+			period_counter = 0;   
+			previous_system_time = current_time;
 			break; 
 		case MOV_OBJ_STATUS_DISABLED:
 			while ((*read_idx) != write_idx)		
@@ -210,13 +233,15 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 				else
 					(*read_idx)++;
 			}    
+			period_counter = 0;
+			previous_system_time = current_time;
 			break; 
 		default:
 			get_mov_obj_status_type_string(mov_obj_status, str_mov_obj_status);
 			return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", str_mov_obj_status);
 	}
 
-	previous_system_time = current_time;
+
 
 	return TRUE;
 }

@@ -12,12 +12,19 @@ static MovObjStatusHistory* static_mov_obj_status_history = NULL;
 static ThreeDofRobotAngleHistory *static_robot_angle_history = NULL;
 static ThreeDofRobotPulseHistory *static_robot_pulse_history = NULL;
 
+static GtkWidget *btn_submit_stay_at_start_duration;
+static GtkWidget *entry_stay_at_start_duration;
+
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
+
+static void submit_stay_at_start_duration_button_func (void);
 
 static void create_recording_folder_button_func (void);
 
 static void set_directory_btn_select_directory_to_save(void);
+
+
 
 static gboolean timeout_callback(gpointer graph);
 
@@ -54,6 +61,14 @@ bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
+	btn_submit_stay_at_start_duration = gtk_button_new_with_label("Stay at Start Duration (ms)");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_stay_at_start_duration, TRUE, TRUE, 0);
+
+	entry_stay_at_start_duration = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_stay_at_start_duration, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_stay_at_start_duration, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_stay_at_start_duration), "500");
+
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 2,3, 0, 6);  // column 2-3, row 0-6
@@ -75,6 +90,9 @@ bool create_mov_obj_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui
 	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+
+	g_signal_connect(G_OBJECT(btn_submit_stay_at_start_duration), "clicked", G_CALLBACK(submit_stay_at_start_duration_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
@@ -210,4 +228,10 @@ static void set_directory_btn_select_directory_to_save(void)
 		}
 		fclose(fp); 		
 	}  	 
+}
+
+static void submit_stay_at_start_duration_button_func (void)
+{
+	static_mov_obj_paradigm->stay_at_start_duration = 1000000*(unsigned int)atof(gtk_entry_get_text(GTK_ENTRY(entry_stay_at_start_duration)));
+
 }

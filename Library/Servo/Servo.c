@@ -114,6 +114,61 @@ void evaluate_servo_pw_command_with_limitation(ServoData *servo_data, double deg
 	pthread_mutex_unlock(&(servo_data->mutex));	
 }
 
+void evaluate_servo_pw_command_with_limitation_and_threshold(ServoData *servo_data, double degree_limitation, double degree_threshold)
+{
+	double degree_change;
+	pthread_mutex_lock(&(servo_data->mutex));
+
+	if (servo_data->pulse_change == 0)	// it is evaluating submit_servo_direction_and_speed
+	{
+		if (servo_data->pulse_target > servo_data->pulse_current)
+		{
+			degree_change = ((double)(servo_data->pulse_target - servo_data->pulse_current)) / servo_data->range.pw_per_degree;
+			if (degree_change < degree_threshold)
+			{
+				servo_data->pulse_target = servo_data->pulse_current; 		// no move
+			}
+			else if (degree_change > degree_limitation)
+			{
+				servo_data->pulse_target = servo_data->pulse_current + ((ServoPulse)(servo_data->range.pw_per_degree * degree_limitation));
+			}
+		}
+		else
+		{
+			degree_change = ((double)(servo_data->pulse_current - servo_data->pulse_target)) / servo_data->range.pw_per_degree;
+			if (degree_change < degree_threshold)
+			{
+				servo_data->pulse_target = servo_data->pulse_current; 		// no move
+			}
+			else if (degree_change > degree_limitation)
+			{
+				servo_data->pulse_target = servo_data->pulse_current - ((ServoPulse)(servo_data->range.pw_per_degree * degree_limitation));
+			}
+		}
+		servo_data->pulse_current = servo_data->pulse_target;	// pulse_current is the pulse width which is sent to servo in previous period.
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
+	}
+	else if (servo_data->pulse_change > 0)  // target pulse width given and it reaches that pulse width with servo_data->pulse_change with the servo pulsing frequency period.
+	{
+		servo_data->pulse_current += servo_data->pulse_change;
+		if (servo_data->pulse_current > servo_data->pulse_target)
+		{
+			servo_data->pulse_current = servo_data->pulse_target;
+		}
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);
+	}
+	else if (servo_data->pulse_change < 0) 
+	{
+		servo_data->pulse_current += servo_data->pulse_change;
+		if (servo_data->pulse_current < servo_data->pulse_target)
+		{
+			servo_data->pulse_current = servo_data->pulse_target;
+		}
+		servo_data->pulse_command.pulse_width = (unsigned short int)65536 - (unsigned short int)((9216/10000.0)*10*servo_data->pulse_current);		
+	}
+	pthread_mutex_unlock(&(servo_data->mutex));	
+}
+
 void get_servo_pw_val_bytes(ServoData *servo_data, unsigned char *low_byte, unsigned char *high_byte)
 {
 	pthread_mutex_lock(&(servo_data->mutex));

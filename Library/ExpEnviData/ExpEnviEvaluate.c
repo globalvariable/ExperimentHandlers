@@ -233,7 +233,7 @@ bool disable_exp_envi_input_with_status_reset(ExpEnviInputCompTypeData *comp_dat
 // eğer disable etmeden önceki status bilgisine ihtiyacın varsa bu input component e hiç disable etme. ama exp_envi_status' ta bir status belirle, o status' a göre bunun outputunu handle et.
 {
 	if (! comp_data->enabled)
-		return print_message(BUG_MSG ,"ExperimentHandlers", "ExpEnviEvaluate", "enable_exp_envi_input_with_status_reset", "Component is already disabled.");
+		return print_message(BUG_MSG ,"ExperimentHandlers", "ExpEnviEvaluate", "disable_exp_envi_input_with_status_reset", "Component is already disabled.");
 	comp_data->enabled = 0;
 	comp_data->low_2_high_switch_success = 0;
 	comp_data->high_2_low_switch_success = 0;	

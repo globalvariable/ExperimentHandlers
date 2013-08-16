@@ -1,6 +1,6 @@
 #include "HandleMovObjHand2TrialHandMsgs.h"
 
-#define REWARD_AVERAGING_WINDOW 2
+#define REWARD_AVERAGING_WINDOW 1
 #define DISTANCE_AVERAGING_WINDOW 1
 #define ALPHA 80.0
 #define BETA 270.0
@@ -58,8 +58,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 
 						paradigm->current_trial_data.binary_reward = TRUE;
 						R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-						reward = 1 - R_n;
-
+					//	reward = 1 - R_n;
+						reward = 1.0 * (1 - R_n);
 						paradigm->current_trial_data.reward_magnitude = reward;
 
 						printf ("reward --- : %.8f\n", reward);
@@ -126,6 +126,16 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 								return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgss", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
 							if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD, 0))
 								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+#ifdef	SIMULATION_MODE
+							trial_hand_to_spike_gen_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
+							trial_hand_to_spike_gen_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
+							if (!write_to_trial_hand_2_spike_gen_msg_buffer(msgs_trial_hand_2_spike_gen, current_time, TRIAL_HAND_2_SPIKE_GEN_MSG_TRIAL_STATUS_CHANGED, trial_hand_to_spike_gen_msg_add))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_spike_gen_msg_buffer()");
+#endif	
+							if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_IN_REFRACTORY))
+								return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_hand_2_spike_gen_msg_buffer()");
+							if (! write_to_trial_status_history(trial_status_history, current_time, TRIAL_STATUS_IN_REFRACTORY))
+									return print_message(ERROR_MSG ,"TrialHandler", "HandleMovObjHand2TrialHandMsgs", "handle_mov_obj_handler_to_trial_handler_msg", "write_to_trial_status_history()");
 						}
 						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
 						trial_hand_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
@@ -159,22 +169,26 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 						{
 							paradigm->current_trial_data.binary_reward = FALSE;
 							R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-							reward = -(1 - R_n);
+						//	reward = -(1 - R_n);
+							reward = -1.0 * (1 - R_n);
 						}
 						else
 						{
-							if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.05))
+							if (remained_distance_to_target_windowed_average > (paradigm->current_trial_data.remained_distance_to_target + 0.15))
 							{
 								paradigm->current_trial_data.binary_reward = FALSE;
 								R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-								reward = (1 - R_n);
+							//	reward = (1 - R_n);
+								reward = 0.5 * (1 - R_n);
 							}
 							else
 							{
 								paradigm->current_trial_data.binary_reward = FALSE;
 								R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-								reward = -(1 - R_n);
+							//	reward = -(1 - R_n);
+								reward = 0.5 * (1 - R_n);
 							}
+
 						}
 						printf ("reward --- : %.8f\n", reward);
 						printf ("R_n --- : %.8f\n", reward);
@@ -227,7 +241,8 @@ bool handle_mov_obj_handler_to_trial_handler_msg(TimeStamp current_time)
 
 						paradigm->current_trial_data.binary_reward = FALSE;
 						R_n = calculate_and_get_windowed_binary_reward_average_all_trials(classified_history, &(paradigm->current_trial_data), REWARD_AVERAGING_WINDOW);	
-						reward = -(1 - R_n);
+					//	reward = -(1 - R_n);
+						reward = -1.0 * (1 - R_n);
 
 						printf ("reward --- : %.8f\n", reward);
 						printf ("R_n --- : %.8f\n", reward);

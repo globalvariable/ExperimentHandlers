@@ -65,6 +65,7 @@ void submit_servo_target(ServoData *servo_data, ServoPulse target_pulse_width, d
 void submit_servo_direction_and_speed(ServoData *servo_data,  ServoPulseChange amount);
 void evaluate_servo_pw_command(ServoData *servo_data);
 void evaluate_servo_pw_command_with_limitation(ServoData *servo_data, double degree_limitation);
+void evaluate_servo_pw_command_with_limitation_and_threshold(ServoData *servo_data, double degree_limitation, double degree_threshold);
 void get_servo_pw_val_bytes(ServoData *servo_data, unsigned char *low_byte, unsigned char *high_byte);
 void get_servo_position_val(ServoData *servo_data, ServoPosition *servo_position);
 void write_servo_position_val(ServoData *servo_data, unsigned char low_byte, unsigned char high_byte);

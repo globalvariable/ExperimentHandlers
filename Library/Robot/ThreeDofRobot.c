@@ -26,12 +26,21 @@ void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm)
 	pthread_mutex_unlock(&(robot_arm->mutex));
 }
 
-void evaluate_three_dof_robot_arm_pw_command_width_degree_limitation(ThreeDofRobot *robot_arm, double degree_limitation)   // to limit the speed of robot.
+void evaluate_three_dof_robot_arm_pw_command_with_degree_limitation(ThreeDofRobot *robot_arm, double degree_limitation)   // to limit the speed of robot.
 {
 	unsigned int i;
 	pthread_mutex_lock(&(robot_arm->mutex));
 	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 		evaluate_servo_pw_command_with_limitation(&(robot_arm->servos[i]), degree_limitation);
+	pthread_mutex_unlock(&(robot_arm->mutex));
+}
+
+void evaluate_three_dof_robot_arm_pw_command_with_degree_limitation_and_threshold(ThreeDofRobot *robot_arm, double degree_limitation, double degree_threshold)  // to limit the speed of robot and discard slow speeds.
+{
+	unsigned int i;
+	pthread_mutex_lock(&(robot_arm->mutex));
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+		evaluate_servo_pw_command_with_limitation_and_threshold(&(robot_arm->servos[i]), degree_limitation, degree_threshold);
 	pthread_mutex_unlock(&(robot_arm->mutex));
 }
 

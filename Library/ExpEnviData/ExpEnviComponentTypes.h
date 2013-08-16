@@ -20,7 +20,7 @@ typedef unsigned int ExpEnviInputCompType;
 #define	EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE				1
 #define	EXP_ENVI_INPUT_COMPONENT_LEFT_LEVER						2
 #define	EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER						3
-
+#define	EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR				4
 
 typedef unsigned int ExpEnviOutputCompType;					
 
