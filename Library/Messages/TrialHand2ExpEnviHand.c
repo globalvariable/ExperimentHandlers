@@ -69,6 +69,14 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_ENABLE_NOSE_POKE_RETRACT");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_INVALID_START_TRIAL_REQUEST:	
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_INVALID_START_TRIAL_REQUEST");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL_AVAILABLE:	
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL_AVAILABLE");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

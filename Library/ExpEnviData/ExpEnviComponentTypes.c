@@ -56,6 +56,10 @@ bool get_exp_envi_output_component_type_string(ExpEnviOutputCompType component_t
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID");
 			return TRUE;	
+		case EXP_ENVI_OUTPUT_COMPONENT_TRIAL_AVAILABLE_LED:
+			if (str != NULL)
+				strcpy(str, "EXP_ENVI_OUTPUT_COMPONENT_TRIAL_AVAILABLE_LED");
+			return TRUE;	
 
 
 /////////////////////////	

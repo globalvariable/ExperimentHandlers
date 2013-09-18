@@ -32,7 +32,7 @@ typedef unsigned int ExpEnviOutputCompType;
 #define	EXP_ENVI_OUTPUT_COMPONENT_RIGHT_TARGET_LED				3
 #define	EXP_ENVI_OUTPUT_COMPONENT_GUIDE_LED						4
 #define	EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID				5
-
+#define	EXP_ENVI_OUTPUT_COMPONENT_TRIAL_AVAILABLE_LED			6
 
 
 bool get_exp_envi_input_component_type_string(ExpEnviInputCompType component_type, char *str);

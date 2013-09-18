@@ -58,6 +58,11 @@ bool add_input_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviInputCo
 bool is_input_component_type_used(ExpEnviData* data, ExpEnviInputCompType comp_type, bool *used);
 bool submit_new_time_params_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration, TimeStamp max_high_status_duration, TimeStamp min_low_status_duration, TimeStamp max_low_status_duration);
 
+bool submit_new_min_low_status_duration_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_low_status_duration);
+bool submit_new_max_low_status_duration_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp max_low_status_duration);
+bool submit_new_min_high_status_duration_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp min_high_status_duration);
+bool submit_new_max_high_status_duration_for_input_component_type(ExpEnviData *data, ExpEnviInputCompType comp_type, TimeStamp max_high_status_duration);
+
 bool get_output_component_type_idx_in_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, unsigned int *idx);
 bool add_output_component_type_to_exp_envi_data(ExpEnviData *data, ExpEnviOutputCompType comp_type, TimeStamp high_status_duration);
 bool is_output_component_type_used(ExpEnviData* data, ExpEnviOutputCompType comp_type, bool *used);

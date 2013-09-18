@@ -86,6 +86,14 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_TURN_LEVER_PRESS_MODE_OFF");
 			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_ON:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_ON");
+			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_OFF:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_OFF");
+			return TRUE;
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

@@ -23,6 +23,7 @@ typedef struct
 typedef union 
 {
 	ScheduleAdditionalData	schedule;
+	bool				dummy;
 }
 MovObjHand2MovObjDurHandMsgAdditional;
 

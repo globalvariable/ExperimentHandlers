@@ -22,6 +22,7 @@ typedef struct __TrialStatusEvents TrialStatusEvents;
 #define	TRIAL_STATUS_START_TRIAL_AVAILABLE		4
 #define	TRIAL_STATUS_GET_READY_TO_START		5
 #define	TRIAL_STATUS_WAIT_FOR_LEVER_PRESS		6
+#define	TRIAL_STATUS_WAIT_FOR_NOSE_RETRACT	7
 
 struct __TrialStatusEventItem
 {
