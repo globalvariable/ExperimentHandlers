@@ -9,8 +9,15 @@
 typedef struct __MovObjHand2NeuralNetMsg MovObjHand2NeuralNetMsg;
 typedef struct __MovObjHand2NeuralNetMsgItem MovObjHand2NeuralNetMsgItem;
 typedef unsigned int MovObjHand2NeuralNetMsgType;
+typedef struct __MovObjHand2NeuralNetMsgAddBinaryReward MovObjHand2NeuralNetMsgAddBinaryReward;
 
 #include "../Robot/ThreeDofRobot.h"
+
+struct __MovObjHand2NeuralNetMsgAddBinaryReward
+{
+	int 			reward;
+	unsigned int	target_idx;
+};
 
 typedef union 
 {
@@ -19,6 +26,7 @@ typedef union
 	double three_dof_robot_max_joint_angles[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 	double momentary_reward;
 	bool dummy;
+	MovObjHand2NeuralNetMsgAddBinaryReward	binary_reward_add;
 } MovObjHand2NeuralNetMsgAdditional;
 
 #include "../../../BlueSpike/System/RtTasksData/RtTasksData.h"
@@ -33,7 +41,9 @@ typedef MovObjHand2NeuralNetMsgPtr MovObjHand2NeuralNetMsgMultiThread[NUM_OF_MOV
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE					2
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN					3
 #define MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX					4
-
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_REINFORCEMENT						5
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_REWARD				6
+#define MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_PUNISH				7
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

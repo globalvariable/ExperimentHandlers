@@ -7,7 +7,11 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 	MovObjDurHand2MovObjHandMsgItem msg_item;
 	char str_mov_obj_dur_msg[MOV_OBJ_DUR_HAND_2_MOV_OBJ_HAND_MSG_STRING_LENGTH];
 	MovObjHand2NeuralNetMsgAdditional	mov_obj_hand_2_neural_net_msg_add;
-
+	static double prev_distance_to_target = 0;
+	double distance_to_target;
+	CartesianCoordinates	*target_coordinates;
+	ThreeDofRobotPosition	*tip_position;
+	unsigned int i;
 	while (get_next_mov_obj_dur_hand_2_mov_obj_hand_msg_buffer_item(msgs_mov_obj_dur_hand_2_mov_obj_hand, &msg_item))
 	{
 		switch (msg_item.msg_type)
@@ -74,19 +78,28 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 						if (! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm())
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! ! handle_rs232_rx_buffer_and_write_to_exp_envi_rx_shm()");
 						calculate_forward_kinematics_with_averaging(robot_arm);	
-						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, mov_obj_status_history))
+						if (! handle_robot_arm_position_threshold(robot_arm, mov_obj_paradigm, mov_obj_status, current_time, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, mov_obj_status_history, msgs_mov_obj_hand_2_neural_net_multi_thread))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! handle_robot_arm_position_threshold()");
 						if (! write_to_three_dof_robot_angle_history(robot_angle_history, current_time, robot_arm->servos[BASE_SERVO].current_angle, robot_arm->servos[SHOULDER_SERVO].current_angle, robot_arm->servos[ELBOW_SERVO].current_angle))
 							return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_three_dof_robot_angle_history()");
-						if ((*mov_obj_status) != MOV_OBJ_STATUS_DISABLED)  // to be faster using, if instead of switch.
-						{
-							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[BASE_SERVO] = robot_arm->servos[BASE_SERVO].current_angle;
-							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[SHOULDER_SERVO] = robot_arm->servos[SHOULDER_SERVO].current_angle;
-							mov_obj_hand_2_neural_net_msg_add.three_dof_robot_joint_angles[ELBOW_SERVO] = robot_arm->servos[ELBOW_SERVO].current_angle;
-							if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_3_DOF_JOINT_ANGLE, mov_obj_hand_2_neural_net_msg_add))
-								return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
-						}
 
+						target_coordinates = &(mov_obj_paradigm->target_info.cart_coordinates[mov_obj_paradigm->target_info.selected_position_idx]);
+						tip_position = &(robot_arm->tip_position);
+						distance_to_target = distance_btwn_two_points(&(robot_arm->tip_position), &(mov_obj_paradigm->target_info.cart_coordinates[mov_obj_paradigm->target_info.selected_position_idx]));
+						if ((*mov_obj_status) == MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL)  // to be faster using, if instead of switch.
+						{
+							mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = mov_obj_paradigm->target_info.selected_position_idx;
+							if (distance_to_target < prev_distance_to_target)
+								mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 1;
+							else
+								mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = -1;
+							for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+							{
+								if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_REINFORCEMENT, mov_obj_hand_2_neural_net_msg_add))
+									return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
+							}
+						}
+						prev_distance_to_target = distance_to_target;
 						break;	
 					default:
 						return FALSE;

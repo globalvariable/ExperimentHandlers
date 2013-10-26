@@ -105,6 +105,7 @@ static void *rt_trial_handler(void *args)
         mlockall(MCL_CURRENT | MCL_FUTURE);
 	rt_make_hard_real_time();		// do not forget this // check the task by nano /proc/rtai/scheduler (HD/SF) 
 
+	msgs_trial_hand_2_trial_dur_hand->buff_read_idx = msgs_trial_hand_2_trial_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_trial_dur_hand_2_trial_hand->buff_read_idx = msgs_trial_dur_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_exp_envi_hand_2_trial_hand->buff_read_idx = msgs_exp_envi_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_mov_obj_hand_2_trial_hand->buff_read_idx = msgs_mov_obj_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,

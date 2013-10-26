@@ -4,6 +4,9 @@ static RtTasksData *static_rt_tasks_data = NULL;
 
 static TrialStatus trial_status = TRIAL_STATUS_NULL;   // Only trial handler can change trial status. 
 
+static TrialDurationStatus trial_duration_status = TRIAL_DUR_STATUS_NULL;   // Only trial duration handler can change trial status. 
+static TimeStamp handling_end_time = 0;
+
 static TrialHandParadigmRobotReach *static_paradigm = NULL;
 
 static ClassifiedTrialHistory *classified_history = NULL;
@@ -53,6 +56,8 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 
 	trial_status = TRIAL_STATUS_TRIALS_DISABLED;
 
+	trial_duration_status = TRIAL_DUR_STATUS_HANDLING_DISABLED;
+
 	static_paradigm = paradigm;
 
 	classified_history = classified_trial_history;
@@ -88,9 +93,9 @@ bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg
 	msgs_trial_dur_hand_2_trial_hand = allocate_trial_dur_hand_2_trial_hand_msg_buffer(msgs_trial_dur_hand_2_trial_hand);
 	msgs_trial_hand_2_trial_dur_hand = allocate_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand);
 
-	if(! create_trial_duration_handler_rt_thread(rt_tasks_data, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand))
+/*	if(! create_trial_duration_handler_rt_thread(rt_tasks_data, msgs_trial_dur_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand))
 		return print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "create_trial_handler_rt_thread().");	
-
+*/
 	if (trial_handler_rt_thread !=0)
 		return print_message(BUG_MSG ,"TrialHandler", "TrialHandlerRtTask", "create_trial_handler_rt_thread", "CANNOT create rt_thread again.");	
 	trial_handler_rt_thread =  rt_thread_create(rt_trial_handler, NULL, 10000);
@@ -137,6 +142,7 @@ static void *rt_trial_handler(void *args)
 	initialize_mov_obj_handler_to_trial_handler_msg_params(&trial_status, msgs_mov_obj_hand_2_trial_hand, msgs_trial_hand_2_trial_dur_hand, msgs_trial_hand_2_exp_envi_hand, msgs_trial_hand_2_mov_obj_hand, msgs_trial_hand_2_neural_net, static_paradigm, classified_history, static_msgs_trial_hand_2_gui, static_trial_status_history);
 #endif
 
+	msgs_trial_hand_2_trial_dur_hand->buff_read_idx = msgs_trial_hand_2_trial_dur_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_trial_dur_hand_2_trial_hand->buff_read_idx = msgs_trial_dur_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_exp_envi_hand_2_trial_hand->buff_read_idx = msgs_exp_envi_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	msgs_mov_obj_hand_2_trial_hand->buff_read_idx = msgs_mov_obj_hand_2_trial_hand->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
@@ -158,11 +164,16 @@ static void *rt_trial_handler(void *args)
 		if (!handle_gui_to_trial_handler_msg(curr_system_time)) {
 			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_gui_to_trial_handler_msg()."); break; }
 		if (!handle_exp_envi_handler_to_trial_handler_msg(curr_system_time))  {
-			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_exp_envi_handler_to_trial_handler_msg()."); break; }
 		if (!handle_mov_obj_handler_to_trial_handler_msg(curr_system_time))  {
-			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_mov_obj_handler_to_trial_handler_msg()."); break; }
+		// handle_trial_handler_to_trial_dur_handler  --> handle_trial_handler_duration --> handle_trial_dur_handler_to_trial_handler_msg is important  === so that messages from exp envi and mov obj handler have priority over trial  duratiion handler.  e.g. nose poke event from exp envi handler extends refractory period (BEFORE trial_dur_handler_to_trial_handler makes trials available due to refractory timeout). 
+		if (! handle_trial_handler_to_trial_dur_handler_msg(&trial_duration_status, curr_system_time, msgs_trial_hand_2_trial_dur_hand, &handling_end_time)) {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_duration_handler", "! handle_trial_handler_to_trial_duration_handler_msg()."); break; }
+		if (! handle_trial_handler_duration(&trial_duration_status, curr_system_time, handling_end_time, msgs_trial_dur_hand_2_trial_hand)) {
+			print_message(ERROR_MSG ,"BMIExpController", "TrialHandlerRtTask", "rt_trial_duration_handler", "! handle_trial_handler_to_trial_duration_handler_msg()."); break; }
 		if (!handle_trial_dur_handler_to_trial_handler_msg(curr_system_time))  {
-			print_message(ERROR_MSG ,"TrialHandler", "TrialDurationHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
+			print_message(ERROR_MSG ,"TrialHandler", "TrialHandlerRtTask", "rt_trial_handler", "! handle_trial_dur_handler_to_trial_handler_msg()."); break; }
 		// routines	
 		evaluate_and_save_period_run_time(static_rt_tasks_data, TRIAL_HANDLER_CPU_ID, TRIAL_HANDLER_CPU_THREAD_ID, TRIAL_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_cpu_time_ns());		
         }

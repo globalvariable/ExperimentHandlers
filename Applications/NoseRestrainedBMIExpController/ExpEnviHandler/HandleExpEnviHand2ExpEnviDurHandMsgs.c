@@ -247,20 +247,20 @@ bool handle_exp_envi_handler_to_exp_envi_dur_handler_msg(ExpEnviDurationStatus *
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 						}
 						 break;			
-					case LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA:
-						switch (exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA])
+					case TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA:
+						switch (exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA])
 						{
 							case EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_ON:
-								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA");
-								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status); 
+								print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA");
+								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status); 
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 							case EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_OFF:
-								outputs_handling_end_time[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA] = msg_item.additional_data;
-								exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA] = EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_ON;
+								outputs_handling_end_time[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA] = msg_item.additional_data;
+								exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA] = EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_ON;
 								break;			
 							default:
-								printf("LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA\n");
-								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status); 
+								printf("TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA\n");
+								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status); 
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 						}
 						 break;	
@@ -345,18 +345,18 @@ bool handle_exp_envi_handler_to_exp_envi_dur_handler_msg(ExpEnviDurationStatus *
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 						}
 						 break;	
-					case LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA:
-						switch (exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA])
+					case TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA:
+						switch (exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA])
 						{
 							case EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_ON:
-								exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA] = EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_OFF;
+								exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA] = EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_OFF;
 								break;			
 							case EXP_ENVI_OUTPUTS_DUR_STATUS_TIMER_OFF:
 								print_message(WARNING_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", "Unnecessary Cancel Output Timer for LEVER_SOLENOID_IN_EXP_ENVI_DATA");
 								break; // do nothing
 							default:
-								printf("LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA\n");
-								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status);  
+								printf("TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA\n");
+								get_exp_envi_dur_status_type_string(exp_envi_outputs_dur_status[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA], str_exp_envi_dur_status);  
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviHand2ExpEnviDurHandMsgs", "handle_exp_envi_handler_to_exp_envi_dur_handler_msg", str_exp_envi_dur_status);
 						}
 						 break;	

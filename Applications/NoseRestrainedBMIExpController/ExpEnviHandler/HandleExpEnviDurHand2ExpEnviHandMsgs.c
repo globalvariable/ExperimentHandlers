@@ -32,7 +32,7 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 						if (has_response)
 						{
 							print_message(INFO_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "NOSE_RETRACT_IR_IDX_IN_EXP_ENVI_DATA RESPONSE");
-							if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST, 0))
+							if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST, 0))
 								return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
 						} 
 						break;				
@@ -124,16 +124,16 @@ bool handle_exp_envi_dur_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_d
 								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[GUIDE_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
 						}
 						break;	
-					case LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA:
-						switch(exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status)
+					case TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA:
+						switch(exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status)
 						{
 							case EXP_ENVI_COMP_STATUS_LOW:
 								break;  // do nothing, it is already set low before (maybe by handle_trial_hand_2_exp_envi_hand)
 							case EXP_ENVI_COMP_STATUS_HIGH:
-								exp_envi_data->outp_comp_types[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+								exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
 								break;
 							default:
-								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[LEVER_SOLENOID_IDX_IN_EXP_ENVI_DATA].status) - default");
+								return print_message(BUG_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "EXP_ENVI_DUR_HAND_2_EXP_ENVI_HAND_MSG_OUTPUT_TIMEOUT & switch(exp_envi_data->outp_comps[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
 						}
 						break;	
 					default:

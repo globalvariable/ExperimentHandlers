@@ -68,10 +68,10 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->receive_position_wait_period = 5000000;
 	mov_obj_paradigm->stay_at_start_duration = 500000000;   
 
-	mov_obj_paradigm->spike_2_servo_degree_multiplier = 8;
-	mov_obj_paradigm->spike_2_servo_degree_handling_period_multiplier = 4;  /// to be 100 ms
-	mov_obj_paradigm->max_servo_angle_change = 10;
-	mov_obj_paradigm->servo_angle_change_threshold = 8;
+	mov_obj_paradigm->spike_2_servo_degree_multiplier = 1;
+	mov_obj_paradigm->spike_2_servo_degree_handling_period_multiplier = 1;  /// to be 25 ms
+	mov_obj_paradigm->max_servo_angle_change = 2;
+	mov_obj_paradigm->servo_angle_change_threshold = 0;
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
 	mov_obj_paradigm->target_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 2);

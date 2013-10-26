@@ -94,23 +94,11 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					(*read_idx)++;
 				switch (item->mwa_or_layer)
 				{
-					case LAYER_BASE_SERVO_EXTENSOR_MOTOR:
+					case LAYER_BASE_SERVO_EXTENSOR_SPINY:
 						base_servo_extensor_spike_counter++;
 						break;
-					case LAYER_BASE_SERVO_FLEXOR_MOTOR:
+					case LAYER_BASE_SERVO_FLEXOR_SPINY:
 						base_servo_flexor_spike_counter++;	
-						break;
-					case LAYER_SHOULDER_SERVO_EXTENSOR_MOTOR:
-						shoulder_servo_extensor_spike_counter++;
-						break;
-					case LAYER_SHOULDER_SERVO_FLEXOR_MOTOR:
-						shoulder_servo_flexor_spike_counter++;	
-						break;
-					case LAYER_ELBOW_SERVO_EXTENSOR_MOTOR:
-						elbow_servo_extensor_spike_counter++;
-						break;
-					case LAYER_ELBOW_SERVO_FLEXOR_MOTOR:
-						elbow_servo_flexor_spike_counter++;	
 						break;
 					default:		
 						return print_message(BUG_MSG ,"MovObjHandler", "HandleSpikeDataBuff", "handle_spike_data_buff", "Invalid Output Layer Number.");

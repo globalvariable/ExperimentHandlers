@@ -145,7 +145,7 @@ static void *rt_mov_obj_handler(void *args)
 		// routines
 		if (! handle_gui_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, static_msgs_gui_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
-		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, static_mov_obj_paradigm, static_message_log, static_mov_obj_status_history, static_msgs_mov_obj_hand_2_gui))  {
+		if (! handle_trial_handler_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, msgs_trial_hand_2_mov_obj_hand, msgs_mov_obj_hand_2_mov_obj_dur_hand, msgs_mov_obj_hand_2_trial_hand, static_mov_obj_paradigm, static_message_log, static_mov_obj_status_history, static_msgs_mov_obj_hand_2_gui, msgs_mov_obj_hand_2_neural_net_multi_thread))  {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_trial_handler_to_mov_obj_handler_msg()."); break; }
 		if (! handle_mov_obj_handler_to_mov_obj_dur_handler_msg(curr_system_time, msgs_mov_obj_hand_2_mov_obj_dur_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjDurationHandlerRtTask", "rt_mov_obj_duration_handler", "! handle_mov_obj_handler_to_mov_obj_duration_handler_msg()."); break; }

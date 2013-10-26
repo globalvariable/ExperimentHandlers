@@ -303,9 +303,6 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 							paradigm->current_trial_data.robot_start_position_idx++;
 						}
 						break;
-					case TRIAL_STATUS_WAIT_FOR_LEVER_PRESS:
-						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreasing threshold cannot be done during TRIAL_STATUS_WAIT_FOR_LEVER_PRESS");
-						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);
 						get_trial_status_type_string(*trial_status, str_status);   
@@ -347,9 +344,6 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						{
 							paradigm->current_trial_data.robot_start_position_idx--;
 						}
-						break;
-					case TRIAL_STATUS_WAIT_FOR_LEVER_PRESS:
-						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreasing threshold cannot be done during TRIAL_STATUS_WAIT_FOR_LEVER_PRESS");
 						break;
 					default:
 						print_message(BUG_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", str_gui_msg);

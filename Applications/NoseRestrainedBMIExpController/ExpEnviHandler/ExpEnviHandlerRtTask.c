@@ -115,7 +115,7 @@ static void *rt_exp_envi_handler(void *args)
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_gui_to_exp_envi_handler_msg()."); break; }
 		if (! handle_trial_handler_to_exp_envi_handler_msg(static_exp_envi_data, curr_system_time, msgs_trial_hand_2_exp_envi_hand,  msgs_exp_envi_hand_2_exp_envi_dur_hand, static_exp_envi_paradigm, static_msgs_exp_envi_hand_2_gui))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_trial_handler_to_exp_envi_handler_msg()."); break; }
-		if (! handle_exp_envi_rx_shm(static_exp_envi_data, curr_system_time, msgs_exp_envi_hand_2_exp_envi_dur_hand, static_exp_envi_input_status_history)) {
+		if (! handle_exp_envi_rx_shm(static_exp_envi_data, curr_system_time, msgs_exp_envi_hand_2_exp_envi_dur_hand, msgs_exp_envi_hand_2_trial_hand, static_exp_envi_input_status_history)) {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_rx_shm()."); break; }
 		if (! handle_exp_envi_dur_handler_to_exp_envi_handler_msg(static_exp_envi_data, curr_system_time, msgs_exp_envi_dur_hand_2_exp_envi_hand, msgs_exp_envi_hand_2_trial_hand, static_exp_envi_paradigm))  {
 			print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandlerRtTask", "rt_exp_envi_handler", "! handle_exp_envi_dur_handler_to_exp_envi_handler_msg()."); break; }
