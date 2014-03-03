@@ -21,10 +21,11 @@ int main( int argc, char *argv[])
 	exp_envi_paradigm->target_led_component_indexes_list = g_new0(unsigned int, 2);
 	exp_envi_paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;
 	exp_envi_paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
-
+	exp_envi_paradigm->min_low_status_duration_for_nose_poke = 600000000;
+//	exp_envi_paradigm->max_extra_low_status_duration_for_nose_poke = 400000000;
 
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
-	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, 800000000, 10000000000, 800000000, 10000000000, 0, 1, EXP_ENVI_COMP_STATUS_HIGH, TRUE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
+	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, exp_envi_paradigm->min_low_status_duration_for_nose_poke, 10000000000, exp_envi_paradigm->min_low_status_duration_for_nose_poke, 10000000000, 0, 1, EXP_ENVI_COMP_STATUS_HIGH, TRUE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "! add_input_component_type_to_exp_envi_data().");  
 //     Order of addition of components is important. Add them according to ConfigExpEnviComponentNums.h
 	if (! add_input_component_type_to_exp_envi_data(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR, 40000000,500000000, 40000000, 500000000, 1, 0, EXP_ENVI_COMP_STATUS_LOW, FALSE)) /// 1 nose retract   // initially the nose of the animal gets is in ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 

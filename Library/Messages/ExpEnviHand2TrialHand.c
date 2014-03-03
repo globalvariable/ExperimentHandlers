@@ -29,6 +29,14 @@ bool get_exp_envi_hand_2_trial_hand_msg_type_string(ExpEnviHand2TrialHandMsgType
 			if (str != NULL)
  				strcpy(str, "EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_POKE_EVENT");
 			return TRUE;
+		case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_RETRACT_EVENT:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_RETRACT_EVENT");
+			return TRUE;
+		case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_RESTRAIN_RELEASE_REQ:
+			if (str != NULL)
+ 				strcpy(str, "EXP_ENVI_HAND_2_TRIAL_HAND_MSG_RESTRAIN_RELEASE_REQ");
+			return TRUE;
 /////////////////////////		
 		case EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

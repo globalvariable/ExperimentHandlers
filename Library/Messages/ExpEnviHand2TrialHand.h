@@ -18,6 +18,8 @@ typedef unsigned int ExpEnviHand2TrialHandMsgAdditional;
 #define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_PUNISHMENT_REQUEST			4		
 #define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_END_TRIAL_REQUEST				5
 #define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_POKE_EVENT				6
+#define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_RETRACT_EVENT			7
+#define EXP_ENVI_HAND_2_TRIAL_HAND_MSG_RESTRAIN_RELEASE_REQ			8
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

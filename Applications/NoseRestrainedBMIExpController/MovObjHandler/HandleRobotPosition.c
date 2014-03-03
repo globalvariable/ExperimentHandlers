@@ -32,7 +32,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = paradigm->target_info.selected_position_idx;
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
-				for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+				for (i = 0; i < 1; i++) 	// send only once
 				{
 					if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_REWARD, mov_obj_hand_2_neural_net_msg_add))
 						return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
@@ -50,7 +50,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");	
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = paradigm->target_info.selected_position_idx;
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
-				for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+				for (i = 0; i < 1; i++)	// send only once
 				{
 					if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_PUNISH, mov_obj_hand_2_neural_net_msg_add))
 						return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");
@@ -68,7 +68,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_hand_2_trial_hand_msg_buffer()");
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = paradigm->target_info.selected_position_idx;
 				mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
-				for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+				for (i = 0; i < 1; i++) 	// send only once
 				{
 					if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_PUNISH, mov_obj_hand_2_neural_net_msg_add))
 						return print_message(ERROR_MSG ,"MovObjHandler", "HandleMovObjDurHand2MovObjHandMsgs", "handle_mov_obj_dur_handler_to_mov_obj_handler_msg", "! write_to_mov_obj_hand_2_neural_net_msg_buffer()");	

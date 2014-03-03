@@ -44,6 +44,24 @@ void evaluate_three_dof_robot_arm_pw_command_with_degree_limitation_and_threshol
 	pthread_mutex_unlock(&(robot_arm->mutex));
 }
 
+bool evaluate_three_dof_robot_arm_pw_command_with_any_servo_target_reach_feedback(ThreeDofRobot *robot_arm)  
+{
+	unsigned int i;
+	bool reached;
+
+	reached = TRUE;
+	pthread_mutex_lock(&(robot_arm->mutex));
+	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+	{
+		if (! evaluate_servo_pw_command_with_target_reach_feedback(&(robot_arm->servos[i])))
+		{
+			reached = FALSE;	// if any of the servos did not reach to their target pw, it is not reached to target. 
+		}
+	}
+	pthread_mutex_unlock(&(robot_arm->mutex));
+	return reached;
+}
+
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm)
 {
 	ServoData *servo;

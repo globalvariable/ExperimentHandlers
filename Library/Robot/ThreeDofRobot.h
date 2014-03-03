@@ -53,6 +53,7 @@ void submit_arm_length_vals(ThreeDofRobot *robot_arm, double length_humerus, dou
 void evaluate_three_dof_robot_arm_pw_command(ThreeDofRobot *robot_arm);
 void evaluate_three_dof_robot_arm_pw_command_with_degree_limitation(ThreeDofRobot *robot_arm, double degree_limitation);
 void evaluate_three_dof_robot_arm_pw_command_with_degree_limitation_and_threshold(ThreeDofRobot *robot_arm, double degree_limitation, double degree_threshold);
+bool evaluate_three_dof_robot_arm_pw_command_with_any_servo_target_reach_feedback(ThreeDofRobot *robot_arm);
 void calculate_forward_kinematics(ThreeDofRobot *robot_arm);
 void submit_static_variables_for_forward_kinematics_with_three_sample_averaging(double servo_angle_base, double servo_angle_shoulder, double servo_angle_elbow);
 void calculate_forward_kinematics_with_averaging(ThreeDofRobot *robot_arm);

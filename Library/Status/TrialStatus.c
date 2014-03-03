@@ -33,6 +33,14 @@ bool get_trial_status_type_string(TrialStatus trial_status_type, char *str)   //
 			if (str != NULL)
 				strcpy(str, "TRIAL_STATUS_WAIT_FOR_NOSE_RETRACT");
 			return TRUE;
+		case TRIAL_STATUS_CUE_LED_ON:
+			if (str != NULL)
+				strcpy(str, "TRIAL_STATUS_CUE_LED_ON");
+			return TRUE;
+		case TRIAL_STATUS_REWARD_AVAILABLE:
+			if (str != NULL)
+				strcpy(str, "TRIAL_STATUS_REWARD_AVAILABLE");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_STATUS_NULL:
 			if (str != NULL)

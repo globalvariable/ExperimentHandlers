@@ -77,6 +77,22 @@ bool get_trial_hand_2_exp_envi_hand_msg_type_string(TrialHand2ExpEnviHandMsgType
 			if (str != NULL)
  				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL_AVAILABLE");
 			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_CUE_LED_ON:	
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_CUE_LED_ON");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL_WHEN_GET_READY:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_END_TRIAL_WHEN_GET_READY");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_TURN_BUZZER_OFF:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_TURN_BUZZER_OFF");
+			return TRUE;
+		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_NOSE_POKE:
+			if (str != NULL)
+ 				strcpy(str, "TRIAL_HAND_2_EXP_ENVI_HAND_MSG_DISABLE_NOSE_POKE");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_NULL:
 			if (str != NULL)

@@ -25,7 +25,7 @@ typedef union
 		unsigned ir_beam:1;  
 		unsigned left_lever:1;  
 		unsigned right_lever:1;  
-		unsigned none0:1;
+		unsigned ir_beam_2:1;
 		unsigned none1:1;
 		unsigned none2:1;
 		unsigned none3:1;
@@ -205,7 +205,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 //	printf ("%u\n", exp_envi_rs232_status->all_status);
 	if (exp_envi_rs232_status_prev.ir_beam != exp_envi_rs232_status->ir_beam)
 	{
-		printf ("IR_1  %d\n", exp_envi_rs232_status->ir_beam);
+//		printf ("IR_1  %d\n", exp_envi_rs232_status->ir_beam);
 		exp_envi_rs232_status_prev.ir_beam = exp_envi_rs232_status->ir_beam;
 
 		if (exp_envi_rs232_status->ir_beam)
@@ -302,6 +302,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 			if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_POKE_EVENT, 0))
 				return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
 		}
+
 	}
 	if (exp_envi_rs232_status_prev.left_lever != exp_envi_rs232_status->left_lever)
 	{
@@ -310,6 +311,12 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 	if (exp_envi_rs232_status_prev.right_lever != exp_envi_rs232_status->right_lever)
 	{
 		exp_envi_rs232_status_prev.right_lever = exp_envi_rs232_status->right_lever;
+	}
+	if (exp_envi_rs232_status_prev.ir_beam_2 != exp_envi_rs232_status->ir_beam_2)
+	{
+		exp_envi_rs232_status_prev.ir_beam_2 = exp_envi_rs232_status->ir_beam_2;
+
+
 	}
 	return TRUE;
 }

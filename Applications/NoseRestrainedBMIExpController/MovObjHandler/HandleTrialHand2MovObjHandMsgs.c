@@ -197,10 +197,37 @@ bool handle_trial_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm, MovOb
 						break;
 					case MOV_OBJ_STATUS_STAYING_AT_START_POINT: 
 						break;
-					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL: // should have gone to target already to receive such message
+					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL: 
 						mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = mov_obj_paradigm->target_info.selected_position_idx;
 						mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
-						for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
+						for (i = 0; i < 1; i++)  	// send only once
+						{
+							if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_PUNISH, mov_obj_hand_2_neural_net_msg_add))
+								return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "write_to_mov_obj_hand_2_gui_msg_buffer", "! write_to_mov_obj_hand_2_neural_net_msg_buffer().");
+						}
+						break;
+					case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT: 		
+						break;
+					case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
+						break;   // do nothing
+					case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:		
+						break;
+					default:
+						print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_trial_hand_msg);
+						get_mov_obj_status_type_string(*mov_obj_status, str_mov_obj_status);   
+						return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "handle_trial_handler_to_mov_obj_handler_msg", str_mov_obj_status);
+				}
+			case TRIAL_HAND_2_MOV_OBJ_HAND_MSG_END_BY_NOSE_RETRACT:
+				switch (*mov_obj_status)
+				{
+					case MOV_OBJ_STATUS_DISABLED:
+						break;
+					case MOV_OBJ_STATUS_STAYING_AT_START_POINT: 
+						break;
+					case MOV_OBJ_STATUS_AVAILABLE_TO_CONTROL: 
+						mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = mov_obj_paradigm->target_info.selected_position_idx;
+						mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
+						for (i = 0; i < 1; i++)  	// send only once
 						{
 							if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_END_TRIAL_W_PUNISH, mov_obj_hand_2_neural_net_msg_add))
 								return print_message(BUG_MSG ,"MovObjHandler", "HandleTrialHand2MovObjHandMsgs", "write_to_mov_obj_hand_2_gui_msg_buffer", "! write_to_mov_obj_hand_2_neural_net_msg_buffer().");

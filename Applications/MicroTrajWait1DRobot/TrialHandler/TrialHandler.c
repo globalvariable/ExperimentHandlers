@@ -17,12 +17,14 @@ int main( int argc, char *argv[])
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
 	paradigm->max_trial_length = 10000000000;
-	paradigm->min_trial_refractory = 2000000000;
-	paradigm->max_extra_trial_refractory = 3000000000;
+	paradigm->min_trial_refractory = 2500000000;
+	paradigm->max_extra_trial_refractory = 1500000000;
 //	paradigm->min_get_ready_to_trial_start_length = 300000000;
 	paradigm->min_get_ready_to_trial_start_length = 0;
 	paradigm->max_extra_get_ready_to_trial_start_length = 200000000;
 	paradigm->max_nose_retract_interval = 1500000000;
+	paradigm->cue_led_status_duration = 300000000;
+
 	paradigm->num_of_robot_start_positions = 1;
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
@@ -48,6 +50,8 @@ int main( int argc, char *argv[])
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
 
 	paradigm->current_trial_data.nose_retract_mode_on = FALSE; 
+
+	paradigm->current_trial_data.cue_led_mode_on = FALSE; 
 
 	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions, paradigm->max_num_of_sessions); 
 

@@ -9,6 +9,8 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ti
 	unsigned int recording_number;
 	bool cancellation_required_for_status_timers;
 	bool timer_restart_reqiured_for_low_status_timers, timer_restart_reqiured_for_high_status_timers;
+	TimeStamp min_low_status_duration;
+
 	while (get_next_trial_hand_2_exp_envi_hand_msg_buffer_item(msgs_trial_hand_2_exp_envi_hand, &msg_item))
 	{
 		get_trial_hand_2_exp_envi_hand_msg_type_string(msg_item.msg_type, str_trial_hand_msg);
@@ -126,6 +128,13 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ti
 				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_OUTPUT_TIMER, GUIDE_LED_IDX_IN_EXP_ENVI_DATA, 0))
 					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
 
+				exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_LOW;
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_OUTPUT_TIMER, TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA, 0))
+					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
+
+				min_low_status_duration = exp_envi_paradigm->min_low_status_duration_for_nose_poke + ((TimeStamp)(get_rand_number() * (double)exp_envi_paradigm->max_extra_low_status_duration_for_nose_poke));
+				if (! submit_new_min_low_status_duration_for_input_component_type(exp_envi_data, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, min_low_status_duration))
+					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_trial_handler_to_exp_envi_handler_msg", "! submit_new_min_low_status_duration_for_input_component_type().");
 				break;
 
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_RELEASE_REWARD:	// trial handler should send reward before ending trial.
@@ -184,6 +193,11 @@ bool handle_trial_handler_to_exp_envi_handler_msg(ExpEnviData *exp_envi_data, Ti
 
 				break;
 			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL_AVAILABLE:
+				exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_HIGH;
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_OUTPUT_TIMER, TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA, exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].high_status_duration + current_time))
+					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
+				break;
+			case TRIAL_HAND_2_EXP_ENVI_HAND_MSG_CUE_LED_ON:
 				exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status = EXP_ENVI_COMP_STATUS_HIGH;
 				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_OUTPUT_TIMER, TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA, exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].high_status_duration + current_time))
 					return print_message(BUG_MSG ,"ExpEnviHandler", "HandleTrialHand2ExpEnviHandMsgs", "handle_exp_envi_interf_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");

@@ -33,6 +33,7 @@ struct __TrialData
 	bool				trial_incomplete;
 	unsigned int			num_of_incomplete_trials;  // so far, up to this trial
 	bool				nose_retract_mode_on;
+	bool				cue_led_mode_on;
 };
 
 

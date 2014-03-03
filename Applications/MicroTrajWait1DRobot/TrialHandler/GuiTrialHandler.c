@@ -34,6 +34,9 @@ static GtkWidget *btn_catch_trial_mode_on_off;
 static GtkWidget *btn_turn_nose_retract_mode_on;
 static GtkWidget *btn_turn_nose_retract_mode_off;
 
+static GtkWidget *btn_turn_cue_led_mode_on;
+static GtkWidget *btn_turn_cue_led_mode_off;
+
 static GtkWidget *lbl_threshold_r_x;
 static GtkWidget *lbl_threshold_r_y;
 static GtkWidget *lbl_threshold_r_z;
@@ -78,6 +81,8 @@ static void auto_target_select_mode_on_off_button_func(void);
 static void catch_trial_mode_on_off_button_func(void);
 static void turn_nose_retract_mode_on_button_func (void);
 static void turn_nose_retract_mode_off_button_func (void);
+static void turn_cue_led_mode_on_button_func (void);
+static void turn_cue_led_mode_off_button_func (void);
 
 static void select_target_button_func (void);
 static void release_reward_button_func (void);
@@ -206,6 +211,20 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	btn_turn_nose_retract_mode_off = gtk_button_new_with_label("Turn Nose Retract Mode OFF");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_turn_nose_retract_mode_off, TRUE, TRUE, 0);
+
+       gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_turn_cue_led_mode_on = gtk_button_new_with_label("Turn Cue Led Mode ON");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_turn_cue_led_mode_on, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_turn_cue_led_mode_off = gtk_button_new_with_label("Turn Cue Led Mode OFF");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_turn_cue_led_mode_off, TRUE, TRUE, 0);
 
        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
 
@@ -488,6 +507,9 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	g_signal_connect(G_OBJECT(btn_turn_nose_retract_mode_on), "clicked", G_CALLBACK(turn_nose_retract_mode_on_button_func), NULL);
 	g_signal_connect(G_OBJECT(btn_turn_nose_retract_mode_off), "clicked", G_CALLBACK(turn_nose_retract_mode_off_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_turn_cue_led_mode_on), "clicked", G_CALLBACK(turn_cue_led_mode_on_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_turn_cue_led_mode_off), "clicked", G_CALLBACK(turn_cue_led_mode_off_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_release_reward), "clicked", G_CALLBACK(release_reward_button_func), NULL);
 
@@ -837,6 +859,16 @@ static void turn_nose_retract_mode_off_button_func (void)
 {
 	if (!write_to_gui_2_trial_hand_msg_buffer(static_msgs_gui_2_trial_hand, static_rt_tasks_data->current_system_time, GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_OFF, 0))
 		return (void)print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "turn_nose_retract_mode_off_button_func", "! write_to_gui_2_trial_hand_msg_buffer().");		
+}
+
+static void turn_cue_led_mode_on_button_func (void)
+{
+	paradigm->current_trial_data.cue_led_mode_on = TRUE;
+}
+
+static void turn_cue_led_mode_off_button_func (void)
+{
+	paradigm->current_trial_data.cue_led_mode_on = FALSE;
 }
 
 

@@ -25,7 +25,7 @@ typedef union
 		unsigned ir_beam:1;  
 		unsigned left_lever:1;  
 		unsigned right_lever:1;  
-		unsigned none0:1;
+		unsigned ir_beam_2:1;
 		unsigned none1:1;
 		unsigned none2:1;
 		unsigned none3:1;
@@ -169,7 +169,7 @@ bool handle_exp_envi_tx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 	
 	if (exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status != output_components_status_prev[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA])
 	{	
-		switch(exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status)
+/*		switch(exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status)
 		{
 			case EXP_ENVI_COMP_STATUS_LOW:
 				exp_envi_rs232_cmd->levers_available = 0;   //  lever available ouput is being used to control trial available led.
@@ -180,7 +180,7 @@ bool handle_exp_envi_tx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 			default:
 				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffer", "handle_exp_envi_tx_shm", "switch(exp_envi_data->outp_comps[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status) - default");
 		}		
-		output_components_status_prev[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status;
+*/		output_components_status_prev[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA] = exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status;
 		if (! write_to_exp_envi_output_status_history(exp_envi_output_status_history, current_time, EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID, exp_envi_data->outp_comp_types[TRIAL_AVAILABLE_LED_IDX_IN_EXP_ENVI_DATA].status))
 			return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_output_status_history().");
 	}
@@ -205,10 +205,9 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 //	printf ("%u\n", exp_envi_rs232_status->all_status);
 	if (exp_envi_rs232_status_prev.ir_beam != exp_envi_rs232_status->ir_beam)
 	{
-		printf ("IR_1  %d\n", exp_envi_rs232_status->ir_beam);
 		exp_envi_rs232_status_prev.ir_beam = exp_envi_rs232_status->ir_beam;
 
-		if (exp_envi_rs232_status->ir_beam)
+/*		if (exp_envi_rs232_status->ir_beam)
 		{
 			if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &cancellation_reqiured_for_low_status_timer, &setting_required_for_high_status_timer))
 				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "exp_envi_input_low_2_high_event().");
@@ -302,7 +301,7 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 			if (! write_to_exp_envi_hand_2_trial_hand_msg_buffer(msgs_exp_envi_hand_2_trial_hand, current_time, EXP_ENVI_HAND_2_TRIAL_HAND_MSG_NOSE_POKE_EVENT, 0))
 				return print_message(ERROR_MSG ,"ExpEnviHandler", "HandleExpEnviDurHand2ExpEnviHandMsgs", "handle_exp_envi_dur_handler_to_exp_envi_handler_msg", "write_to_exp_envi_hand_2_trial_hand_msg_buffer().");
 		}
-	}
+*/	}
 
 	if (exp_envi_rs232_status_prev.left_lever != exp_envi_rs232_status->left_lever)
 	{
@@ -313,5 +312,57 @@ bool handle_exp_envi_rx_shm(ExpEnviData *exp_envi_data, TimeStamp current_time, 
 		exp_envi_rs232_status_prev.right_lever = exp_envi_rs232_status->right_lever;
 
 	}
+
+
+	if (exp_envi_rs232_status_prev.ir_beam_2 != exp_envi_rs232_status->ir_beam_2)
+	{
+		exp_envi_rs232_status_prev.ir_beam_2 = exp_envi_rs232_status->ir_beam_2;
+
+		if (exp_envi_rs232_status->ir_beam_2)
+		{
+			if (! exp_envi_input_low_2_high_event(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &cancellation_reqiured_for_low_status_timer, &setting_required_for_high_status_timer))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "exp_envi_input_low_2_high_event().");
+			if (cancellation_reqiured_for_low_status_timer)	 
+			{
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+			}
+			if (setting_required_for_high_status_timer)
+			{	
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA].constraints.min_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA].constraints.max_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");
+			}
+			if (! write_to_exp_envi_input_status_history(exp_envi_input_status_history, current_time, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, EXP_ENVI_COMP_STATUS_HIGH))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_input_status_history().");
+
+		}
+		else
+		{
+			if (! exp_envi_input_high_2_low_event(&(exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA]), &cancellation_reqiured_for_high_status_timer, &setting_required_for_low_status_timer))
+				return print_message(BUG_MSG ,"ExpEnviHandler", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "exp_envi_input_high_2_low_event().");
+			if (cancellation_reqiured_for_high_status_timer)	 
+			{
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");		
+			}
+			if (setting_required_for_low_status_timer)
+			{	
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MIN_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA].constraints.min_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+				if (! write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer(msgs_exp_envi_hand_2_exp_envi_dur_hand, current_time,  EXP_ENVI_HAND_2_EXP_ENVI_DUR_HAND_MSG_START_INPUT_MAX_TIMER, IR_BEAM_IDX_IN_EXP_ENVI_DATA, exp_envi_data->inp_comp_types[IR_BEAM_IDX_IN_EXP_ENVI_DATA].constraints.max_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_hand_2_exp_envi_dur_hand_msg_buffer().");	
+			}	
+			if (! write_to_exp_envi_input_status_history(exp_envi_input_status_history, current_time, EXP_ENVI_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, EXP_ENVI_COMP_STATUS_LOW))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_exp_envi_rx_shm", "write_to_exp_envi_input_status_history().");
+		}
+	}
+
+
 	return TRUE;
 }

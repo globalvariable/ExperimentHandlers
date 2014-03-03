@@ -37,6 +37,22 @@ bool get_mov_obj_hand_2_trial_hand_msg_type_string(MovObjHand2TrialHandMsgType m
 			if (str != NULL)
  				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_OUT_OF_ROBOT_SPACE");
 			return TRUE;
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_LEVER_PRESS:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_LEVER_PRESS");
+			return TRUE;
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_REWARD_THRES:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_LEVER_PRESS");
+			return TRUE;
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_1:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_1");
+			return TRUE;
+		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_2:
+			if (str != NULL)
+ 				strcpy(str, "MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_2");
+			return TRUE;
 ////////////////////////		
 		case MOV_OBJ_HAND_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

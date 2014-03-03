@@ -12,13 +12,13 @@ static ExpEnviHandParadigmRobotReach *static_exp_envi_paradigm = NULL;
 
 static ExpEnviData *static_exp_envi_data = NULL;
 
-static GtkWidget *entry_lever_press_duration;
-static GtkWidget *btn_submit_lever_press_duration;
+static GtkWidget *entry_nose_press_duration;
+static GtkWidget *btn_submit_nose_press_duration;
 
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
 
-static void submit_lever_press_duration_button_func (void);
+static void submit_nose_press_duration_button_func (void);
 
 static void create_recording_folder_button_func (void);
 
@@ -59,13 +59,13 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_submit_lever_press_duration = gtk_button_new_with_label("Lever Press Duration");
-	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_lever_press_duration, FALSE, FALSE, 0);
+	btn_submit_nose_press_duration = gtk_button_new_with_label("Nose Press Duration");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_nose_press_duration, FALSE, FALSE, 0);
 
-	entry_lever_press_duration = gtk_entry_new();
-        gtk_box_pack_start(GTK_BOX(hbox), entry_lever_press_duration, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(entry_lever_press_duration, 50, 25);
-	gtk_entry_set_text(GTK_ENTRY(entry_lever_press_duration), "300");
+	entry_nose_press_duration = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_nose_press_duration, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_nose_press_duration, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_nose_press_duration), "300");
 	lbl = gtk_label_new("ms");	
      	gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
 
@@ -91,7 +91,7 @@ bool create_exp_envi_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gu
 
         gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
 
-	g_signal_connect(G_OBJECT(btn_submit_lever_press_duration), "clicked", G_CALLBACK(submit_lever_press_duration_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_submit_nose_press_duration), "clicked", G_CALLBACK(submit_nose_press_duration_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
@@ -228,22 +228,14 @@ static void set_directory_btn_select_directory_to_save(void)
 	}  	 
 }
 
-static void submit_lever_press_duration_button_func (void)
+static void submit_nose_press_duration_button_func (void)
 {
-	TimeStamp lever_press_duration;
+	TimeStamp nose_press_duration;
 	unsigned int idx;
 
-	lever_press_duration = (TimeStamp)(1000000.0 * atof(gtk_entry_get_text(GTK_ENTRY(entry_lever_press_duration))));
+	nose_press_duration = (TimeStamp)(1000000.0 * atof(gtk_entry_get_text(GTK_ENTRY(entry_nose_press_duration))));
 
-	if (! get_input_component_type_idx_in_exp_envi_data(static_exp_envi_data, EXP_ENVI_INPUT_COMPONENT_LEFT_LEVER, &idx))
-		return (void)print_message(ERROR_MSG ,"ExpEnviHandler", "GuiExpEnviHandler", "submit_lever_press_duration_button_func", "! get_input_component_type_idx_in_exp_envi_data()");
-
-	static_exp_envi_data->inp_comp_types[idx].constraints.min_low_status_duration = lever_press_duration;
-
-	if (! get_input_component_type_idx_in_exp_envi_data(static_exp_envi_data, EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER, &idx))
-		return (void)print_message(ERROR_MSG ,"ExpEnviHandler", "GuiExpEnviHandler", "submit_lever_press_duration_button_func", "! get_input_component_type_idx_in_exp_envi_data()");
-
-	static_exp_envi_data->inp_comp_types[idx].constraints.min_low_status_duration = lever_press_duration;
+	static_exp_envi_paradigm->min_low_status_duration_for_nose_poke = nose_press_duration;
 
 	return;
 }

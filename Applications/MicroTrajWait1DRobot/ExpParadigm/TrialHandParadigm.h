@@ -19,6 +19,7 @@ typedef struct
 	TimeStamp				min_get_ready_to_trial_start_length;	
 	TimeStamp				max_extra_get_ready_to_trial_start_length;	
 	TimeStamp				max_nose_retract_interval;
+	TimeStamp				cue_led_status_duration;
 	EllipsoidThreshold			min_target_reach_threshold;
 	EllipsoidThreshold			max_target_reach_threshold;
 	unsigned int				max_num_of_sessions;

@@ -91,8 +91,10 @@ bool handle_mov_obj_dur_handler_to_mov_obj_handler_msg(ThreeDofRobot *robot_arm,
 							mov_obj_hand_2_neural_net_msg_add.binary_reward_add.target_idx = mov_obj_paradigm->target_info.selected_position_idx;
 							if (distance_to_target < prev_distance_to_target)
 								mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 1;
-							else
+							else if (distance_to_target > prev_distance_to_target)
 								mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = -1;
+							else
+								mov_obj_hand_2_neural_net_msg_add.binary_reward_add.reward = 0;
 							for (i = 0; i < NUM_OF_MOV_OBJ_HAND_2_NEURAL_NET_MSG_BUFFERS; i++)
 							{
 								if (! write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], current_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_REINFORCEMENT, mov_obj_hand_2_neural_net_msg_add))

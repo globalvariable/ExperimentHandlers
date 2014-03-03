@@ -21,6 +21,14 @@ bool get_exp_envi_input_component_type_string(ExpEnviInputCompType component_typ
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR");
 			return TRUE;
+		case EXP_ENVI_INPUT_COMPONENT_LEVER:
+			if (str != NULL)
+				strcpy(str, "EXP_ENVI_INPUT_COMPONENT_LEVER");
+			return TRUE;
+		case EXP_ENVI_INPUT_COMPONENT_RESTRAIN_SWITCH:
+			if (str != NULL)
+				strcpy(str, "EXP_ENVI_INPUT_COMPONENT_RESTRAIN_SWITCH");
+			return TRUE;
 /////////////////////////		
 		default:
  			strcpy(str, "EXP_ENVI_INPUT_COMPONENT_INVALID");
@@ -60,7 +68,10 @@ bool get_exp_envi_output_component_type_string(ExpEnviOutputCompType component_t
 			if (str != NULL)
 				strcpy(str, "EXP_ENVI_OUTPUT_COMPONENT_TRIAL_AVAILABLE_LED");
 			return TRUE;	
-
+		case EXP_ENVI_OUTPUT_COMPONENT_GET_READY_LED:
+			if (str != NULL)
+				strcpy(str, "EXP_ENVI_OUTPUT_COMPONENT_GET_READY_LED");
+			return TRUE;	
 
 /////////////////////////	
 	

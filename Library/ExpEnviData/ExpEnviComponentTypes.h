@@ -21,6 +21,8 @@ typedef unsigned int ExpEnviInputCompType;
 #define	EXP_ENVI_INPUT_COMPONENT_LEFT_LEVER						2
 #define	EXP_ENVI_INPUT_COMPONENT_RIGHT_LEVER						3
 #define	EXP_ENVI_INPUT_COMPONENT_NOSE_RETRACT_IR				4
+#define	EXP_ENVI_INPUT_COMPONENT_LEVER							5
+#define	EXP_ENVI_INPUT_COMPONENT_RESTRAIN_SWITCH				6
 
 typedef unsigned int ExpEnviOutputCompType;					
 
@@ -33,6 +35,7 @@ typedef unsigned int ExpEnviOutputCompType;
 #define	EXP_ENVI_OUTPUT_COMPONENT_GUIDE_LED						4
 #define	EXP_ENVI_OUTPUT_COMPONENT_LEVER_SOLENOID				5
 #define	EXP_ENVI_OUTPUT_COMPONENT_TRIAL_AVAILABLE_LED			6
+#define	EXP_ENVI_OUTPUT_COMPONENT_GET_READY_LED				7
 
 
 bool get_exp_envi_input_component_type_string(ExpEnviInputCompType component_type, char *str);
