@@ -25,6 +25,8 @@ typedef struct __TrialStatusEvents TrialStatusEvents;
 #define	TRIAL_STATUS_WAIT_FOR_NOSE_RETRACT	7
 #define	TRIAL_STATUS_CUE_LED_ON					8
 #define	TRIAL_STATUS_REWARD_AVAILABLE			9
+#define	TRIAL_STATUS_ESCAPING					10
+#define	TRIAL_STATUS_AFTER_ESCAPING				11
 
 struct __TrialStatusEventItem
 {

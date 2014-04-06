@@ -3,24 +3,24 @@
 static pthread_t logging_thread;
 void *logging_thread_function( void *message_log );
 
-#define BASE_SERVO_0_DEGREE_PULSE		879
-#define BASE_SERVO_90_DEGREE_PULSE		1430
-#define BASE_SERVO_0_DEGREE_ADC_VAL		358
-#define BASE_SERVO_90_DEGREE_ADC_VAL	615
+#define BASE_SERVO_0_DEGREE_PULSE		2090
+#define BASE_SERVO_90_DEGREE_PULSE		1544
+#define BASE_SERVO_0_DEGREE_ADC_VAL		60
+#define BASE_SERVO_90_DEGREE_ADC_VAL	465
 
-#define SHOULDER_SERVO_0_DEGREE_PULSE		956
-#define SHOULDER_SERVO_90_DEGREE_PULSE		1431
-#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	415
-#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	654
+#define SHOULDER_SERVO_0_DEGREE_PULSE		958
+#define SHOULDER_SERVO_90_DEGREE_PULSE		1434
+#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	222
+#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	349
 
-#define ELBOW_SERVO_0_DEGREE_PULSE		904
-#define ELBOW_SERVO_90_DEGREE_PULSE		1391
-#define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
-#define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
+#define ELBOW_SERVO_0_DEGREE_PULSE		914
+#define ELBOW_SERVO_90_DEGREE_PULSE		1394
+#define ELBOW_SERVO_0_DEGREE_ADC_VAL	227
+#define ELBOW_SERVO_90_DEGREE_ADC_VAL	353
 
 #define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE   
 #define SHOULDER_SERVO_INIT_PULSE		1531
-#define ELBOW_SERVO_INIT_PULSE			1344
+#define ELBOW_SERVO_INIT_PULSE			1444
 
 int main( int argc, char *argv[])
 {
@@ -40,12 +40,20 @@ int main( int argc, char *argv[])
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "rt_tasks_data == NULL.");
 
+#ifdef	SIMULATION_MODE
+	sys_time_ptr = &(rt_tasks_data->current_periodic_system_time);
+#else
+	sys_time_ptr = &(rt_tasks_data->current_daq_system_time);
+	if (*sys_time_ptr == 0)
+		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "rt_tasks_data->current_daq_system_time.");
+#endif	
+
 	robot_arm = g_new0(ThreeDofRobot, 1);
 	mov_obj_paradigm = g_new0(MovObjHandParadigmRobotReach, 1);
 
 	init_three_dof_robot_arm(robot_arm);
 	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
-	submit_arm_security_limits(robot_arm, -19.0, 16.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
+	submit_arm_security_limits(robot_arm, -19.0, 20.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
 	if (! submit_cartesian_robotic_space_borders(robot_arm, mov_obj_paradigm, -18.0, 15.5, -19.0, 19.0, 4.0, 34.0))
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandler", "main", "! submit_cartesian_robotic_space_borders().");
 	if (! submit_polar_robotic_space_borders(robot_arm, mov_obj_paradigm, (M_PI*2.5)/12.0, (M_PI*9.5)/12.0, (M_PI*0.0)/12.0, (M_PI*10.0)/12.0, (M_PI*1.0)/12.0, (M_PI*11.0)/12.0))
@@ -75,7 +83,7 @@ int main( int argc, char *argv[])
 //	mov_obj_paradigm->spike_2_servo_degree_multiplier = 0.5;
 //	mov_obj_paradigm->spike_2_servo_degree_handling_period_multiplier = 1;  /// to be 25 ms
 	mov_obj_paradigm->max_servo_angle_change = 1.0;
-	mov_obj_paradigm->servo_angle_change_threshold = 0.1;
+	mov_obj_paradigm->servo_angle_change_threshold = 0.0;
 	mov_obj_paradigm->left_spike_multiplier = 1.0;   
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
@@ -98,16 +106,16 @@ int main( int argc, char *argv[])
 */
 	mov_obj_paradigm->target_info.cart_coordinates[0].height = 17.7;
 	mov_obj_paradigm->target_info.cart_coordinates[0].depth = 11.85;
-	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = -8.2;
-	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1645;
-	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
-	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
+	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = 8.1;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1754;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
+	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 	mov_obj_paradigm->target_info.cart_coordinates[1].height = 17.7 ;
 	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 11.85;
-	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = 8.2;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1215;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1531;
-	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1444;
+	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = -8.1;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1340;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
+	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 
 	mov_obj_paradigm->start_info.num_of_positions = 7;   ///   if change, change trialhandler.c as well. 	paradigm->num_of_robot_start_positions = 3;
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, mov_obj_paradigm->start_info.num_of_positions);
@@ -126,8 +134,8 @@ int main( int argc, char *argv[])
 	for (i = 0; i < mov_obj_paradigm->start_info.num_of_positions; i++)
 	{
 		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[BASE_SERVO] = mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO]  - ( (i +1 )* temp_pulse );
-		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[SHOULDER_SERVO] = 1531;
-		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[ELBOW_SERVO] = 1444;		
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;		
 	}
 
 	mov_obj_paradigm->threshold.outer_threshold.r_x = 16;  //height
@@ -138,9 +146,9 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->threshold.point_reach_threshold.r_y = 2.0;
 	mov_obj_paradigm->threshold.point_reach_threshold.r_z = 2.0;
 
-	mov_obj_paradigm->threshold.target_reach_threshold.r_x = 1.5;
-	mov_obj_paradigm->threshold.target_reach_threshold.r_y = 1.5;
-	mov_obj_paradigm->threshold.target_reach_threshold.r_z = 1.5;
+	mov_obj_paradigm->threshold.target_reach_threshold.r_x = 10.0; //height
+	mov_obj_paradigm->threshold.target_reach_threshold.r_y = 10.0; // depth
+	mov_obj_paradigm->threshold.target_reach_threshold.r_z = 1.0;// lateral
 
 	msgs_gui_2_mov_obj_hand = allocate_gui_2_mov_obj_hand_msg_buffer(msgs_gui_2_mov_obj_hand);
 	msgs_mov_obj_hand_2_gui = allocate_mov_obj_hand_2_gui_msg_buffer(msgs_mov_obj_hand_2_gui);

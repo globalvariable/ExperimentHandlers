@@ -141,17 +141,35 @@ bool check_three_dof_robot_security_limits(ThreeDofRobot *robot_arm)
 
 	unsigned int i;
 	if (cart_security_limits->depth_min > tip_position->depth)
+	{
+		printf ("%f\t%f\n", cart_security_limits->depth_min, tip_position->depth);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->depth_min > tip_position->depth."); 
+	}
 	if (cart_security_limits->depth_max < tip_position->depth)
+	{
+		printf ("%f\t%f\n", cart_security_limits->depth_max, tip_position->depth);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->depth_max < tip_position->depth."); 
+	}
 	if (cart_security_limits->lateral_min > tip_position->lateral)
+	{
+		printf ("%f\t%f\n", cart_security_limits->lateral_min, tip_position->lateral);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->lateral_min > tip_position->lateral."); 
+	}
 	if (cart_security_limits->lateral_max < tip_position->lateral)
+	{
+		printf ("%f\t%f\n", cart_security_limits->lateral_max, tip_position->lateral);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->lateral_max < tip_position->lateral."); 
+	}
 	if (cart_security_limits->height_min > tip_position->height)
+	{
+		printf ("%f\t%f\n", cart_security_limits->height_min, tip_position->lateral);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->height_min > tip_position->height."); 
+	}
 	if (cart_security_limits->height_max < tip_position->height)
+	{
+		printf ("%f\t%f\n", cart_security_limits->height_max, tip_position->lateral);
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "ThreeDofRobot", "check_three_dof_robot_security_limits", "cart_security_limits->height_max < tip_position->height."); 
+	}
 	for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
 	{
 		if (robot_arm->servos[i].angular_security_limit.min > robot_arm->servos[i].current_angle) 

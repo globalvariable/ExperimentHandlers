@@ -1,19 +1,19 @@
 #include "NeuRecHandlerNonRtThread.h"
 
 static RtTasksData *rt_tasks_data = NULL;
-static RecordingData *recording_data = NULL;
-static SpikeTimeStamp *spike_time_stamps = NULL;
+static RecordingData *static_recording_data = NULL;
+static SortedSpikes *static_bluespike_sorted_spikes = NULL;
 static TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
 static GtkWidget *btn_select_directory_to_save = NULL;
 
 static pthread_t recording_thread;
 static void *recording_thread_function( void *dummy );
 
-bool create_neu_rec_handler_non_rt_thread(RtTasksData *arg_rt_tasks_data, RecordingData *arg_recording_data, SpikeTimeStamp *arg_spike_time_stamps, TrialHand2NeuRecHandMsg *arg_msgs_trial_hand_2_neu_rec_hand, GtkWidget *arg_btn_select_directory_to_save)
+bool create_neu_rec_handler_non_rt_thread(RtTasksData *arg_rt_tasks_data, RecordingData *arg_recording_data, SortedSpikes *arg_bluespike_sorted_spikes, TrialHand2NeuRecHandMsg *arg_msgs_trial_hand_2_neu_rec_hand, GtkWidget *arg_btn_select_directory_to_save)
 {
 	rt_tasks_data = arg_rt_tasks_data;
-	recording_data = arg_recording_data;
-	spike_time_stamps = arg_spike_time_stamps;
+	static_recording_data = arg_recording_data;
+	static_bluespike_sorted_spikes = arg_bluespike_sorted_spikes;
 	msgs_trial_hand_2_neu_rec_hand = arg_msgs_trial_hand_2_neu_rec_hand;
 
 	btn_select_directory_to_save = arg_btn_select_directory_to_save;
@@ -43,7 +43,7 @@ static void *recording_thread_function( void *dummy )
 					path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 					path = &path_temp[7];   // since     uri returns file:///home/....	
 					recording_number = msg_item.additional_data;
-					if (!(*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(5, path, &rt_tasks_data->current_system_time, recording_number, recording_data, spike_time_stamps))	
+					if (!(*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(5, path, *sys_time_ptr, recording_number, static_recording_data, static_bluespike_sorted_spikes))	
 					{
 						print_message(ERROR_MSG ,"NeuRecHandler", "Gui", "timeout_callback", " *create_data_directory().");		
 						exit(1);
@@ -51,7 +51,7 @@ static void *recording_thread_function( void *dummy )
 					recording = TRUE;	
 					break;
 				case TRIAL_HAND_2_NEU_REC_HAND_MSG_STOP_RECORDING:
-					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, &rt_tasks_data->current_system_time, recording_data, spike_time_stamps))	
+					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, *sys_time_ptr, static_recording_data, static_bluespike_sorted_spikes))	
 					{
 						print_message(ERROR_MSG ,"NeuRecHandler", "Gui", "timeout_callback", " *fclose_all_data_file().");		
 						exit(1);
@@ -64,7 +64,7 @@ static void *recording_thread_function( void *dummy )
 					path = &path_temp[7];   // since     uri returns file:///home/....		
 
 					recording_number = msg_item.additional_data;
-					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, &rt_tasks_data->current_system_time, recording_data, spike_time_stamps))	
+					if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, *sys_time_ptr, static_recording_data, static_bluespike_sorted_spikes))	
 					{
 						print_message(ERROR_MSG ,"NeuRecHandler", "Gui", "timeout_callback", "! *fclose_all_data_files().");
 						exit(1);
@@ -83,7 +83,7 @@ static void *recording_thread_function( void *dummy )
 
 		if (recording)
 		{
-			if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, recording_data, spike_time_stamps))	
+			if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, static_recording_data, static_bluespike_sorted_spikes))	
 			{
 				print_message(ERROR_MSG ,"MovObjHandler", "GuiMovObjHandler", "timeout_callback", " *write_to_data_files().");		
 				exit(1);

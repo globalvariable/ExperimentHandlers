@@ -3,20 +3,20 @@
 static pthread_t logging_thread;
 void *logging_thread_function( void *message_log );
 
-#define BASE_SERVO_0_DEGREE_PULSE		879
-#define BASE_SERVO_90_DEGREE_PULSE		1430
-#define BASE_SERVO_0_DEGREE_ADC_VAL		358
-#define BASE_SERVO_90_DEGREE_ADC_VAL	615
+#define BASE_SERVO_0_DEGREE_PULSE		2100
+#define BASE_SERVO_90_DEGREE_PULSE		1550
+#define BASE_SERVO_0_DEGREE_ADC_VAL		50
+#define BASE_SERVO_90_DEGREE_ADC_VAL	462
 
-#define SHOULDER_SERVO_0_DEGREE_PULSE		956
-#define SHOULDER_SERVO_90_DEGREE_PULSE		1431
-#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	415
-#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	654
+#define SHOULDER_SERVO_0_DEGREE_PULSE		958
+#define SHOULDER_SERVO_90_DEGREE_PULSE		1434
+#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	222
+#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	349
 
-#define ELBOW_SERVO_0_DEGREE_PULSE		904
-#define ELBOW_SERVO_90_DEGREE_PULSE		1391
-#define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
-#define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
+#define ELBOW_SERVO_0_DEGREE_PULSE		914
+#define ELBOW_SERVO_90_DEGREE_PULSE		1394
+#define ELBOW_SERVO_0_DEGREE_ADC_VAL	227
+#define ELBOW_SERVO_90_DEGREE_ADC_VAL	353
 
 #define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE   
 #define SHOULDER_SERVO_INIT_PULSE		1531
@@ -71,17 +71,17 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->max_pulse_width_change = 100;
 
 	mov_obj_paradigm->servo_pw_change_rate_for_position_reset_min = 0.018;
-	mov_obj_paradigm->servo_pw_change_rate_for_position_reset_max = 0.022;
+	mov_obj_paradigm->servo_pw_change_rate_for_position_reset_max = 0.018;
 
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, 1);
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 1);
 	mov_obj_paradigm->start_info.num_of_positions = 1;
 
 	mov_obj_paradigm->start_info.cart_coordinates[0].height = 17.7;
-	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 12.3;
+	mov_obj_paradigm->start_info.cart_coordinates[0].depth = 14.4;
 	mov_obj_paradigm->start_info.cart_coordinates[0].lateral = 0.0;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1430;
-	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[BASE_SERVO] = BASE_SERVO_90_DEGREE_PULSE;
+	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
 
 	mov_obj_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
@@ -104,28 +104,28 @@ int main( int argc, char *argv[])
 */
 	mov_obj_paradigm->target_info.cart_coordinates[0].height = 17.7;
 	mov_obj_paradigm->target_info.cart_coordinates[0].depth = 11.85;
-	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = -8.2;
+	mov_obj_paradigm->target_info.cart_coordinates[0].lateral = 8.2;
 	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1645;
 	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = 1531;
 	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
 	mov_obj_paradigm->target_info.cart_coordinates[1].height = 17.7 ;
 	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 11.85;
-	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = 8.2;
+	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = -8.2;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1215;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = 1531;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = 1444;
 
-	mov_obj_paradigm->threshold.target_reach_threshold.r_x = 1.5;
-	mov_obj_paradigm->threshold.target_reach_threshold.r_y = 1.5;
-	mov_obj_paradigm->threshold.target_reach_threshold.r_z = 1.5;
+	mov_obj_paradigm->threshold.target_reach_threshold.r_x = 1.0;
+	mov_obj_paradigm->threshold.target_reach_threshold.r_y = 1.0;
+	mov_obj_paradigm->threshold.target_reach_threshold.r_z = 1.0;
 
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_1.r_x = 7.5;
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_1.r_y = 7.5;
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_1.r_z = 7.5;
+	mov_obj_paradigm->threshold.lever_press_reach_threshold.r_x = 5.5;  // 4.0 - 4.5 is good for well-learned rat.	// for correct targets, rat should wait until this threshold. it is the DISTANCE FROM TARGET
+	mov_obj_paradigm->threshold.lever_press_reach_threshold.r_y = 5.5;
+	mov_obj_paradigm->threshold.lever_press_reach_threshold.r_z = 5.5;
 
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_2.r_x = 5.5;  // 4.0 - 4.5 is good for well-learned rat.
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_2.r_y = 5.5;
-	mov_obj_paradigm->threshold.lever_press_reach_threshold_2.r_z = 5.5;
+	mov_obj_paradigm->threshold.lever_press_reach_threshold_escape.r_x = 2.5;  
+	mov_obj_paradigm->threshold.lever_press_reach_threshold_escape.r_y = 2.5;
+	mov_obj_paradigm->threshold.lever_press_reach_threshold_escape.r_z = 2.5;
 
 	mov_obj_paradigm->threshold.start_reach_threshold.r_x = 1.0;
 	mov_obj_paradigm->threshold.start_reach_threshold.r_y = 5.0;

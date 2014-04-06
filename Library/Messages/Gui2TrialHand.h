@@ -35,6 +35,9 @@ typedef unsigned int Gui2TrialHandMsgAdditional;
 #define GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_ON			21
 #define GUI_2_TRIAL_HAND_MSG_TURN_NOSE_RETRACT_MODE_OFF			22
 #define GUI_2_TRIAL_HAND_MSG_END_TRIAL								23
+#define GUI_2_TRIAL_HAND_MSG_FULL_CATCH_TRIAL_MODE_ON				24
+#define GUI_2_TRIAL_HAND_MSG_FULL_CATCH_TRIAL_MODE_OFF			25
+#define GUI_2_TRIAL_HAND_MSG_START_TRIAL_REQUEST					26
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

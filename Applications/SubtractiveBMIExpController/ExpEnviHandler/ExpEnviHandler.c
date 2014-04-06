@@ -15,6 +15,15 @@ int main( int argc, char *argv[])
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "rt_tasks_data == NULL.");
+#ifdef	SIMULATION_MODE
+	sys_time_ptr = &(rt_tasks_data->current_periodic_system_time);
+#else
+	sys_time_ptr = &(rt_tasks_data->current_daq_system_time);
+	if (*sys_time_ptr == 0)
+		return print_message(ERROR_MSG ,"ExpEnviHandler", "ExpEnviHandler", "main", "rt_tasks_data->current_daq_system_time.");
+#endif	
+
+
 	exp_envi_data = allocate_exp_envi_data(exp_envi_data);
 
 	exp_envi_paradigm = g_new0(ExpEnviHandParadigmRobotReach, 1);

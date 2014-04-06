@@ -51,11 +51,11 @@ static void *rt_servo_control(void *args)
 	pw_tx_buffer[PW_TX_BUFF_SIZE-2] = 0xFF;
 	pw_tx_buffer[PW_TX_BUFF_SIZE-1] = 0xFF;	
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, 3, 0, 0,  10000000))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, 3, 0, 0,  10000000, FALSE))  {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! check_rt_task_specs_to_init()."); exit(1); }	
        if (! (handler = rt_task_init_schmod(nam2num("SERVOCON"), 10, 10000, 1000, SCHED_FIFO, 1 << ((3*MAX_NUM_OF_CPU_THREADS_PER_CPU)+0)))) {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, 3, 0, 0, 10000000, 1000000, 1000000, "ServoControl"))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, 3, 0, 0, 10000000, 1000000, 1000000, "ServoControl", FALSE))  {
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	// SEMAPHORE should be init'd after rt_task_init_schmod
@@ -63,7 +63,7 @@ static void *rt_servo_control(void *args)
 		print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_rx_buffer_semaphore().");	exit(1); }	
 	if (! init_exp_envi_tx_buffer_semaphore(&exp_envi_tx_buff_sem))  {
 		print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_tx_buffer_semaphore().");	exit(1); }	
-	if (! init_exp_envi_tx_buffer_shm(&exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_rt_tasks_data->current_system_time) )  {
+	if (! init_exp_envi_tx_buffer_shm(&exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, static_rt_tasks_data->current_periodic_system_time) )  {
 		print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_tx_buffer_shm().");	exit(1); }	
 	if (! init_exp_envi_rx_buffer_shm(&exp_envi_rx_buff_shm, EXP_ENVI_STATUS_MSG_LEN) )  {
 		print_message(ERROR_MSG ,"ArmConfig", "ArmConfig", "main", "! init_exp_envi_rx_buffer_shm().");	exit(1); }	
@@ -78,7 +78,7 @@ static void *rt_servo_control(void *args)
 
 	curr_time = rt_get_cpu_time_ns();
 	prev_time = curr_time;	
-	curr_system_time = static_rt_tasks_data->current_system_time;
+	curr_system_time = static_rt_tasks_data->current_periodic_system_time;
 	if (! read_exp_envi_tx_buff_shm(&exp_envi_tx_buffer, exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, exp_envi_tx_buff_sem)) {   //  Exp Envi Handler writes its command to static_exp_envi_tx_buff for delivery by this process
 		print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! read_exp_envi_tx_buff_shm()."); exit(1); }	
 	for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
@@ -91,7 +91,7 @@ static void *rt_servo_control(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(static_rt_tasks_data, 3, 0, 0, prev_time, curr_time);
 		prev_time = curr_time;
-		curr_system_time = static_rt_tasks_data->current_system_time;
+		curr_system_time = static_rt_tasks_data->current_periodic_system_time;
 		// routines
 		clear_rx_buffer(rx_buffer, RX_BUFF_SIZE) ;
 		if (! read_from_rs232_com1(rx_buffer, RX_BUFF_SIZE)) {
@@ -118,7 +118,7 @@ static void *rt_servo_control(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(static_rt_tasks_data, 3, 0, 0, prev_time, curr_time);
 		prev_time = curr_time;
-		curr_system_time = static_rt_tasks_data->current_system_time;
+		curr_system_time = static_rt_tasks_data->current_periodic_system_time;
 		// routines
 
 		if (! read_exp_envi_tx_buff_shm(&exp_envi_tx_buffer, exp_envi_tx_buff_shm, EXP_ENVI_CMD_MSG_LEN, exp_envi_tx_buff_sem)) {
@@ -129,8 +129,8 @@ static void *rt_servo_control(void *args)
 		for (i = 0; i < EXP_ENVI_CMD_MSG_LEN; i++)
 			pw_tx_buffer[EXP_ENVI_CMD_MSG_START_IDX+i] = exp_envi_tx_buffer.exp_envi_tx_buff[i];
 
-		if ( check_three_dof_robot_security_limits(static_robot_arm))
-		{
+//		if ( check_three_dof_robot_security_limits(static_robot_arm))
+//		{
 			evaluate_three_dof_robot_arm_pw_command(static_robot_arm);
 			for (i = 0; i < ROBOT_PW_CMD_MSG_LEN; i+=2)
 			{
@@ -140,12 +140,12 @@ static void *rt_servo_control(void *args)
 			}
 			if (! write_to_rs232_com1(pw_tx_buffer, PW_TX_BUFF_SIZE)) {
 				print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! write_to_rs232_com1()."); exit(1); }	
-		}
+/*		}
 		else
 		{
 			print_message(ERROR_MSG ,"ServoControl", "ServoControlRtTask", "rt_servo_control", "! check_three_dof_robot_out_of_security_limits()."); exit(1);
 		}
-
+*/
 		evaluate_and_save_period_run_time(static_rt_tasks_data, 3,0,0, curr_time, rt_get_cpu_time_ns());		
 		// routines	
 

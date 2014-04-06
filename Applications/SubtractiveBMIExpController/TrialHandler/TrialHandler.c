@@ -15,11 +15,21 @@ int main( int argc, char *argv[])
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data == NULL.");
 
+
+#ifdef	SIMULATION_MODE
+	sys_time_ptr = &(rt_tasks_data->current_periodic_system_time);
+#else
+	sys_time_ptr = &(rt_tasks_data->current_daq_system_time);
+	if (*sys_time_ptr == 0)
+		return print_message(ERROR_MSG ,"BMIExpController", "TrialHandler", "main", "rt_tasks_data->current_daq_system_time.");
+#endif	
+
+
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
-	paradigm->max_trial_length = 7000000000;
-	paradigm->min_trial_refractory = 3000000000;
+	paradigm->max_trial_length = 5000000000;	////    increment this value as the task difficulty increases. it should be maximum 5 seconds. maximum attention time of animal. for close targets 4 sec is good.
+	paradigm->min_trial_refractory = 2000000000;
 	paradigm->max_extra_trial_refractory = 0;
-	paradigm->min_get_ready_to_trial_start_length = 200000000;
+	paradigm->min_get_ready_to_trial_start_length = 100000000;
 	paradigm->max_extra_get_ready_to_trial_start_length = 00000000;
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;

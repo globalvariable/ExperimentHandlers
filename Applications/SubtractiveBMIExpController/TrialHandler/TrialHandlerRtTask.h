@@ -33,6 +33,8 @@
 #include "HandleTrialHand2TrialDurHandMsgs.h"
 #include "HandleTrialHandDur.h"
 
+TimeStamp	*sys_time_ptr;
+
 bool create_trial_handler_rt_thread(RtTasksData *rt_tasks_data, Gui2TrialHandMsg *msgs_gui_2_trial_hand, TrialHandParadigmRobotReach *paradigm, ClassifiedTrialHistory* classified_trial_history, TrialHand2GuiMsg *msgs_trial_hand_2_gui, TrialStatusHistory *trial_status_history);
 bool kill_trial_handler_rt_thread(void);
 

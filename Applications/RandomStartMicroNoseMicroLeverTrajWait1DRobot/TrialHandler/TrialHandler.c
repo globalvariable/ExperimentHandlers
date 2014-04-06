@@ -22,7 +22,7 @@ int main( int argc, char *argv[])
 	paradigm->min_get_ready_to_trial_start_length = 400000000;
 	paradigm->max_extra_get_ready_to_trial_start_length = 400000000;
 	paradigm->max_lever_press_interval = 700000000;
-	paradigm->num_of_robot_start_positions = 3;      // mov_obj_paradigm->start_info.num_of_positions = 3;   ///   if change, change movobjhander.c as well.
+	paradigm->num_of_robot_start_positions = 4;      // mov_obj_paradigm->start_info.num_of_positions = 3;   ///   if change, change movobjhander.c as well.
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
 

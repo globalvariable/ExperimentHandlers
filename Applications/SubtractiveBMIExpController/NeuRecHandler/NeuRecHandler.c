@@ -6,7 +6,7 @@ int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;
 	RecordingData *recording_data = NULL;
-	SpikeTimeStamp *spike_time_stamps = NULL;
+	SortedSpikes 	*bluespike_sorted_spikes = NULL;    /// spike time stamps from biological neurons // sorted according to unit, not according to spike time.
 	GtkWidget *btn_select_directory_to_save = NULL;
 
 	TrialHand2NeuRecHandMsg *msgs_trial_hand_2_neu_rec_hand = NULL;
@@ -16,13 +16,21 @@ int main( int argc, char *argv[])
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "rt_tasks_data == NULL.");
 
-   	recording_data = rtai_malloc(SHM_NUM_KERNEL_SPIKE_RECORDING_DATA, 0);
+#ifdef	SIMULATION_MODE
+	sys_time_ptr = &(rt_tasks_data->current_periodic_system_time);
+#else
+	sys_time_ptr = &(rt_tasks_data->current_daq_system_time);
+	if (*sys_time_ptr == 0)
+		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "rt_tasks_data->current_daq_system_time.");
+#endif	
+
+   	recording_data = rtai_malloc(SHM_NUM_BLUESPIKE_RECORDING_DATA, 0);
 	if (recording_data == NULL) 
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "recording_data == NULL.");
 
-   	spike_time_stamps = rtai_malloc(SHM_NUM_KERNEL_SPIKE_SPIKE_TIME_STAMP, 0);
-	if (spike_time_stamps == NULL) 
-		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "spike_time_stamps == NULL.");
+   	bluespike_sorted_spikes = rtai_malloc(SHM_NUM_BLUESPIKE_SORTED_SPIKES, 0);
+	if (bluespike_sorted_spikes == NULL) 
+		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "bluespike_sorted_spikes == NULL.");
 
 	initialize_data_read_write_handlers();
 
@@ -34,7 +42,7 @@ int main( int argc, char *argv[])
 	gtk_init(&argc, &argv);
   	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
-	if(! create_neu_rec_handler_non_rt_thread(rt_tasks_data, recording_data, spike_time_stamps, msgs_trial_hand_2_neu_rec_hand, btn_select_directory_to_save))
+	if(! create_neu_rec_handler_non_rt_thread(rt_tasks_data, recording_data, bluespike_sorted_spikes, msgs_trial_hand_2_neu_rec_hand, btn_select_directory_to_save))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "main", "create_neu_rec_handler_non_rt_thread().");
 
 ///	gtk_init(&argc, &argv);   call it before gtk_file_chooser_button_new() above;
@@ -61,7 +69,7 @@ static bool connect_to_trial_hand(RtTasksData *rt_tasks_data, TrialHand2NeuRecHa
 					usleep(1000);
 					if (*msgs_neu_rec_hand_2_trial_hand == NULL)
 						return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "connect_to_trial_hand", "msgs_neu_rec_hand_2_trial_hand == NULL.");	
-					if (!write_to_neu_rec_hand_2_trial_hand_msg_buffer(*msgs_neu_rec_hand_2_trial_hand, rt_tasks_data->current_system_time, NEU_REC_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
+					if (!write_to_neu_rec_hand_2_trial_hand_msg_buffer(*msgs_neu_rec_hand_2_trial_hand, *sys_time_ptr , NEU_REC_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
 						return print_message(ERROR_MSG ,"NeuRecHandler", "NeuRecHandler", "connect_to_trial_hand", "write_to_neu_rec_hand_2_trial_hand_msg_buffer().");	
 					print_message(INFO_MSG ,"NeuRecHandler", "NeuRecHandler", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
 					return TRUE;		

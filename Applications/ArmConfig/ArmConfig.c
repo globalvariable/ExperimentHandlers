@@ -1,25 +1,5 @@
 #include "ArmConfig.h"
 
-#define BASE_SERVO_0_DEGREE_PULSE		879
-#define BASE_SERVO_90_DEGREE_PULSE		1430
-#define BASE_SERVO_0_DEGREE_ADC_VAL		358
-#define BASE_SERVO_90_DEGREE_ADC_VAL	615
-
-#define SHOULDER_SERVO_0_DEGREE_PULSE		956
-#define SHOULDER_SERVO_90_DEGREE_PULSE		1431
-#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	415
-#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	654
-
-#define ELBOW_SERVO_0_DEGREE_PULSE		904
-#define ELBOW_SERVO_90_DEGREE_PULSE		1391
-#define ELBOW_SERVO_0_DEGREE_ADC_VAL	428
-#define ELBOW_SERVO_90_DEGREE_ADC_VAL	666
-
-#define BASE_SERVO_INIT_PULSE				1425   // it should have been equal to BASE_SERVO_90_DEGREE_PULSE but there is an error due to imperfectness of servo and robot stands; this value worked well. 
-#define SHOULDER_SERVO_INIT_PULSE		1431
-#define ELBOW_SERVO_INIT_PULSE			1014
-
-
 int main( int argc, char *argv[])
 {
 	RtTasksData *rt_tasks_data = NULL;

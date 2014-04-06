@@ -91,7 +91,7 @@ bool handle_spike_data_buff(MovObjStatus mov_obj_status, TimeStamp current_time,
 					*read_idx = 0;
 				else
 					(*read_idx)++;
-				switch (item->mwa_or_layer)
+				switch (item->layer)
 				{
 					case LAYER_BASE_SERVO_EXTENSOR_SPINY:
 						base_servo_extensor_spike_counter++;

@@ -22,7 +22,7 @@ typedef double MovObjHand2TrialHandMsgAdditional;
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_OUT_OF_ROBOT_SPACE			8
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_LEVER_PRESS		9		// sends it out by the time mov obj reaches the target
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_REWARD_THRES		10
-#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_1		11
+#define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD			11
 #define MOV_OBJ_HAND_2_TRIAL_HAND_MSG_REACHED_2_THRESHOLD_2		12
 
 #include <stdbool.h>

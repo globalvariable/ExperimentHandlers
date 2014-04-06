@@ -86,7 +86,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 			}
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_TARGET_POINT:
-			target_coordinates = &(paradigm->target_info.cart_coordinates[paradigm->target_info.selected_position_idx]);
+/*			target_coordinates = &(paradigm->target_info.cart_coordinates[paradigm->target_info.selected_position_idx]);
 			tip_position = &(robot->tip_position);
 			if (apply_ellipsoid_threshold(&(threshold->point_reach_threshold), tip_position->height, tip_position->depth, tip_position->lateral, target_coordinates->height, target_coordinates->depth, target_coordinates->lateral))
 			{
@@ -98,7 +98,7 @@ bool handle_robot_arm_position_threshold(ThreeDofRobot *robot, MovObjHandParadig
 				if (! write_to_mov_obj_status_history(mov_obj_status_history, current_time, MOV_OBJ_STATUS_REACHED_TARGET_POINT))
 					return print_message(ERROR_MSG ,"MovObjHandler", "HandleRobotPosition", "handle_robot_arm_position_threshold", "! write_to_mov_obj_status_history()");
 			}
-			break;
+*/			break;
 		case MOV_OBJ_STATUS_REACHED_TARGET_POINT:
 			break;
 		case MOV_OBJ_STATUS_RESETTING_TO_START_POINT:

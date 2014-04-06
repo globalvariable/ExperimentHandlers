@@ -2,12 +2,12 @@
 
 static unsigned int recording_data_buff_read_start_idx[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
 static unsigned int recording_data_buff_read_end_idx[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
-static unsigned int spike_time_stamp_buff_read_start_idx;
-static unsigned int spike_time_stamp_buff_read_end_idx;
+static unsigned int spike_time_stamp_buff_read_start_idx[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
+static unsigned int spike_time_stamp_buff_read_end_idx[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
 
 static FILE *meta_data_file_ptr;
 static FILE *recording_data_file_ptr_arr[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
-static FILE *spike_time_stamps_file_ptr;
+static FILE *spike_time_stamps_file_ptr[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
 
 static int create_main_meta_file(char *main_directory_path);
 static int create_data_files(TimeStamp rec_start, char *data_directory_path);
@@ -15,10 +15,10 @@ static int create_meta_data(TimeStamp rec_start, char *data_directory_path);
 static int create_recording_data(char *data_directory_path);
 static int create_spike_time_stamps_data(char *data_directory_path);
 static int write_to_recording_data(RecordingData *recording_data);
-static int write_to_spike_time_stamps_data(SpikeTimeStamp *spike_time_stamps);
+static int write_to_spike_time_stamps_data(SortedSpikes *bluespike_sorted_spikes);
 static int close_meta_data(TimeStamp rec_end);
 static int close_recording_data(RecordingData *recording_data);
-static int close_spike_time_stamps_data(SpikeTimeStamp *spike_time_stamps);
+static int close_spike_time_stamps_data(SortedSpikes *bluespike_sorted_spikes);
 static int delete_data_files(char *data_directory_path);
 static int delete_meta_data(char *data_directory_path);
 static int delete_recording_data(char *data_directory_path);
@@ -68,30 +68,31 @@ int create_data_directory_v0(int num, ...)
 	DIR	*dir_data_directory;	
 	char *path_chooser;
 	char data_directory_path[600];
-	TimeStamp *rec_start, recording_start_time;
+	TimeStamp rec_start, recording_start_time;
 	RecordingData *recording_data;
-	SpikeTimeStamp *spike_time_stamps;
+	SortedSpikes *bluespike_sorted_spikes;
 
 	unsigned int i, j, data_directory_cntr, ret, recording_number;
  
   	va_list arguments;
 	va_start ( arguments, num );   
     	path_chooser = va_arg ( arguments, char *); 
-	rec_start = va_arg ( arguments, TimeStamp*); 
+	rec_start = va_arg ( arguments, TimeStamp); 
 	recording_number = va_arg ( arguments, unsigned int); 
 	recording_data = va_arg ( arguments, RecordingData *); 
-	spike_time_stamps = va_arg ( arguments, SpikeTimeStamp *); 
+	bluespike_sorted_spikes = va_arg ( arguments, SortedSpikes *); 
 	va_end ( arguments );
 
 	for (i=0; i < MAX_NUM_OF_MWA; i++)
 	{
 		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
 		{
-			recording_data_buff_read_start_idx[i][j] = recording_data->buff_idx_write[i][j];
+			recording_data_buff_read_start_idx[i][j] = (*recording_data)[i][j].buff_idx_write;
+			spike_time_stamp_buff_read_start_idx[i][j]  = (*bluespike_sorted_spikes)[i][j].buff_idx_write;
 		}
 	}
-	spike_time_stamp_buff_read_start_idx = spike_time_stamps->buff_idx_write;
-	recording_start_time = *rec_start;		//  ACCORDING TO THIS DESIGN, RECORDING START TIME AND THE CORRESPONDING NEURAL DATA SAMPLE MIGHT NOT COINCODE TO SAME TIME BUT THEY WILL BE ALMOST EQUAL. 
+
+	recording_start_time = rec_start;		//  ACCORDING TO THIS DESIGN, RECORDING START TIME AND THE CORRESPONDING NEURAL DATA SAMPLE MIGHT NOT COINCODE TO SAME TIME BUT THEY WILL BE ALMOST EQUAL. 
 
 	meta_data_file_ptr = NULL;
 	for (i=0; i < MAX_NUM_OF_MWA; i++)
@@ -99,9 +100,10 @@ int create_data_directory_v0(int num, ...)
 		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
 		{
 			recording_data_file_ptr_arr[i][j] = NULL;
+			spike_time_stamps_file_ptr[i][j] = NULL;
 		}
 	}
-	spike_time_stamps_file_ptr = NULL;
+
 
 	data_directory_cntr = recording_number;
 	if (data_directory_cntr <10)
@@ -164,15 +166,15 @@ int create_data_directory_v0(int num, ...)
 }
 int fclose_all_data_files_v0(int num, ...)
 {
-	TimeStamp *rec_end, recording_end_time;
+	TimeStamp rec_end, recording_end_time;
 	RecordingData *recording_data;
-	SpikeTimeStamp *spike_time_stamps;
+	SortedSpikes *bluespike_sorted_spikes;
 	unsigned int i, j;
   	va_list arguments;
 	va_start ( arguments, num );   
-	rec_end = va_arg ( arguments, TimeStamp*); 
+	rec_end = va_arg ( arguments, TimeStamp); 
 	recording_data = va_arg ( arguments, RecordingData *); 
-	spike_time_stamps = va_arg ( arguments, SpikeTimeStamp *); 
+	bluespike_sorted_spikes = va_arg ( arguments, SortedSpikes *); 
 	va_end ( arguments );
 
 
@@ -180,11 +182,11 @@ int fclose_all_data_files_v0(int num, ...)
 	{
 		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
 		{
-			recording_data_buff_read_end_idx[i][j] = recording_data->buff_idx_write[i][j];
+			recording_data_buff_read_end_idx[i][j] = (*recording_data)[i][j].buff_idx_write;
+			spike_time_stamp_buff_read_end_idx[i][j]  = (*bluespike_sorted_spikes)[i][j].buff_idx_write;
 		}
 	}
-	spike_time_stamp_buff_read_end_idx = spike_time_stamps->buff_idx_write;
-	recording_end_time = *rec_end;
+	recording_end_time = rec_end;
 
 	if (! close_meta_data(recording_end_time))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "DataFormat_v0", "create_data_directory_v0", "! close_meta_data");
@@ -192,7 +194,7 @@ int fclose_all_data_files_v0(int num, ...)
 	if (! close_recording_data(recording_data))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "DataFormat_v0", "create_data_directory_v0", "! close_recording_data");
 
-	if (! close_spike_time_stamps_data(spike_time_stamps))
+	if (! close_spike_time_stamps_data(bluespike_sorted_spikes))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "DataFormat_v0", "create_data_directory_v0", "! close_spike_time_stamps_data");
 
 	return 1;
@@ -274,18 +276,18 @@ int delete_data_directory_v0(int num, ...)
 int write_to_data_files_v0(int num, ...)
 {
 	RecordingData *recording_data;
-	SpikeTimeStamp *spike_time_stamps;
+	SortedSpikes *bluespike_sorted_spikes;
 
   	va_list arguments;
 	va_start ( arguments, num );   
     	recording_data = va_arg ( arguments, RecordingData*); 
-    	spike_time_stamps = va_arg ( arguments, SpikeTimeStamp*); 
+    	bluespike_sorted_spikes = va_arg ( arguments, SortedSpikes*); 
 	va_end ( arguments );
 
 	if (! write_to_recording_data(recording_data))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "DataFormat_v0", "write_to_data_files_v0", "! write_to_recording_data()");
 
-	if (! write_to_spike_time_stamps_data(spike_time_stamps))
+	if (! write_to_spike_time_stamps_data(bluespike_sorted_spikes))
 		return print_message(ERROR_MSG ,"NeuRecHandler", "DataFormat_v0", "write_to_data_files_v0", "! write_to_spike_time_stamps_data()");
 
 	return 1;
@@ -336,8 +338,8 @@ static int create_main_meta_file(char *main_directory_path)
 	fprintf(fp,"unsigned int		mwa_or_layer;\n");
 	fprintf(fp,"unsigned int		channel_or_neuron_group;\n");
 	fprintf(fp,"unsigned int		unit_or_neuron;\n");
-	fprintf(fp,"} SpikeTimeStampItem;\n");
-	fprintf(fp,"sizeof(SpikeTimeStampItem)\t%lu\n", sizeof(SpikeTimeStampItem));	
+	fprintf(fp,"} SortedSpikeItem;\n");
+	fprintf(fp,"sizeof(SortedSpikeItem)\t%lu\n", sizeof(SortedSpikeItem));
 	fprintf(fp,"----------NeuRecHandler - End of Main Meta File----------\n");
 	fclose(fp);
 	return 1;
@@ -440,19 +442,63 @@ static int create_spike_time_stamps_data(char *data_directory_path)
 {
 	char temp[600];
 	FILE *fp;
-		
-	strcpy(temp, data_directory_path);
-	strcat(temp, "/spikes");
-	if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: NeuRecHandler: Couldn't create file: %s\n\n", temp); return 0; }
+	char char_mwa_num[20], char_chan_num[20];
+	unsigned int i,j;
+	
+	for (i=0; i < MAX_NUM_OF_MWA; i++)
+	{
+		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
+		{
+			strcpy(temp, data_directory_path);	
+			if (i<10)
+			{
+				sprintf(char_mwa_num, "/spikes_mwa_0%u" , i);
+				strcat(temp, char_mwa_num);
+			}
+			else if (i<100)
+			{
+				sprintf(char_mwa_num, "/spikes_mwa_%u" , i);
+				strcat(temp, char_mwa_num);				
+			}
+			else
+			{
+				printf ("ERROR: BlueSpike: MAX MWA NUM is larger than 99\n\n");
+				printf ("ERROR: BlueSpike: Couldn't create all spike files requested\n\n");
+				return 0; 
+			}
+			strcat(temp, "_");
+			if (j<10)
+			{
+				sprintf(char_chan_num, "chan_00%u" , j);
+				strcat(temp, char_chan_num);
+			}
+			else if (j<100)
+			{
+				sprintf(char_chan_num, "chan_0%u" , j);
+				strcat(temp, char_chan_num);				
+			}
+			else if (j<1000)
+			{
+				sprintf(char_chan_num, "chan_%u" , j);
+				strcat(temp, char_chan_num);			
+			}
+			else
+			{
+				printf ("ERROR: BlueSpike: MAX NUM OF CHAN PER MWA is larger than 999\n\n");
+				printf ("ERROR: BlueSpike: Couldn't create all recording files requested\n\n");
+				return 0; 
+			}			
+			if ((fp = fopen(temp, "wb")) == NULL)  { printf ("ERROR: BlueSpike: Couldn't create file: %s\n\n", temp); return 0; }
+			spike_time_stamps_file_ptr[i][j] =  fp;
+		}
+	}
 
-	spike_time_stamps_file_ptr =  fp;
-
-	return 1;	
+	return 1;
 }
 
 static int write_to_recording_data(RecordingData *recording_data)
 {
-	RecordingDataChanBuff	*recording_data_chan_buff;
+	RecordingDataSample	*recording_data_chan_buff;
 	FILE *fp;
 	unsigned int i,j, idx, end_idx;
 	RecordingDataSampleFloat sample;
@@ -460,13 +506,13 @@ static int write_to_recording_data(RecordingData *recording_data)
 	{
 		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
 		{
-			recording_data_chan_buff = &(recording_data->recording_data_buff[i][j]);
+			recording_data_chan_buff = (*recording_data)[i][j].rec_data_buff;
 			idx = recording_data_buff_read_start_idx[i][j];
-			end_idx = recording_data->buff_idx_write[i][j];
+			end_idx = (*recording_data)[i][j].buff_idx_write;
 			fp = recording_data_file_ptr_arr[i][j];
 			while (idx != end_idx)
 			{
-				sample = (RecordingDataSampleFloat)((*recording_data_chan_buff)[idx]);	// lower the precision for faster writing
+				sample = (RecordingDataSampleFloat)(recording_data_chan_buff[idx]);	// lower the precision for faster writing
 				fwrite(&sample, sizeof(RecordingDataSampleFloat), 1, fp);
 				idx++;	
 				if (idx ==	RECORDING_DATA_BUFF_SIZE)
@@ -478,21 +524,29 @@ static int write_to_recording_data(RecordingData *recording_data)
 	return 1;
 
 }
-static int write_to_spike_time_stamps_data(SpikeTimeStamp *spike_time_stamps)
+static int write_to_spike_time_stamps_data(SortedSpikes *bluespike_sorted_spikes)
 {
-	unsigned int idx, end_idx;
-
-	idx = spike_time_stamp_buff_read_start_idx;
-	end_idx = spike_time_stamps->buff_idx_write;
-
-	while (idx != end_idx)
+	SortedSpikeItem	*sorted_spike_buff;
+	FILE *fp;
+	unsigned int i,j, idx, end_idx;
+	for (i=0; i < MAX_NUM_OF_MWA; i++)
 	{
-		fwrite(&(spike_time_stamps->spike_time_stamp_buff[idx]), sizeof(SpikeTimeStampItem), 1, spike_time_stamps_file_ptr);
-		idx++;	
-		if (idx ==	SPIKE_TIME_STAMP_BUFF_SIZE)
-			idx = 0;	
-	}
-	spike_time_stamp_buff_read_start_idx = end_idx;
+		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
+		{
+			sorted_spike_buff = (*bluespike_sorted_spikes)[i][j].buffer;
+			idx = spike_time_stamp_buff_read_start_idx[i][j];
+			end_idx = (*bluespike_sorted_spikes)[i][j].buff_idx_write;
+			fp = spike_time_stamps_file_ptr[i][j];
+			while (idx != end_idx)
+			{
+				fwrite(&(sorted_spike_buff[idx]), sizeof(SortedSpikeItem), 1, fp);
+				idx++;	
+				if (idx ==	BLUESPIKE_SORTED_SPIKE_BUFF_SIZE)
+					idx = 0;	
+			}
+			spike_time_stamp_buff_read_start_idx[i][j] = end_idx;
+		}
+	}		
 	return 1;
 }
 
@@ -506,7 +560,7 @@ static int close_meta_data(TimeStamp rec_end)
 
 static int close_recording_data(RecordingData *recording_data)
 {
-	RecordingDataChanBuff	*recording_data_chan_buff;
+	RecordingDataSample	*recording_data_chan_buff;
 	FILE *fp;
 	unsigned int i,j, idx, end_idx;
 	RecordingDataSampleFloat sample;
@@ -514,13 +568,13 @@ static int close_recording_data(RecordingData *recording_data)
 	{
 		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
 		{
-			recording_data_chan_buff = &(recording_data->recording_data_buff[i][j]);
+			recording_data_chan_buff = (*recording_data[i][j]).rec_data_buff;
 			idx = recording_data_buff_read_start_idx[i][j];
 			end_idx = recording_data_buff_read_end_idx[i][j];	// before closing the files, write data up to the write indexes of the buffers determined by fclose_all_data_files_v0()
 			fp = recording_data_file_ptr_arr[i][j];
 			while (idx != end_idx)
 			{
-				sample = (RecordingDataSampleFloat)((*recording_data_chan_buff)[idx]);	// lower the precision for faster writing
+				sample = (RecordingDataSampleFloat)(recording_data_chan_buff[idx]);	// lower the precision for faster writing
 				fwrite(&sample, sizeof(RecordingDataSampleFloat), 1, fp);
 				idx++;	
 				if (idx ==	RECORDING_DATA_BUFF_SIZE)
@@ -531,21 +585,30 @@ static int close_recording_data(RecordingData *recording_data)
 	}	
 	return 1;
 }
-static int close_spike_time_stamps_data(SpikeTimeStamp *spike_time_stamps)
+static int close_spike_time_stamps_data(SortedSpikes *bluespike_sorted_spikes)
 {
-	unsigned int idx, end_idx;
-
-	idx = spike_time_stamp_buff_read_start_idx;
-	end_idx = spike_time_stamp_buff_read_end_idx;
-
-	while (idx != end_idx)
+	SortedSpikeItem	*sorted_spike_buff;
+	FILE *fp;
+	unsigned int i,j, idx, end_idx;
+	for (i=0; i < MAX_NUM_OF_MWA; i++)
 	{
-		fwrite(&(spike_time_stamps->spike_time_stamp_buff[idx]), sizeof(SpikeTimeStampItem), 1, spike_time_stamps_file_ptr);
-		idx++;	
-		if (idx ==	SPIKE_TIME_STAMP_BUFF_SIZE)
-			idx = 0;	
-	}
-	fclose(spike_time_stamps_file_ptr);
+		for (j=0; j<MAX_NUM_OF_CHAN_PER_MWA; j++)
+		{
+			sorted_spike_buff = (*bluespike_sorted_spikes)[i][j].buffer;
+			idx = spike_time_stamp_buff_read_start_idx[i][j];
+			end_idx = (*bluespike_sorted_spikes)[i][j].buff_idx_write;
+			fp = spike_time_stamps_file_ptr[i][j];
+			while (idx != end_idx)
+			{
+				fwrite(&(sorted_spike_buff[idx]), sizeof(SortedSpikeItem), 1, fp);
+				idx++;	
+				if (idx ==	BLUESPIKE_SORTED_SPIKE_BUFF_SIZE)
+					idx = 0;	
+			}
+			fclose(fp);
+		}
+	}		
+
 	return 1;
 }
 

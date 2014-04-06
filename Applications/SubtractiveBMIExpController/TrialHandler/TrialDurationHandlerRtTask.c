@@ -41,11 +41,11 @@ static void *rt_trial_duration_handler(void *args)
 	unsigned int prev_time, curr_time;
 	TimeStamp curr_system_time;
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_TASK_ID, TRIAL_DURATION_HANDLER_PERIOD))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_TASK_ID, TRIAL_DURATION_HANDLER_PERIOD, FALSE))  {
 		print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(TRIAL_DURATION_HANDLER_TASK_NAME, TRIAL_DURATION_HANDLER_TASK_PRIORITY, TRIAL_DURATION_HANDLER_STACK_SIZE, TRIAL_DURATION_HANDLER_MSG_SIZE,TRIAL_DURATION_HANDLER_POLICY, 1 << ((TRIAL_DURATION_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+TRIAL_DURATION_HANDLER_CPU_THREAD_ID)))) {
 		print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_TASK_ID, TRIAL_DURATION_HANDLER_PERIOD, TRIAL_DURATION_HANDLER_POSITIVE_JITTER_THRES, TRIAL_DURATION_HANDLER_NEGATIVE_JITTER_THRES, "TrialDurationHandler"))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_TASK_ID, TRIAL_DURATION_HANDLER_PERIOD, TRIAL_DURATION_HANDLER_POSITIVE_JITTER_THRES, TRIAL_DURATION_HANDLER_NEGATIVE_JITTER_THRES, "TrialDurationHandler", FALSE))  {
 		print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
         period = nano2count(TRIAL_HANDLER_PERIOD);
         rt_task_make_periodic(handler, rt_get_time() + period, period);
@@ -63,7 +63,7 @@ static void *rt_trial_duration_handler(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(static_rt_tasks_data, TRIAL_DURATION_HANDLER_CPU_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_ID, TRIAL_DURATION_HANDLER_CPU_THREAD_TASK_ID, prev_time, curr_time);
 		prev_time = curr_time;
-		curr_system_time = static_rt_tasks_data->current_system_time;
+		curr_system_time = *sys_time_ptr;
 		// routines
 		if (! handle_trial_handler_to_trial_dur_handler_msg(&trial_duration_status, curr_system_time, static_msgs_trial_hand_2_trial_dur_hand, &handling_end_time)) {
 			print_message(ERROR_MSG ,"BMIExpController", "TrialDurationHandlerRtTask", "rt_trial_duration_handler", "! handle_trial_handler_to_trial_duration_handler_msg()."); break; }

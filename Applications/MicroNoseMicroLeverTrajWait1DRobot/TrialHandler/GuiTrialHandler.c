@@ -102,7 +102,7 @@ static void set_directory_btn_select_directory_to_save(void);
 static Network *blue_spike_network = NULL;
 static NetworkSpikePatternGraphScroll *blue_spike_spike_pattern_graph = NULL;
 static SpikeData **blue_spike_spike_data_for_graph = NULL;   // for visualization
-static SpikeTimeStamp 	*sorted_spike_time_stamp = NULL;    /// spike time stamps from biological neurons // sorted according to unit, not according to spike time.
+static SortedSpikes *sorted_spikes = NULL;    /// spike time stamps from biological neurons // sorted according to unit, not according to spike time.
 static TrialStatusEvents	*trial_status_events = NULL;   // to show status changed in graphs
 static unsigned int blue_spike_buff_read_idx;
 static unsigned int *blue_spike_buff_write_idx;
@@ -553,9 +553,9 @@ bool create_trial_handler_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2T
 
 	blue_spike_spike_pattern_graph = allocate_network_spike_pattern_graph_scroll(blue_spike_network, hbox, blue_spike_spike_pattern_graph, 3000, 1000000, 900, 1000, BUFFER_FOLLOWUP_LATENCY, blue_spike_spike_data_for_graph,  NUM_OF_STATUS_MARKERS, trial_status_events, 1);    // 3 seconds, 1000 samples/sec, 100 ms latency
 
-	sorted_spike_time_stamp = rtai_malloc(SHM_NUM_KERNEL_SPIKE_SPIKE_TIME_STAMP, 0);
-	if (sorted_spike_time_stamp == NULL) 
-		return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "create_trial_handler_tab", "sorted_spike_time_stamp == NULL.");	
+	sorted_spikes = rtai_malloc(SHM_NUM_BLUESPIKE_SORTED_SPIKES, 0);
+	if (sorted_spikes == NULL) 
+		return print_message(ERROR_MSG ,"TrialHandler", "GuiTrialHandler", "create_trial_handler_tab", "sorted_spikes == NULL.");	
 	blue_spike_buff_write_idx = &(sorted_spike_time_stamp->buff_idx_write);
 	blue_spike_buff_read_idx = *blue_spike_buff_write_idx;
 

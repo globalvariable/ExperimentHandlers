@@ -98,6 +98,14 @@ bool get_gui_2_trial_hand_msg_type_string(Gui2TrialHandMsgType msg_type, char *s
 			if (str != NULL)
 				strcpy(str, "GUI_2_TRIAL_HAND_MSG_END_TRIAL");
 			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_FULL_CATCH_TRIAL_MODE_ON:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_FULL_CATCH_TRIAL_MODE_ON");
+			return TRUE;
+		case GUI_2_TRIAL_HAND_MSG_START_TRIAL_REQUEST:
+			if (str != NULL)
+				strcpy(str, "GUI_2_TRIAL_HAND_MSG_START_TRIAL_REQUEST");
+			return TRUE;
 /////////////////////////		
 		case GUI_2_TRIAL_HAND_MSG_NULL:
 			if (str != NULL)

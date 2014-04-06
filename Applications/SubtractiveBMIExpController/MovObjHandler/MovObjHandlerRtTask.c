@@ -100,15 +100,15 @@ static void *rt_mov_obj_handler(void *args)
 	ExpEnviRxShm *exp_envi_rx_buff_shm = NULL;
 	ExpEnviTxShm *exp_envi_tx_buff_shm = NULL;
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD, FALSE))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(MOV_OBJ_HANDLER_TASK_NAME, MOV_OBJ_HANDLER_TASK_PRIORITY, MOV_OBJ_HANDLER_STACK_SIZE, MOV_OBJ_HANDLER_MSG_SIZE,MOV_OBJ_HANDLER_POLICY, 1 << ((MOV_OBJ_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+MOV_OBJ_HANDLER_CPU_THREAD_ID)))) {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD, MOV_OBJ_HANDLER_POSITIVE_JITTER_THRES, MOV_OBJ_HANDLER_NEGATIVE_JITTER_THRES, "MovObjHandler"))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, MOV_OBJ_HANDLER_PERIOD, MOV_OBJ_HANDLER_POSITIVE_JITTER_THRES, MOV_OBJ_HANDLER_NEGATIVE_JITTER_THRES, "MovObjHandler", FALSE))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	// Initialization of semaphores should be done after initializing the rt task !!!!
-	if (! init_rs232_buffers(static_robot_arm, &exp_envi_rx_buff_sem, &exp_envi_tx_buff_sem, &exp_envi_rx_buff_shm, &exp_envi_tx_buff_shm,  static_rt_tasks_data->current_system_time))  {
+	if (! init_rs232_buffers(static_robot_arm, &exp_envi_rx_buff_sem, &exp_envi_tx_buff_sem, &exp_envi_rx_buff_shm, &exp_envi_tx_buff_shm,  *sys_time_ptr))  {
 		print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! init_rs232_buffers()."); exit(1); }	
 
         period = nano2count(MOV_OBJ_HANDLER_PERIOD);
@@ -129,7 +129,7 @@ static void *rt_mov_obj_handler(void *args)
 		((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_read_idx = ((*msgs_neural_net_2_mov_obj_hand_multi_thread)[i])->buff_write_idx; // to reset message buffer. previously written messages and reading of them now might lead to inconvenience.,
 	}
 
-	curr_system_time = static_rt_tasks_data->current_system_time;
+	curr_system_time = *sys_time_ptr;
 	mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.schedule = curr_system_time;  // send this command now
 	mov_obj_hand_2_mov_obj_dur_hand_additional_data.schedule.item_idx = MOV_OBJ_DUR_STATUS_ITEM_SEND_AD_CONVERSION;
 	if (! write_to_mov_obj_hand_2_mov_obj_dur_hand_msg_buffer(msgs_mov_obj_hand_2_mov_obj_dur_hand, curr_system_time,  MOV_OBJ_HAND_2_MOV_OBJ_DUR_HAND_MSG_SET_SCHEDULE, mov_obj_hand_2_mov_obj_dur_hand_additional_data)) {
@@ -141,7 +141,7 @@ static void *rt_mov_obj_handler(void *args)
 		curr_time = rt_get_cpu_time_ns();
 		evaluate_and_save_jitter(static_rt_tasks_data, MOV_OBJ_HANDLER_CPU_ID, MOV_OBJ_HANDLER_CPU_THREAD_ID, MOV_OBJ_HANDLER_CPU_THREAD_TASK_ID, prev_time, curr_time);
 		prev_time = curr_time;
-		curr_system_time = static_rt_tasks_data->current_system_time;
+		curr_system_time = *sys_time_ptr;
 		// routines
 		if (! handle_gui_to_mov_obj_handler_msg(static_robot_arm, &mov_obj_status, curr_system_time, static_msgs_gui_2_mov_obj_hand)) {
 			print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "rt_mov_obj_handler", "! handle_gui_to_mov_obj_handler_msg()."); break; }
@@ -186,7 +186,7 @@ static bool connect_to_trial_hand(void )
 					sleep(1);
 					if (msgs_mov_obj_hand_2_trial_hand == NULL)
 						return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "msgs_mov_obj_hand_2_trial_hand == NULL.");	
-					if (!write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
+					if (!write_to_mov_obj_hand_2_trial_hand_msg_buffer(msgs_mov_obj_hand_2_trial_hand, *sys_time_ptr, MOV_OBJ_HAND_2_TRIAL_HAND_MSG_I_AM_ALIVE, 0))
 						return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "write_to_mov_obj_hand_2_trial_hand_msg_buffer().");	
 					print_message(INFO_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_trial_hand", "Connection to TRIAL_HANDLER is successful!!!");	
 					return TRUE;		
@@ -212,7 +212,7 @@ static bool connect_to_neural_net(void)
 		if ((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i] == NULL)
 			return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "msgs_mov_obj_hand_2_neural_net == NULL.");
 		mov_obj_hand_2_neural_net_msg_add.dummy = 0;
-		if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, mov_obj_hand_2_neural_net_msg_add))
+		if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[i], *sys_time_ptr, MOV_OBJ_HAND_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, mov_obj_hand_2_neural_net_msg_add))
 			return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
 	}
 	while (1) 
@@ -242,13 +242,13 @@ static bool connect_to_neural_net(void)
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[BASE_SERVO] = static_mov_obj_paradigm->polar_space_limits[BASE_SERVO].min;
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[SHOULDER_SERVO] = static_mov_obj_paradigm->polar_space_limits[SHOULDER_SERVO].min;
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_min_joint_angles[ELBOW_SERVO] = static_mov_obj_paradigm->polar_space_limits[ELBOW_SERVO].min;
-	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN, mov_obj_hand_2_neural_net_msg_add))	
+	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], *sys_time_ptr, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MIN, mov_obj_hand_2_neural_net_msg_add))	
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
 
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[BASE_SERVO] = static_mov_obj_paradigm->polar_space_limits[BASE_SERVO].max;
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[SHOULDER_SERVO] = static_mov_obj_paradigm->polar_space_limits[SHOULDER_SERVO].max;
 	mov_obj_hand_2_neural_net_msg_add.three_dof_robot_max_joint_angles[ELBOW_SERVO] = static_mov_obj_paradigm->polar_space_limits[ELBOW_SERVO].max;
-	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], static_rt_tasks_data->current_system_time, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX, mov_obj_hand_2_neural_net_msg_add))	
+	if (!write_to_mov_obj_hand_2_neural_net_msg_buffer((*msgs_mov_obj_hand_2_neural_net_multi_thread)[0], *sys_time_ptr, MOV_OBJ_HAND_2_NEURAL_NET_MSG_JOINT_ANGLE_MAX, mov_obj_hand_2_neural_net_msg_add))	
 		return print_message(ERROR_MSG ,"MovObjHandler", "MovObjHandlerRtTask", "connect_to_neural_net", "write_to_mov_obj_hand_2_neural_net_msg_buffer().");
 
 

@@ -7,7 +7,7 @@
 #include "../../../../BlueSpike/Library/Thresholding/Thresholding.h"
 #include "Gui.h"
 #include "MovObjHandlerRtTask.h"
-
+#include "../Compile.h"
 
 
 
