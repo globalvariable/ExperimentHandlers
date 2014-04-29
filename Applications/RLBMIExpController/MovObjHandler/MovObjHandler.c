@@ -34,7 +34,7 @@ int main( int argc, char *argv[])
 	ThreeDofRobotAngleHistory *robot_angle_history = NULL;
 	ThreeDofRobotPulseHistory *robot_pulse_history = NULL;
 	unsigned int i;
-	ServoPulse temp_pulse;
+	ServoPulse diff_pulse;
 
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
@@ -117,7 +117,7 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 
-	mov_obj_paradigm->start_info.num_of_positions = 7;   ///   if change, change trialhandler.c as well. 	paradigm->num_of_robot_start_positions = 3;
+	mov_obj_paradigm->start_info.num_of_positions = 9;   ///   if change, change trialhandler.c as well. 	paradigm->num_of_robot_start_positions = 3;
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, mov_obj_paradigm->start_info.num_of_positions);
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, mov_obj_paradigm->start_info.num_of_positions);
 
@@ -130,10 +130,10 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->start_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = 1444;
 */
 
-	temp_pulse = (mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] - mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO]) / (mov_obj_paradigm->start_info.num_of_positions +1);
+	diff_pulse = mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] - mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO];
 	for (i = 0; i < mov_obj_paradigm->start_info.num_of_positions; i++)
 	{
-		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[BASE_SERVO] = mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO]  - ( (i +1 )* temp_pulse );
+		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[BASE_SERVO] = mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO]  - ( ((double)(i +1 ) / (mov_obj_paradigm->start_info.num_of_positions +1))* diff_pulse );
 		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 		mov_obj_paradigm->start_info.robot_pulse_widths[i].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;		
 	}

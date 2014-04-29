@@ -8,6 +8,8 @@ typedef struct __TrialHand2NeuralNetMsgItem TrialHand2NeuralNetMsgItem;
 typedef unsigned int TrialHand2NeuralNetMsgType;
 
 typedef struct __TrialHand2NeuralNetTrialStatusMsgAdd TrialHand2NeuralNetTrialStatusMsgAdd;
+typedef struct __TrialHand2NeuralNetDifficultyRewardAdd TrialHand2NeuralNetDifficultyRewardAdd;
+
 
 typedef union __TrialHand2NeuralNetMsgAdditional TrialHand2NeuralNetMsgAdditional;
 
@@ -20,9 +22,16 @@ struct __TrialHand2NeuralNetTrialStatusMsgAdd
 	unsigned int	new_robot_target_position_idx;   // in TrialHandParadigm
 };
 
+struct __TrialHand2NeuralNetDifficultyRewardAdd
+{
+	unsigned int	difficulty_level;
+	double		reward_prediction;
+};
+
 union __TrialHand2NeuralNetMsgAdditional
 {
 	TrialHand2NeuralNetTrialStatusMsgAdd trial_status_change_msg_add;
+	TrialHand2NeuralNetDifficultyRewardAdd difficulty_reward_predict_add;
 	double reward;
 	unsigned int recording_number;
 	bool dummy;

@@ -4,6 +4,7 @@
 
 int main( int argc, char *argv[])
 {
+	unsigned int i;
 	RtTasksData *rt_tasks_data = NULL;
 	Gui2TrialHandMsg *msgs_gui_2_trial_hand = NULL;    
 	TrialHand2GuiMsg *msgs_trial_hand_2_gui = NULL;    
@@ -26,35 +27,43 @@ int main( int argc, char *argv[])
 
 
 	paradigm = g_new0(TrialHandParadigmRobotReach, 1);
-	paradigm->max_trial_length = 5000000000;	////    increment this value as the task difficulty increases. it should be maximum 5 seconds. maximum attention time of animal. for close targets 4 sec is good.
-	paradigm->min_trial_refractory = 2000000000;
-	paradigm->max_extra_trial_refractory = 0;
-	paradigm->min_get_ready_to_trial_start_length = 100000000;
-	paradigm->max_extra_get_ready_to_trial_start_length = 00000000;
+
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
 
-	paradigm->num_of_robot_start_positions = 7;	/// change ClassifiedTrialHistory struct so that it does not have a dimension for num_of_robot_start_positions since reward is related to target, not starting point. remained distance to target when a trial ends is normalized according to the initial distance to target. 
-	paradigm->num_of_robot_target_positions = 2;
-	paradigm->num_of_target_led_components = 2;
+	paradigm->num_of_robot_start_positions = 9;	
+
+	paradigm->num_of_difficulty_levels = (paradigm->num_of_robot_start_positions +1)/ 2; 
+
+	paradigm->max_trial_length = g_new0(TimeStamp, paradigm->num_of_difficulty_levels);
+
+	paradigm->max_trial_length[0] = 3750000000;
+	for (i = 1; i < paradigm->num_of_difficulty_levels; i++)
+	{
+		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + 2500000000;
+	}
+	paradigm->trial_refractory = 2000000000;
+	paradigm->get_ready_to_trial_start_length = 100000000;
 
 	paradigm->target_led_component_indexes_list = g_new0(unsigned int, paradigm->num_of_target_led_components);
 	paradigm->target_led_component_indexes_list[0] = LEFT_LED_IDX_IN_EXP_ENVI_DATA;   // get this number from ExpEnviHandler/ConfigExpEnviComponentNums.h
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
-	paradigm->min_target_reach_threshold.r_x = 1.0;  //height
-	paradigm->min_target_reach_threshold.r_y = 1.0; // depth
-	paradigm->min_target_reach_threshold.r_z = 1.0; // lateral
-
-	paradigm->max_num_of_sessions = 1;  
-
-	paradigm->current_trial_data.session_idx = 0;
-
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
+	paradigm->current_trial_data.robot_start_position_idx = 1;  // start at difficulty level 1, decrease it to 0 if animal is unsuccessful.
 
-	paradigm->current_trial_data.reward_magnitude = 1;
+	paradigm->all_success_average = allocate_averaging_struct(paradigm->all_success_average, 40);
 
-	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_start_positions, paradigm->num_of_robot_target_positions, paradigm->max_num_of_sessions); 
+	paradigm->target_success_average = g_new0(AveragingStruct*, paradigm->num_of_robot_target_positions);
+	paradigm->target_success_average_small = g_new0(AveragingStruct*, paradigm->num_of_robot_target_positions);
+	for (i = 0; i < paradigm->num_of_robot_target_positions; i++)
+	{
+		paradigm->target_success_average[i] = allocate_averaging_struct(paradigm->target_success_average[i], 20);
+		paradigm->target_success_average_small[i] = allocate_averaging_struct(paradigm->target_success_average_small[i], 4);
+	}
+
+
+	classified_history = allocate_classified_trial_history(classified_history, 1000, paradigm->num_of_robot_target_positions); 
 
 	msgs_gui_2_trial_hand = allocate_gui_2_trial_hand_msg_buffer(msgs_gui_2_trial_hand);
 	msgs_trial_hand_2_gui = allocate_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui);

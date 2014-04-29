@@ -27,8 +27,9 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 	TrialHand2SpikeGenMsgAdditional trial_hand_to_spike_gen_msg_add;
 #endif
 	TrialHand2MovObjHandMsgAdditional trial_hand_2_mov_obj_hand_add;
-	TimeStamp get_ready_duration;
 	unsigned int recording_number;
+	TrialData *prev_trial_w_type;
+
 	while (get_next_gui_2_trial_hand_msg_buffer_item(msgs_gui_2_trial_hand, &msg_item))
 	{
 		get_gui_2_trial_hand_msg_type_string(msg_item.msg_type, str_gui_msg);
@@ -40,7 +41,7 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
 						*trial_status = TRIAL_STATUS_IN_REFRACTORY;
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->min_trial_refractory))
+						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->trial_refractory))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 
 						if (paradigm->current_trial_data.auto_target_select_mode_on)
@@ -154,7 +155,7 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) == paradigm->num_of_robot_start_positions)
+						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) > (paradigm->num_of_robot_start_positions/2))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->num_of_robot_start_positions number. Cannot be increase  more.");
 						}
@@ -170,7 +171,7 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Increasing threshold cannot be done during TRIAL_STATUS_GET_READY_TO_START");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) == paradigm->num_of_robot_start_positions)
+						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) > (paradigm->num_of_robot_start_positions/2))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->num_of_robot_start_positions number. Cannot be increase  more.");
 						}
@@ -180,7 +181,7 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) == paradigm->num_of_robot_start_positions)
+						if ((paradigm->current_trial_data.robot_start_position_idx +1 ) > (paradigm->num_of_robot_start_positions/2))
 						{
 							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->num_of_robot_start_positions number. Cannot be increase  more.");
 						}
@@ -199,9 +200,9 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 				switch (*trial_status)
 				{
 					case TRIAL_STATUS_TRIALS_DISABLED:
-						if (paradigm->current_trial_data.robot_start_position_idx == 0 )
+						if (paradigm->current_trial_data.robot_start_position_idx == 1 )
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 0. Cannot  decrease  more.");
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 1. Cannot  decrease  more.");
 						}
 						else
 						{
@@ -215,9 +216,9 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Decreasing threshold cannot be done during TRIAL_STATUS_GET_READY_TO_START");
 						break;
 					case TRIAL_STATUS_IN_REFRACTORY:
-						if (paradigm->current_trial_data.robot_start_position_idx == 0 )
+						if (paradigm->current_trial_data.robot_start_position_idx == 1 )
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 0. Cannot  decrease  more.");
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 1. Cannot  decrease  more.");
 						}
 						else
 						{
@@ -225,9 +226,9 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						}
 						break;
 					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
-						if (paradigm->current_trial_data.robot_start_position_idx == 0 )
+						if (paradigm->current_trial_data.robot_start_position_idx == 1 )
 						{
-							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 0. Cannot  decrease  more.");
+							print_message(WARNING_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "Reached paradigm->current_trial_data.robot_start_position_idx == 1. Cannot  decrease  more.");
 						}
 						else
 						{
@@ -521,11 +522,31 @@ bool handle_gui_to_trial_handler_msg(TimeStamp current_time)
 						*trial_status = TRIAL_STATUS_GET_READY_TO_START;
 						paradigm->current_trial_data.trial_start_time = current_time;
 
-						get_ready_duration = current_time + paradigm->min_get_ready_to_trial_start_length + ((TimeStamp)(get_rand_number() * (double)paradigm->max_extra_get_ready_to_trial_start_length));
-						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, get_ready_duration))
+						if (!write_to_trial_hand_2_trial_dur_hand_msg_buffer(msgs_trial_hand_2_trial_dur_hand, current_time, TRIAL_HAND_2_TRIAL_DUR_HAND_MSG_ENABLE_DURATION_HANDLING, current_time + paradigm->get_ready_to_trial_start_length))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_trial_dur_hand_msg_buffer()");
 						if (!write_to_trial_hand_2_exp_envi_hand_msg_buffer(msgs_trial_hand_2_exp_envi_hand, current_time, TRIAL_HAND_2_EXP_ENVI_HAND_MSG_START_TRIAL, paradigm->current_trial_data.target_led_component_list_idx))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleTrialDurHand2TrialHandMsgs", "handle_trial_dur_handler_to_trial_handler_msg", "write_to_trial_hand_2_exp_envi_hand_msg_buffer()");
+
+						prev_trial_w_type = get_previous_trial_history_data_ptr(classified_history->trial_types[paradigm->current_trial_data.robot_target_position_idx]);
+
+						if (prev_trial_w_type->binary_reward)
+						{
+							paradigm->current_trial_data.reward_prediction = ((1.0-(1.0/REWARD_PREDICTION_WINDOW) ) * prev_trial_w_type->reward_prediction) + (1.0/REWARD_PREDICTION_WINDOW);
+							printf ("%f\t%f\t%f\n", paradigm->current_trial_data.reward_prediction, prev_trial_w_type->reward_prediction, averaging_struct_get_mean(paradigm->target_success_average_small[paradigm->current_trial_data.robot_target_position_idx]) );
+						}
+						else
+						{
+							if (averaging_struct_get_mean(paradigm->target_success_average_small[paradigm->current_trial_data.robot_target_position_idx]) < 0.5)  // if 3 out of last 4 trials failed
+								paradigm->current_trial_data.reward_prediction = (1.0-(1.0/REWARD_PREDICTION_WINDOW) ) * prev_trial_w_type->reward_prediction;
+							printf ("%f\t%f\t%f\n", paradigm->current_trial_data.reward_prediction, prev_trial_w_type->reward_prediction, averaging_struct_get_mean(paradigm->target_success_average_small[paradigm->current_trial_data.robot_target_position_idx]) );
+						}
+
+						trial_hand_to_neural_net_msg_add.difficulty_reward_predict_add.difficulty_level = paradigm->current_trial_data.difficulty_level;  // determined when trial ends according to robot start position
+						trial_hand_to_neural_net_msg_add.difficulty_reward_predict_add.reward_prediction = paradigm->current_trial_data.reward_prediction;
+
+						if (!write_to_trial_hand_2_neural_net_msg_buffer(msgs_trial_hand_2_neural_net, current_time, TRIAL_HAND_2_NEURAL_NET_MSG_TRIAL_START, trial_hand_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"TrialHandler", "HandleExpEnviHand2TrialHandMsgs", "handle_exp_envi_handler_to_trial_handler_msg", "write_to_trial_hand_2_neural_net_msg_buffer()");
+
 						if (!write_to_trial_hand_2_gui_msg_buffer(msgs_trial_hand_2_gui, current_time, TRIAL_HAND_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_GET_READY_TO_START))
 							return print_message(ERROR_MSG ,"TrialHandler", "HandleGui2TrialHandMsgs", "handle_gui_to_trial_handler_msg", "write_to_trial_hand_2_gui_msg_buffer()");
 						if (! write_to_trial_status_history(trial_status_history, current_time, TRIAL_STATUS_GET_READY_TO_START))

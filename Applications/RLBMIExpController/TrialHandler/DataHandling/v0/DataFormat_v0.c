@@ -282,18 +282,16 @@ static int create_main_meta_file(char *main_directory_path, TrialHandParadigmRob
 	time ( &rawtime );
 	timeinfo = localtime (&rawtime);
 	fprintf(fp,"CREATION_DATE\t%s", asctime (timeinfo)); 	// already includes \n
-	fprintf(fp,"MAX_TRIAL_LENGTH\t%llu\n", paradigm->max_trial_length); 	
-	fprintf(fp,"MIN_TRIAL_REFRACTORY\t%llu\n", paradigm->min_trial_refractory); 	
-	fprintf(fp,"MAX_EXTRA_TRIAL_REFRACTORY\t%llu\n", paradigm->max_extra_trial_refractory); 
+	fprintf(fp,"NUM_OF_DIFFICULTY_LEVELS\t%u\n", paradigm->num_of_difficulty_levels);
+	for (i = 0; i < paradigm->num_of_difficulty_levels; i++)
+		fprintf(fp,"MAX_TRIAL_LENGTH[%u]\t%llu\n", i, paradigm->max_trial_length[i]); 	
+
+	fprintf(fp,"TRIAL_REFRACTORY\t%llu\n", paradigm->trial_refractory); 	
 	fprintf(fp,"NUM_OF_ROBOT_START_POSITIONS\t%u\n", paradigm->num_of_robot_start_positions); 
 	fprintf(fp,"NUM_OF_ROBOT_TARGET_POSITIONS\t%u\n", paradigm->num_of_robot_target_positions); 
 	fprintf(fp,"NUM_OF_TARGET_LED_COMPONENTS\t%u\n", paradigm->num_of_target_led_components); 
 	for (i = 0; i < paradigm->num_of_target_led_components; i++)
 		fprintf(fp,"TARGET_LED_COMPONENT_INDEXES_LIST[%u]\t%u\n", i, paradigm->target_led_component_indexes_list[i]); 
-	fprintf(fp,"MIN_TARGET_REACH_THRESHOLD->R_X\t%.15f\n", paradigm->min_target_reach_threshold.r_x); 
-	fprintf(fp,"MIN_TARGET_REACH_THRESHOLD->R_Y\t%.15f\n", paradigm->min_target_reach_threshold.r_y); 
-	fprintf(fp,"MIN_TARGET_REACH_THRESHOLD->R_Z\t%.15f\n", paradigm->min_target_reach_threshold.r_z);
-	fprintf(fp,"MAX_NUM_OF_SESSIONS\t%u\n", paradigm->max_num_of_sessions);
 
 	fprintf(fp,"TRIAL_STATUS_TYPES------------------\n");
 	fprintf(fp,"TRIAL_STATUS_NULL\t%u\n", TRIAL_STATUS_NULL); 
@@ -405,13 +403,8 @@ static int close_trial_data(TrialData *trial_data)
 	fprintf(fp,"target_led_component_list_idx\t%u\n", trial_data->target_led_component_list_idx);
 	fprintf(fp,"robot_start_position_idx\t%u\n", trial_data->robot_start_position_idx);
 	fprintf(fp,"robot_target_position_idx\t%u\n", trial_data->robot_target_position_idx);
-	fprintf(fp,"session_idx\t%u\n", trial_data->session_idx);
-	fprintf(fp,"reward_magnitude\t%.15f\n", trial_data->reward_magnitude);
 	fprintf(fp,"binary_reward\t%u\n", trial_data->binary_reward);
-	fprintf(fp,"binary_reward_windowed_average\t%.15f\n", trial_data->binary_reward_windowed_average);
-	fprintf(fp,"trial_length_windowed_average\t%llu\n", trial_data->trial_length_windowed_average);
-	fprintf(fp,"remained_distance_to_target\t%.15f\n", trial_data->remained_distance_to_target);
-	fprintf(fp,"initial_distance_to_target\t%.15f\n", trial_data->initial_distance_to_target);
+	fprintf(fp,"trial_incomplete\t%u\n", trial_data->trial_incomplete);
 	fprintf(fp,"rewarding_threshold.r_x\t%.15f\n", trial_data->rewarding_threshold.r_x);
 	fprintf(fp,"rewarding_threshold.r_y\t%.15f\n", trial_data->rewarding_threshold.r_y);
 	fprintf(fp,"rewarding_threshold.r_z\t%.15f\n", trial_data->rewarding_threshold.r_z);

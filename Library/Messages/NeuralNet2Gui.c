@@ -20,6 +20,10 @@ bool get_neural_net_2_gui_msg_type_string(NeuralNet2GuiMsgType msg_type, char *s
 			if (str != NULL)
  				strcpy(str, "NEURAL_NET_2_GUI_MSG_UPDATE_SYNAPTIC_WEIGHTS");
 			return TRUE;
+		case NEURAL_NET_2_GUI_MSG_UPDATE_SYNAPTIC_WEIGHTS_HISTORY:
+			if (str != NULL)
+ 				strcpy(str, "NEURAL_NET_2_GUI_MSG_UPDATE_SYNAPTIC_WEIGHTS_HISTORY");
+			return TRUE;
 /////////////////////////		
 		case NEURAL_NET_2_GUI_MSG_NULL:
 			if (str != NULL)
