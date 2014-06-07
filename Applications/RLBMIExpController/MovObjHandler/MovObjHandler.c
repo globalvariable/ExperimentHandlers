@@ -112,12 +112,12 @@ int main( int argc, char *argv[])
 	mov_obj_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 	mov_obj_paradigm->target_info.cart_coordinates[1].height = 17.7 ;
 	mov_obj_paradigm->target_info.cart_coordinates[1].depth = 11.85;
-	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = -8.1;
+	mov_obj_paradigm->target_info.cart_coordinates[1].lateral = -8.5;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1340;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 	mov_obj_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 
-	mov_obj_paradigm->start_info.num_of_positions = 9;   ///   if change, change trialhandler.c as well. 	paradigm->num_of_robot_start_positions = 3;
+	mov_obj_paradigm->start_info.num_of_positions = 7;   ///   if change, change trialhandler.c as well. 	paradigm->num_of_robot_start_positions = 3;
 	mov_obj_paradigm->start_info.cart_coordinates = g_new0(CartesianCoordinates, mov_obj_paradigm->start_info.num_of_positions);
 	mov_obj_paradigm->start_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, mov_obj_paradigm->start_info.num_of_positions);
 

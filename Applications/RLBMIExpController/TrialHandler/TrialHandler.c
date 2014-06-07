@@ -31,7 +31,7 @@ int main( int argc, char *argv[])
 	paradigm->num_of_robot_target_positions = 2;
 	paradigm->num_of_target_led_components = 2;
 
-	paradigm->num_of_robot_start_positions = 9;	
+	paradigm->num_of_robot_start_positions = 7;	
 
 	paradigm->num_of_difficulty_levels = (paradigm->num_of_robot_start_positions +1)/ 2; 
 
@@ -50,7 +50,7 @@ int main( int argc, char *argv[])
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_EXP_ENVI_DATA;
 
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
-	paradigm->current_trial_data.robot_start_position_idx = 1;  // start at difficulty level 1, decrease it to 0 if animal is unsuccessful.
+	paradigm->current_trial_data.robot_start_position_idx = 0; 
 
 	paradigm->all_success_average = allocate_averaging_struct(paradigm->all_success_average, 40);
 
