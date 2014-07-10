@@ -1,14 +1,14 @@
 #include "MovObjData.h"
 
 
-MovObjData* allocate_mov_obj_data(MovObjData* data, TimeStamp	neural_net_2_mov_obj_hand_delay)
+MovObjData* allocate_mov_obj_data(MovObjData* data, TimeStamp	neural_net_2_mov_obj_hand_delay, TimeStamp	HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 {
-	if (neural_net_2_mov_obj_hand_delay < MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
+	if (neural_net_2_mov_obj_hand_delay < HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 		return (MovObjData*)print_message(BUG_MSG ,"ExperimentHandlers", "MovObjData", "deallocate_mov_obj_data", "neural_net_2_mov_obj_hand_delay < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");    
 	if (data != NULL)
 	{
 		data = deallocate_mov_obj_data(data);
-		data = allocate_mov_obj_data(data, neural_net_2_mov_obj_hand_delay);
+		data = allocate_mov_obj_data(data, neural_net_2_mov_obj_hand_delay, HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY);
 		return data;
 	}  
 	data = g_new0(MovObjData,1);
@@ -44,13 +44,13 @@ bool get_component_type_idx_in_mov_obj_data(MovObjData *data, MovObjCompType com
 	}
 	return FALSE;	
 }
-bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_type, TimeStamp	stay_at_start_duration, TimeStamp stay_at_target_duration, double initial_threshold, double threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval)
+bool add_component_type_to_mov_obj_data(MovObjData *data, MovObjCompType comp_type, TimeStamp	stay_at_start_duration, TimeStamp stay_at_target_duration, double initial_threshold, double threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval, TimeStamp	HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 {
 	unsigned int i;
 	bool comp_type_used;
 	char temp[MOV_OBJ_COMPONENT_TYPE_MAX_STRING_LENGTH];
 	MovObjCompTypeData	*lcl_comp_types;
-	if (stay_at_start_duration < MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
+	if (stay_at_start_duration < HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", "stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");	
 	if (!is_mov_obj_component_type_used(data, comp_type, &comp_type_used))
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "add_component_type_to_mov_obj_data", "! is_component_type_used()");	
@@ -94,9 +94,9 @@ bool is_mov_obj_component_type_used(MovObjData* data, MovObjCompType comp_type, 
 	}
 	return TRUE;
 }
-bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_start_duration, TimeStamp stay_at_target_duration, MovObjLocationType initial_threshold, MovObjLocationType threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval)
+bool set_global_constraints_mov_obj_data(MovObjData *data, TimeStamp stay_at_start_duration, TimeStamp stay_at_target_duration, MovObjLocationType initial_threshold, MovObjLocationType threshold_increment_amount, MovObjLocationType target_location, TimeStamp motor_command_delivery_interval, TimeStamp	HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 {
-	if (stay_at_start_duration < MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
+	if (stay_at_start_duration < HARD_MIN_NEURAL_NET_2_MOV_OBJ_HAND_EVENT_SCHEDULING_DELAY)
 		return print_message(ERROR_MSG ,"ExperimentHandlers", "MovObjData", "set_global_constraints_mov_obj_data", "stay_at_start_duration < MINIMUM_NEURAL_NET_2_MOV_OBJ_HAND_SPIKE_SCHEDULING_DELAY.");	
 	data->glo_constraints.stay_at_start_duration = stay_at_start_duration;
 	data->glo_constraints.stay_at_target_duration = stay_at_target_duration;
