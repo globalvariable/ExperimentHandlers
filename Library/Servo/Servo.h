@@ -93,4 +93,5 @@ void write_servo_90_degree_adc_val(ServoData *servo_data, ServoPosition ninety_d
 void init_servo_angles_for_sample_averaging(ServoData *servo, ServoAngle initial_angle, unsigned int prev_angle_memo_size);
 void init_servo_spike_count_memo(ServoData *servo, unsigned int memo_size);
 void calculate_servo_angle_with_averaging(ServoData *servo);
+void clear_spike_count_memo_of_servo(ServoData *servo);
 #endif

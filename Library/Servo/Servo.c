@@ -253,7 +253,7 @@ void evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_bias
  			sum_2_decrease = sum_2_decrease + cnt_2_dec_pw[i];
  			sum_2_increase = sum_2_increase + cnt_2_inc_pw[i];
 		}
-		for (i = 1; i < memo_size; i++)
+		for (i = memo_size-1; i > 0; i--)
 		{
 			cnt_2_dec_pw[i] = cnt_2_dec_pw[i-1];
 			cnt_2_inc_pw[i] = cnt_2_inc_pw[i-1];
@@ -320,7 +320,7 @@ void evaluate_servo_pw_command_via_spike_count_with_limitation_count_thresholdin
  			sum_2_decrease = sum_2_decrease + cnt_2_dec_pw[i];
  			sum_2_increase = sum_2_increase + cnt_2_inc_pw[i];
 		}
-		for (i = 1; i < memo_size; i++)
+		for (i = memo_size-1; i > 0; i--)
 		{
 			cnt_2_dec_pw[i] = cnt_2_dec_pw[i-1];
 			cnt_2_inc_pw[i] = cnt_2_inc_pw[i-1];
@@ -440,13 +440,32 @@ void calculate_servo_angle_with_averaging(ServoData *servo)
 	memo_size = servo->angle_memo_4_averaging->memo_size;
 	prev_angles = servo->angle_memo_4_averaging->angles;
 
-	for (i = 0; i < memo_size; i++)
- 		sum =  sum + prev_angles[i];
 	pthread_mutex_lock(&(servo->mutex));
 	last_angle =  ((double)servo->position.position - (double)servo->range.position_0_degree) * servo->range.radian_per_pos_quanta;
 	pthread_mutex_unlock(&(servo->mutex));
-	servo->current_angle = 	(last_angle + sum) / ( (double) (memo_size+1));
-	for (i = 1; i < memo_size; i++)
-		prev_angles[i] = prev_angles[i-1];
 	prev_angles[0] = last_angle;
+	for (i = 0; i < memo_size; i++)
+ 		sum =  sum + prev_angles[i];
+	servo->current_angle = 	sum / ( (double) memo_size);
+
+	for (i = memo_size-1; i > 0; i--)
+	{
+		prev_angles[i] = prev_angles[i-1];
+	}
+}
+
+void clear_spike_count_memo_of_servo(ServoData *servo)
+{
+	unsigned int i , memo_size;
+	unsigned int *spike_count_2_decrease_pw, *spike_count_2_increase_pw;
+
+	memo_size = servo->spike_count_memo->memo_size;
+	spike_count_2_decrease_pw = servo->spike_count_memo->spike_count_2_decrease_pw;
+	spike_count_2_increase_pw = servo->spike_count_memo->spike_count_2_increase_pw;
+
+	for (i = 0; i < memo_size; i++)
+	{
+		spike_count_2_decrease_pw[i] = 0;
+		spike_count_2_increase_pw[i] = 0;
+	}
 }
